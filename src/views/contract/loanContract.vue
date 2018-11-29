@@ -1,13 +1,13 @@
 <template>
   <csc-single-table :pageDef="pageDef" :entity="entity" @pageQuery="doPageQuery" @create="create" @doEdit="doEdit"
-       @contractList="contractList"            >
+       @contractList="contractList"     @clearFrom="clearFrom"       >
   </csc-single-table>
 </template>
 
 <script>
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-// import { getContractList} from '@/api/contract'
-  import { getContractList } from '@/api/api'
+  import { getContractList } from '@/api/contract'// 正常往后台发送异步请求的类
+//  import { getContractList } from '@/api/api'//api是自己写的用来测试mock假数据的路径，配置了这个之后mock会拦截正常请求
 
   // 合同模块也是需要引入用户的，以后需要根据用户查询对应的合同（高级查询）
 
@@ -15,7 +15,36 @@
     data() {
       return {
         listLoading: false,
-        entity: {},
+        entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
+          data: [
+            {
+              contractNum: '111',
+              bizTypeFlag: '1',
+              partyName: '你好',
+              certType: '渣',
+              certNum: 1234,
+              productType: '贷款',
+              beginDate: '1998-12-1',
+              endDate: '2003-07-02',
+              currencyCd: '人民币',
+              contractAmt: '1789.97',
+              conBalance: '123.11'
+            },
+            {
+              contractNum: '112',
+              bizTypeFlag: '1',
+              partyName: '你好',
+              certType: '渣',
+              certNum: '1234',
+              productType: '贷款',
+              beginDate: '1998-12-1',
+              endDate: '2002-01-22',
+              currencyCd: '人民币',
+              contractAmt: '1729.97',
+              conBalance: '13.11'
+            }
+          ]
+        },
         pageDef: {
           // 查询条件定义
           queryDef: {
@@ -60,23 +89,27 @@
 
       doPageQuery() {
         // this.contractList(listQuery)
-        console.log('doPageQuery...')
+        // console.log('doPageQuery...')
       },
 
       contractList(listQuery) {
         const params = {
           listQuery: this.listQuery
         }
-  
+
+        // const entity={
+        //   contractNum:'1234'
+        // }
         this.listLoading = true
 
-        console.log("listQuery ...."+listQuery)
+        // console.log(entity.contractNum)
+        console.log('listQuery ....' + listQuery)
         getContractList(params).then(response => {
           this.entity = response
-          //console.log(" response.data.entity"+ response.data.entity)
+          // console.log(" response.data.entity"+ response.data.entity)
           this.listLoading = false
         }).catch((error) => {
-          alert(error)
+          // alert(error)
           console.log(error)
         })
       },
@@ -104,8 +137,7 @@
       }
     },
     mounted() {				// 骑马的，安装好的
-      console.log("mounted init....")
-      this.contractList()
+      this.contractList() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
   }
 
   }

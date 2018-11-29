@@ -38,11 +38,11 @@ export default {
         buttons: [
           { label: '新增', funcName: 'create' },
           { label: '重置密码', funcName: 'resetPassword' }]
- }
- }
- },
+      }
+    }
+  },
 
- components: { CscSingleTable },
+  components: { CscSingleTable },
 
  	methods: {
  		doPageQuery(listQuery) {
@@ -58,7 +58,7 @@ export default {
  		},
 
  		rowDbclick(row) {
- 			this.$router.push({ path:'/user/add/card/' + row.userId })
+ 			this.$router.push({ path: '/user/add/card/' + row.userId })
     },
 
     create() {

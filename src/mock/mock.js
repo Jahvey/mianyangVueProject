@@ -1,7 +1,7 @@
 import axios from 'axios'
 import MockAdapter from 'axios-mock-adapter'
 
-import { Contract } from './data/contract'      //这是在contract.js里面定义的生成假数据的文件
+import { Contract } from './data/contract' // 这是在contract.js里面定义的生成假数据的文件
 
 const _Contract = Contract
 
@@ -22,27 +22,25 @@ export default {
       msg: 'failure'
     })
 
-
     // 进行数据测试  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  //  mock.onPost('/csc-service/contract/paginQueryContractByOrgid').reply(config => {
-    mock.onGet('/contract/list').reply(config => {       //试一试把POST请求改为Get请求
-      let {name} = config.params;                       //const改let
-      let mockContract = _Contract.filter(contract => {
+    //  mock.onPost('/csc-service/contract/paginQueryContractByOrgid').reply(config => {
+    mock.onGet('/contract/list').reply(config => { // 试一试把POST请求改为Get请求
+      const { name } = config.params // const改let
+      const mockContract = _Contract.filter(contract => {
         if (name && contract.partyName.indexOf(name) == -1) {
           return false
         }
         return true
       })
-      console.log("mockContract....."+mockContract)
+      console.log('mockContract.....' + mockContract)
       return new Promise((resolve, reject) => {
         setTimeout(() => {
           resolve([200, {
-            contract: mockContract;           //这个contract是定义的哪里的？？？demo里面是自定义的数据，这个是再次封装
-          }])                           //pageDef.tabDef.tabCols
+            contract: mockContract // 这个contract是定义的哪里的？？？demo里面是自定义的数据，这个是再次封装
+          }]) // pageDef.tabDef.tabCols
         }, 1000)
       })
     })
-
   }
 
 }

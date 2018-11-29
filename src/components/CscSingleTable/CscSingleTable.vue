@@ -6,6 +6,7 @@
         <template v-for="(queryCol,idx) in pageDef.queryDef.queryCols">
           <el-col :span="24/pageDef.queryDef.columnNum">
             <template v-if="queryCol.inputType==='select'">
+
               <el-form-item :label="queryCol.label">
                 <el-select clearable v-model="form[queryCol.modelName]" @clear="clearSelect(queryCol.modelName)">
                   <el-option v-for="(value,key) in getEnums(queryCol.enumType)" :key="key" :label="value" :value="key">
@@ -78,7 +79,7 @@
       </el-button>
       <!-- <el-button size="mini" class="filter-item" style="margin-left: 10px;" @click="doClick" type="primary" icon="el-icon-edit">新增</el-button> -->
     </el-row>
-    <!--列表-->
+    <!--列表，使用element-ui加入动态数据-->
     <el-row class="singleTable">
     <el-table  :data="entity.data" highlight-current-row v-loading="listLoading" @selection-change="selectionChange"
               @row-click="rowChange" @select="rowChange" @row-dblclick="rowDbclick">
@@ -189,10 +190,10 @@
   </div>
 </template>
 <script>
-import { formatter, getEnumObj } from '@/utils/formatter';
-import { extend } from '@/utils/validate';
-import commonUtil from '@/utils/commonUtil';
-import CscTableColumn from '@/components/CscTableColumn/CscTableColumn';
+import { formatter, getEnumObj } from '@/utils/formatter'
+import { extend } from '@/utils/validate'
+import commonUtil from '@/utils/commonUtil'
+import CscTableColumn from '@/components/CscTableColumn/CscTableColumn'
 
 export default {
   name: 'CscSingleTable',
@@ -204,6 +205,7 @@ export default {
     dataList: Array,
     matchObj: Object,
     entity: Object,
+    // disableRowButtons: Boolean,
     disableQueryForm: {
       type: Boolean,
       default: false
@@ -229,115 +231,123 @@ export default {
         pageJump: 1, // 多页查询跳转页码
         recInPage: 20 // 多页查询每页笔数
       }
-    };
+    }
   },
   created() {
     if (this.pageDef.defaultConditions) {
-      Object.assign(this.listQuery, this.pageDef.defaultConditions);
+      Object.assign(this.listQuery, this.pageDef.defaultConditions)
     }
-    if (this.autoQuery) this.doPageQuery();
+    if (this.autoQuery) this.doPageQuery()
   },
 
   components: { CscTableColumn },
 
   computed: {
+    // disableQueryForm(){
+    //   return this.disableQueryForm.disabled
+    // },
+
+    // disabled() { // 控制页面渲染
+    //   return this.pageDef.disabled
+    // },
+
     // 分页查询总笔数
 
     totalRec: function() {
-      return this.entity.totalRec;
+      return this.entity.totalRec
     },
     buttonStates() {
-      const disableds = [];
+      const disableds = []
       for (var idx in this.pageDef.buttons) {
-        var button = this.pageDef.buttons[idx];
+        var button = this.pageDef.buttons[idx]
         if (button.regulation) {
-          let evalStr = button.regulation;
-          var reg = /\w+\s*\(\s*\)/g;
-          var result = evalStr.match(reg);
+          let evalStr = button.regulation
+          var reg = /\w+\s*\(\s*\)/g
+          var result = evalStr.match(reg)
           if (result != null) {
             for (var index = 0; index < result.length; index++) {
               evalStr = evalStr.replace(
                 result[index],
                 'this.pageDef.methods.' +
                   result[index].replace('()', '(this.selection)')
-              );
+              )
             }
-            disableds.push(!eval(evalStr));
+            disableds.push(!eval(evalStr))
           } else {
-            disableds.push(!eval(button.regulation));
+            disableds.push(!eval(button.regulation))
           }
         } else {
-          disableds.push(false);
+          disableds.push(false)
         }
       }
-      return disableds;
+      return disableds
     },
     listLoading() {
-      return this.$store.getters.listLoading;
+      return this.$store.getters.listLoading
     }
   },
   methods: {
     matchIdChange(val) {},
     // 模糊查询方法
     queryallRef(val) {
-        this.matchRefList = [];
+      this.matchRefList = []
     },
 
     // 格式化表格字段
     formatVal(row, column, cellValue, enumType) {
       if (enumType) {
-        return formatter(enumType, cellValue);
+        return formatter(enumType, cellValue)
       }
-      return formatter(column.property, cellValue);
+      return formatter(column.property, cellValue)
     },
 
     getEnums(enumType) {
-      return getEnumObj(enumType);
+      return getEnumObj(enumType)
     },
 
     // 子组件按钮事件
     doClick(funcName) {
-      extend(this.form, this.listQuery);
-      this.$emit(funcName, this.selection, this.form);
+      extend(this.form, this.listQuery)
+      this.$emit(funcName, this.selection, this.form)
     },
 
     doRowClick(funcName, index, row) {
-      extend(this.form, this.listQuery);
-      this.$emit(funcName, row, this.form, index);
+      extend(this.form, this.listQuery)
+      this.$emit(funcName, row, this.form, index)
     },
     // 带查询条件的查询
     doQuery() {
-      this.listQuery.pageJump = 1;
-      this.doPageQuery();
+      this.listQuery.pageJump = 1
+      this.doPageQuery()
     },
 
     // 重置
     doReset() {
-      this.form = {};
-      this.$emit('doReset');
+      this.form = {}
+      this.$emit('doReset')
     },
 
     doPageQuery() {
-      this.$store.dispatch('setListLoading', true);
-      extend(this.form, this.listQuery);
-      this.$emit('pageQuery', this.form);
+      this.$store.dispatch('setListLoading', true)
+      extend(this.form, this.listQuery)
+      this.$emit('pageQuery', this.form)
     },
 
     // 查询每页笔数变化事件
     doSizeChange(val) {
-      this.listQuery.recInPage = val;
-      this.doPageQuery();
+      this.listQuery.recInPage = val
+      this.doPageQuery()
     },
 
     // 页码变化事件
     doCurrentChange(val) {
-      this.listQuery.pageJump = val;
-      this.doPageQuery();
+      this.listQuery.pageJump = val
+      this.doPageQuery()
     },
 
     // 编辑
     doEdit(index, row) {
-      this.$emit('doEdit', row);
+      this.$emit('doEdit', row)
     },
 
     // 删除
@@ -349,104 +359,104 @@ export default {
         center: true
       })
         .then(() => {
-          this.$emit('doDelete', row, this.listQuery, index);
+          this.$emit('doDelete', row, this.listQuery, index)
         })
         .catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          });
-        });
+          })
+        })
     },
     // 行点击和行选中事件
     rowChange(row, event, column) {
-      this.currentRow = row;
+      this.currentRow = row
       if (!this.pageDef.tabDef.isSelect) {
-        this.selection = [row];
+        this.selection = [row]
       }
-      this.$emit('rowChange', row);
+      this.$emit('rowChange', row)
     },
 
     selectionChange(selection) {
-      this.selection = selection;
-      this.$emit('selectionChange', selection);
+      this.selection = selection
+      this.$emit('selectionChange', selection)
     },
 
     evalRegulation(regulation, row) {
-      let evalStr = regulation;
+      let evalStr = regulation
       if (regulation) {
-        var reg = /\w+\s*(=|!)=\s*'*\w+'*/g;
-        var result = regulation.match(reg);
+        var reg = /\w+\s*(=|!)=\s*'*\w+'*/g
+        var result = regulation.match(reg)
         if (result != null) {
           for (var idx in result) {
-            evalStr = evalStr.replace(result[idx], 'row.' + result[idx]);
+            evalStr = evalStr.replace(result[idx], 'row.' + result[idx])
           }
-          return !eval(evalStr);
+          return !eval(evalStr)
         } else {
-          return !eval(regulation);
+          return !eval(regulation)
         }
       } else {
-        return false;
+        return false
       }
     },
 
     evalVisible(visible, row) {
-      let evalStr = visible;
+      let evalStr = visible
       if (visible) {
-        var reg = /\w+\s*(=|!)=\s*'*\w+'*/g;
-        var result = visible.match(reg);
+        var reg = /\w+\s*(=|!)=\s*'*\w+'*/g
+        var result = visible.match(reg)
         if (result != null) {
           for (var idx in result) {
-            evalStr = evalStr.replace(result[idx], 'row.' + result[idx]);
+            evalStr = evalStr.replace(result[idx], 'row.' + result[idx])
           }
-          return eval(evalStr);
+          return eval(evalStr)
         } else {
-          return eval(visible);
+          return eval(visible)
         }
       } else {
-        return true;
+        return true
       }
     },
 
     rowDbclick(row, event) {
-      this.$emit('rowDbclick', row);
+      this.$emit('rowDbclick', row)
     },
 
     queryRef(row, column, cellValue) {
-      var fval = '';
+      var fval = ''
       if (cellValue !== '' && cellValue != undefined) {
         this.$emit('queryRef', column.property, cellValue, function(val) {
-          fval = val;
-        });
-        return fval;
+          fval = val
+        })
+        return fval
       }
     },
 
     formatDateTime(row, column, cellValue) {
-      return commonUtil.formatDateString(cellValue, 'yyyy-MM-dd hh:mm:ss');
+      return commonUtil.formatDateString(cellValue, 'yyyy-MM-dd hh:mm:ss')
     },
 
     clearSelect(colName) {
-      delete this.form[colName];
+      delete this.form[colName]
     },
 
     formatDate(row, column, cellValue) {
-      return commonUtil.formatDateString(cellValue, 'yyyy-MM-dd');
+      return commonUtil.formatDateString(cellValue, 'yyyy-MM-dd')
     },
 
     customFormat(row, column, cellValue) {
       if (cellValue !== '' && cellValue != undefined) {
-        let fval = '';
+        let fval = ''
         this.$emit('customFormat', row, column, cellValue, function(val) {
-          fval = val;
-        });
-        return fval;
+          fval = val
+        })
+        return fval
       } else {
-        return cellValue;
+        return cellValue
       }
     }
   }
-};
+}
 </script>
 <style rel='stylesheet/scss' lang='scss' scoped>
 .el-main {
