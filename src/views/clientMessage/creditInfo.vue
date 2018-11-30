@@ -5,13 +5,13 @@
 </template>
 
 <script>
-  // 从合同信息之抵押合同
+  // 信用信息，非常重要
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable' // 引入的这个是子组件，需要把父组件的值传递给子组件修改子组件
-  import { getContractList } from '@/api/contract'// 正常往后台发送异步请求的类
+  import { getContractList } from '@/api/contract'// 正常往后+台发送异步请求的类
   //  import { getContractList } from '@/api/api'//api是自己写的用来测试mock假数据的路径，配置了这个之后mock会拦截正常请求
 
   export default {
-    name: 'mortgageContract',
+    // name: 'mortgageContract',
     data: function() {
       return {
         disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮
@@ -20,17 +20,18 @@
         entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
           data: [
             {
-              SUBCONTRACT_NUM: 'HT111063729',
-              PARTY_NAME: '苟富贵',
-              IF_TOP_SUBCON: '是',
-              BZ: '人民币',
-              SUBCONTRACT_AMT: 15000.00,
-              SURETY_AMT: 14000.00,
-              OPERATION_TYPE: '填什么？'
+              partyName: '军育苗',
+              infoSrc: ' 启信宝',
+              queryDate: '2018-07-24',
+              djkLxyqTimes: '无',
+              djkLjljTimes: '无',
+              dkLxqxTimes: '无',
+              dkLjqxTimes: '无',
+              sxbjYqCondition: '无'
             }
           ]
         },
-        // disableQueryForm: true,
+        // disableQueryForm: true,credit rating
         pageDef: {
           // 查询条件定义
           queryDef: {},
@@ -40,30 +41,21 @@
             isIndex: true, // 是否有序号
             // 表格字段定义
             tabCols: [
-              { label: '抵押合同编号', prop: 'SUBCONTRACT_NUM', isSort: true },
-              { label: '抵押人名称', prop: 'PARTY_NAME', isSort: true },
-              { label: '是否最高额', prop: 'IF_TOP_SUBCON', isSort: true },
-              { label: '币种', prop: 'BZ', isSort: true },
-              { label: '担保合同金额', prop: 'SUBCONTRACT_AMT', isSort: true },
-              { label: '本次担保金额', prop: 'SURETY_AMT', isSort: true }, // currency：货币
-              { label: '操作类型标识', prop: 'OPERATION_TYPE', isSort: true }
+              { label: '客户名称', prop: 'partyName', isSort: true },
+              { label: '记录来源', prop: 'infoSrc', isSort: true }, // currency：货币
+              { label: '查询日期', prop: 'queryDate', isSort: true },
+              { label: '贷记卡及准贷记卡连续逾期次数', prop: 'djkLxyqTimes', isSort: true },
+              { label: '贷记卡及准贷记卡累计逾期次数', prop: 'djkLjljTimes', isSort: true },
+              { label: '贷款连续欠息次数', prop: 'dkLxqxTimes', isSort: true },
+              { label: '贷款累计欠息次数', prop: 'dkLjqxTimes', isSort: true },
+              { label: '授信本金逾期情况', prop: 'sxbjYqCondition', isSort: true }
             ]
-          },
-          buttons: [
-            { label: '查看', funcName: 'findOne' }
-          ]
+          }
         }
       }
     },
 
-    components: { CscSingleTable }, // 引入的子组件
-    // mounted()页面加载完毕之后进行的渲染
-    // computed: {				// 页面加载完毕之后进行的渲染
-    //   disableQueryForm() {
-    //     return this.disableQueryForm
-    //   }
-    // },
-
+    components: { CscSingleTable },
     methods: {
       doPageQuery() {
         // this.contractList(listQuery)

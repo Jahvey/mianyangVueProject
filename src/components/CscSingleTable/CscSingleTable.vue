@@ -1,5 +1,6 @@
 <template>
   <div class="app-container">
+
     <!--工具条-->
     <el-row :gutter="20" class="queryForm" v-if="!disableQueryForm">
       <el-form ref="form" :model="form" :rules="pageDef.queryRules" label-width="120px" label-position="right">
@@ -64,7 +65,7 @@
       </el-form>
     </el-row>
     <!-- 查询 -->
-    <el-row align="middle" v-if="!disableQueryForm">
+    <el-row align="middle" v-if="!disableQueryForm && !disableQueryButtons  "><!--增加了一个button按钮属性，为何只有disableQueryForm能传递？？-->
       <el-col align="center">
         <el-button size="medium" type="primary" @click="doQuery">查询</el-button>
         <el-button size="medium" type="primary" @click="doReset">重置</el-button>
@@ -210,6 +211,10 @@ export default {
       type: Boolean,
       default: false
     },
+    disableQueryButtons: {
+      type: Boolean,
+      default: false
+    },
     disableRowButtons: {
       type: Boolean,
       default: false
@@ -243,16 +248,6 @@ export default {
   components: { CscTableColumn },
 
   computed: {
-    // disableQueryForm(){
-    //   return this.disableQueryForm.disabled
-    // },
-
-    // disabled() { // 控制页面渲染
-    //   return this.pageDef.disabled
-    // },
-
-    // 分页查询总笔数
-
     totalRec: function() {
       return this.entity.totalRec
     },
@@ -317,6 +312,9 @@ export default {
     },
     // 带查询条件的查询
     doQuery() {
+      alert(1)
+      alert('disableQueryForm   ' + this.disableQueryForm)
+      alert('disableQueryButtons   ' + this.disableQueryButtons)
       this.listQuery.pageJump = 1
       this.doPageQuery()
     },

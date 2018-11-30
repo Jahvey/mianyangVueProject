@@ -5,13 +5,13 @@
 </template>
 
 <script>
-  // 从合同信息之抵押合同
+  // 大学信息
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable' // 引入的这个是子组件，需要把父组件的值传递给子组件修改子组件
-  import { getContractList } from '@/api/contract'// 正常往后台发送异步请求的类
+  import { getContractList } from '@/api/contract'// 正常往后+台发送异步请求的类
   //  import { getContractList } from '@/api/api'//api是自己写的用来测试mock假数据的路径，配置了这个之后mock会拦截正常请求
 
   export default {
-    name: 'mortgageContract',
+    // name: 'mortgageContract',
     data: function() {
       return {
         disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮
@@ -20,17 +20,20 @@
         entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
           data: [
             {
-              SUBCONTRACT_NUM: 'HT111063729',
-              PARTY_NAME: '苟富贵',
-              IF_TOP_SUBCON: '是',
-              BZ: '人民币',
-              SUBCONTRACT_AMT: 15000.00,
-              SURETY_AMT: 14000.00,
-              OPERATION_TYPE: '填什么？'
+              collegename: '麻省理工学院',
+              collegeaddr: '马萨诸塞州波士顿都市区剑桥市',
+              institutename: '空气动力学',
+              collegetype: '工学院',
+              educsign: '未知',
+              subjectname: '航空航天',
+              graduateyear: '1932',
+              lastchandate: '1933-06-23',
+              lastchanperson: '马林·福多',
+              areacode: '北美'
             }
           ]
         },
-        // disableQueryForm: true,
+        // disableQueryForm: true,credit
         pageDef: {
           // 查询条件定义
           queryDef: {},
@@ -40,13 +43,16 @@
             isIndex: true, // 是否有序号
             // 表格字段定义
             tabCols: [
-              { label: '抵押合同编号', prop: 'SUBCONTRACT_NUM', isSort: true },
-              { label: '抵押人名称', prop: 'PARTY_NAME', isSort: true },
-              { label: '是否最高额', prop: 'IF_TOP_SUBCON', isSort: true },
-              { label: '币种', prop: 'BZ', isSort: true },
-              { label: '担保合同金额', prop: 'SUBCONTRACT_AMT', isSort: true },
-              { label: '本次担保金额', prop: 'SURETY_AMT', isSort: true }, // currency：货币
-              { label: '操作类型标识', prop: 'OPERATION_TYPE', isSort: true }
+              { label: '高校名称', prop: 'collegename', isSort: true },
+              { label: '高校地址', prop: 'collegeaddr', isSort: true }, // currency：货币
+              { label: '院系名称', prop: 'institutename', isSort: true },
+              { label: '院校类型', prop: 'collegetype', isSort: true },
+              { label: '就读学位', prop: 'educsign', isSort: true },
+              { label: '专业名称', prop: 'subjectname', isSort: true },
+              { label: '毕业年分', prop: 'graduateyear', isSort: true },
+              { label: '最后修改日期', prop: 'lastchandate', isSort: true },
+              { label: '最后修改人', prop: 'lastchanperson', isSort: true },
+              { label: '行政区划代码', prop: 'areacode', isSort: true }
             ]
           },
           buttons: [
@@ -56,14 +62,7 @@
       }
     },
 
-    components: { CscSingleTable }, // 引入的子组件
-    // mounted()页面加载完毕之后进行的渲染
-    // computed: {				// 页面加载完毕之后进行的渲染
-    //   disableQueryForm() {
-    //     return this.disableQueryForm
-    //   }
-    // },
-
+    components: { CscSingleTable },
     methods: {
       doPageQuery() {
         // this.contractList(listQuery)

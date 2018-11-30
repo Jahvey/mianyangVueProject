@@ -183,7 +183,98 @@ export const constantRouterMap = [
         name: '从合同之抵押合同',
         component: _import('contract/serventContractInfo/mortgageContract'), // mainContractDetail
         meta: { title: '从合同之抵押合同', icon: 'manage' }
+      },
+      {
+        path: 'pledgeContract',
+        name: '从合同之质押合同',
+        component: _import('contract/serventContractInfo/pledgeContract'), // mainContractDetail
+        meta: { title: '从合同之质押合同', icon: 'manage' }
+      },
+      {
+        path: 'ensureContract',
+        name: '从合同之保证合同',
+        component: _import('contract/serventContractInfo/ensureContract'), // mainContractDetail
+        meta: { title: '从合同之保证合同', icon: 'manage' }
+      },
+      {
+        path: 'relationEnsureMoney',
+        name: '从合同之关联保证金',
+        component: _import('contract/serventContractInfo/relationEnsureMoney'), // mainContractDetail
+        meta: { title: '关联保证金', icon: 'manage' }
+      },
+      {
+        path: 'accountMessage',
+        name: '账户信息',
+        component: _import('contract/accountMessage'), // mainContractDetail
+        meta: { title: '账户信息', icon: 'manage' }
+      },
+      {
+        path: 'receiptMessage',
+        name: '借据信息',
+        component: _import('contract/receiptMessage'), // mainContractDetail
+        meta: { title: '借据信息', icon: 'manage' }
       }
+    ]
+  },
+
+  {
+    path: '/clientMessage', // 主路径需要更改
+    // redirect: '/contract/list', 	//路由，并没有配置这个，404
+    name: '客户信息',
+    // component: _import('clientMessage'),
+    component: Layout, // 左侧主导航栏
+    meta: { title: '客户信息', icon: 'organization' },
+    roles: ['admin'], // 这里需要更改
+    children: [
+      {
+        path: 'clientBaseInfo',
+        name: '客户概况信息',
+        component: _import('clientMessage/clientBaseInfo'),
+        meta: { title: '客户概况信息', icon: 'manage' }
+      },
+      {
+        path: 'entrustAccountInfo',
+        name: '委托方账户信息',
+        component: _import('clientMessage/entrustAccountInfo'),
+        meta: { title: '委托方账户信息', icon: 'manage' }
+      },
+      {
+        path: 'relativeListInfo',
+        name: '对私客户关系个人信息',
+        component: _import('clientMessage/relativeListInfo/personRelativeInfo'),
+        meta: { title: '对私客户关系个人信息', icon: 'manage' }
+      },
+      {
+        path: 'companyRelativeInfo',
+        name: '对私客户关系企业信息',
+        component: _import('clientMessage/relativeListInfo/companyRelativeInfo'),
+        meta: { title: '对私客户关系企业信息', icon: 'manage' }
+      },
+      {
+        path: 'businessInfo',
+        name: '经营信息',
+        component: _import('clientMessage/businessInfo'),
+        meta: { title: '经营信息', icon: 'manage' }
+      },
+      {
+        path: 'universityInfo',
+        name: '高校信息',
+        component: _import('clientMessage/universityInfo'),
+        meta: { title: '高校信息', icon: 'manage' }
+      },
+      {
+        path: 'creditInfo',
+        name: '信用信息',
+        component: _import('clientMessage/creditInfo'),
+        meta: { title: '信用信息', icon: 'manage' }
+      },
+      {
+        path: 'creditRatingInfo',
+        name: '评级信息',
+        component: _import('clientMessage/creditRatingInfo'),
+        meta: { title: '评级信息', icon: 'manage' }
+      }
+
     ]
   },
 
