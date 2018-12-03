@@ -65,7 +65,7 @@
       </el-form>
     </el-row>
     <!-- 查询 -->
-    <el-row align="middle" v-if="!disableQueryForm && !disableQueryButtons  "><!--增加了一个button按钮属性，为何只有disableQueryForm能传递？？-->
+    <el-row align="middle" v-if="!disableQueryForm && !disableQueryButtons  "><!--增加了一个button按钮属性-->
       <el-col align="center">
         <el-button size="medium" type="primary" @click="doQuery">查询</el-button>
         <el-button size="medium" type="primary" @click="doReset">重置</el-button>

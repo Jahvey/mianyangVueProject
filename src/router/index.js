@@ -273,8 +273,78 @@ export const constantRouterMap = [
         name: '评级信息',
         component: _import('clientMessage/creditRatingInfo'),
         meta: { title: '评级信息', icon: 'manage' }
+      },
+      {
+        path: 'importantEvent',
+        name: '重大事件',
+        component: _import('clientMessage/importantEvent'),
+        meta: { title: '重大事件', icon: 'manage' }
+      },
+      {
+        path: 'warningMessage',
+        name: '预警客户信息',
+        component: _import('clientMessage/warningMessage'),
+        meta: { title: '预警客户信息', icon: 'manage' }
+      },
+      {
+        path: 'otherInfo',
+        name: '附加信息',
+        component: _import('clientMessage/otherInfo'), // financingInfo
+        meta: { title: '附加信息', icon: 'manage' }
       }
+    ]
+  },
 
+  {
+    path: '/ourBankBusinessInfo', // 主路径需要更改
+    // redirect: '/contract/list', 	//路由，并没有配置这个，404business
+    name: '本行业务信息',
+    component: Layout, // 左侧主导航栏
+    meta: { title: '本行业务信息', icon: 'organization' },
+    roles: ['admin'], // 这里需要更改
+    children: [
+      {
+        path: 'ourBankFinancingInfo/financingInfo',
+        name: '批复信息',
+        component: _import('ourBankBusinessInfo/ourBankFinancingInfo/financingInfo'),
+        meta: { title: '批复信息', icon: 'manage' }
+      },
+      {
+        path: 'ourBankFinancingInfo/businessInfo',
+        name: '业务信息',
+        component: _import('ourBankBusinessInfo/ourBankFinancingInfo/businessInfo'),
+        meta: { title: '业务信息', icon: 'manage' }
+      },
+      {
+        path: 'ourBankClientGuaranteeInfo/ourBankGuaranteeInfo',
+        name: '为我行客户担保情况',
+        component: _import('ourBankBusinessInfo/ourBankClientGuaranteeInfo/ourBankGuaranteeInfo'),
+        meta: { title: '本行保证情况', icon: 'manage' }
+      },
+      {
+        path: 'ourBankClientGuaranteeInfo/ourBankPledgeInfo',
+        name: '本行抵押情况',
+        component: _import('ourBankBusinessInfo/ourBankClientGuaranteeInfo/ourBankPledgeInfo'),
+        meta: { title: '本行抵押情况', icon: 'manage' }
+      },
+      {
+        path: 'ourBankBusinessInfo/illegalRecord',
+        name: '违约记录',
+        component: _import('ourBankBusinessInfo/illegalRecord'),
+        meta: { title: '违约记录', icon: 'manage' }
+      },
+      {
+        path: 'ourBankBusinessInfo/refuseMessage',
+        name: '拒贷信息',
+        component: _import('ourBankBusinessInfo/refuseMessage'),
+        meta: { title: '拒贷信息', icon: 'manage' }
+      },
+      {
+        path: 'ourBankBusinessInfo/manageTeam',
+        name: '我行管理团队',
+        component: _import('ourBankBusinessInfo/manageTeam'),
+        meta: { title: '我行管理团队', icon: 'manage' }
+      }
     ]
   },
 
