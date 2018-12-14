@@ -1,17 +1,22 @@
 <template>
-  <csc-single-table :pageDef="pageDef" :entity="entity" :disableQueryForm="disableQueryForm" @findOne="findOne"
-       :disableRowButtons="disableRowButtons"             @contractList="contractList"       >
+  <csc-single-table 
+  :pageDef="pageDef" 
+  :entity="entity" 
+  @findOne="findOne"
+  :disableQueryForm="disableQueryForm" 
+  :disableRowButtons="disableRowButtons"            
+   @contractList="contractList"   >
   </csc-single-table>
 </template>
 
 <script>
-  // 委托方账户信息  http://192.168.1.105:7001/default/csm/account/csm_entrust_account_list.jsp
+  // 账户信息
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable' // 引入的这个是子组件，需要把父组件的值传递给子组件修改子组件
   import { getContractList } from '@/api/contract'// 正常往后台发送异步请求的类
-  //  import { getContractList } from '@/api/api'//api是自己写的用来测试mock假数据的路径，配置了这个之后mock会拦截正常请求
+ 
 
   export default {
-    // name: 'mortgageContract',
+    //name: 'csm_entrust_account_list',
     data: function() {
       return {
         disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮
@@ -24,6 +29,7 @@
               entrustProjectName: '科学养猪',
               entrustAcc: '2S4K09685474',
               entrustLoanAcc: 'jj237297328',
+              entrustReturnAcc:'xxxxxxx',
               entrustReturnPrincipalAcc: 'sx63902198',
               entrustReturnInterestAcc: '729385022'
             }
@@ -43,7 +49,8 @@
               { label: '委托项目名称', prop: 'entrustProjectName', isSort: true },
               { label: '委托存款账号', prop: 'entrustAcc', isSort: true }, // currency：货币
               { label: '委托贷款基金账号', prop: 'entrustLoanAcc', isSort: true },
-              { label: '委托贷款收息账号', prop: 'entrustReturnPrincipalAcc', isSort: true },
+              { label: '委托贷款收息账号', prop: 'entrustReturnAcc', isSort: true },
+              { label: '委托人收本账号', prop: 'entrustReturnPrincipalAcc', isSort: true },
               { label: '委托人收息账号', prop: 'entrustReturnInterestAcc', isSort: true }
             ]
           },
@@ -55,17 +62,11 @@
     },
 
     components: { CscSingleTable }, // 引入的子组件
-    // mounted()页面加载完毕之后进行的渲染
-    // computed: {				// 页面加载完毕之后进行的渲染
-    //   disableQueryForm() {
-    //     return this.disableQueryForm
-    //   }
-    // },
 
     methods: {
       doPageQuery() {
         // this.contractList(listQuery)
-        // console.log('doPageQuery...')
+         console.log('doPageQuery...')
       },
 
       contractList(listQuery) {
@@ -77,10 +78,10 @@
         console.log('listQuery ....' + listQuery)
         getContractList(params).then(response => {
           this.entity = response
-          // console.log(" response.data.entity"+ response.data.entity)
+          console.log(" response.data.entity"+ response.data.entity)
           this.listLoading = false
         }).catch((error) => {
-          // alert(error)
+         
           console.log(error)
         })
       },
@@ -88,17 +89,9 @@
         alert('查询')
       }
     },
-    computed: { // 计算属性
-      disabled() { // 控制页面渲染
-        // return this.disableQueryForm = true
-      }
 
-    },
     mounted() {
-      // disableQueryForm() {
-      //   console.log('emit disableQueryForm.....')
-      //   return this.disableQueryForm
-      // },
+
       this.contractList() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
     }
 

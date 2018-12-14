@@ -39,8 +39,8 @@ export default {
   computed: {
     editableTabsValue2: {
       get() {
-        if (this.$store.state.menu.showTab !== null &&
-          this.$store.state.menu.showTab !== undefined) {
+        if(this.$store.state.menu.showTab !== null &&
+          this.$store.state.menu.showTab !== undefined){
           return this.$store.state.menu.showTab.name
         }
       },
@@ -63,22 +63,23 @@ export default {
   },
   methods: {
     removeTab(targetName) {
-      console.log('targetName: ', targetName)
+      console.log("targetName: ",targetName);
       this.$store.commit('setDeleteMenuList', {
         name: targetName,
-        path: ''
-      })
-      if (this.$store.state.menu.showTab !== null &&
-        this.$store.state.menu.showTab !== undefined) {
-        const path = this.$store.state.menu.showTab.path
-        this.$router.push({ path: path })
+        path: ""
+      });
+      if(this.$store.state.menu.showTab !== null &&
+        this.$store.state.menu.showTab !== undefined){
+        let path = this.$store.state.menu.showTab.path;
+        this.$router.push({path: path});
       }
     },
-    tabClick(tab) {
-      const arr = this.$store.state.menu.menuList
+    tabClick(tab){
+      let arr = this.$store.state.menu.menuList;
       this.$router.push({
         path: arr[tab.index].path
-      })
+      });
+
     }
   }
 }

@@ -1,17 +1,22 @@
 <template>
-  <csc-single-table :pageDef="pageDef" :entity="entity" :disableQueryForm="disableQueryForm" @findOne="findOne"
-       :disableRowButtons="disableRowButtons"             @contractList="contractList"       >
+  <csc-single-table 
+  :pageDef="pageDef" 
+  :entity="entity" 
+  @findOne="findOne"
+  :disableQueryForm="disableQueryForm" 
+  :disableRowButtons="disableRowButtons"            
+   @contractList="contractList"   >
   </csc-single-table>
 </template>
 
 <script>
-  // 预警客户信息 http://192.168.1.105:7001/default/csm/corporation/ews_warn_main.jsp
+  // 账户信息
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable' // 引入的这个是子组件，需要把父组件的值传递给子组件修改子组件
-  import { getContractList } from '@/api/contract'// 正常往后+台发送异步请求的类
-  //  import { getContractList } from '@/api/api'//api是自己写的用来测试mock假数据的路径，配置了这个之后mock会拦截正常请求
+  import { getContractList } from '@/api/contract'// 正常往后台发送异步请求的类
+ 
 
   export default {
-    // name: 'mortgageContract',
+    name: 'ews_warn_main',
     data: function() {
       return {
         disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮
@@ -20,17 +25,18 @@
         entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
           data: [
             {
-              WARN_DATE: '2013-11-30',
-              RULE_ABSTRACT: '哲学预警',
-              WARN_INFO: '摔跤',
-              WARN_LEVEL: '最上级',
-              CLOSE_FLAG: '51',
-              CLOSE_DATE: '2017-11-30',
-              CLOSE_REASON: '停止哲学'
+              WARN_DATE: '2017-09-23',
+              RULE_ABSTRACT: '紧急事件',
+              WARN_INFO: '中度紧急',
+              WARN_LEVEL: '0',
+              CLOSE_FLAG: '无',
+              CLOSE_DATE: '2017-12-12',
+              CLOSE_REASON: '因为某些你懂的原因'
+
             }
           ]
         },
-        // disableQueryForm: true,credit
+
         pageDef: {
           // 查询条件定义
           queryDef: {},
@@ -40,24 +46,30 @@
             isIndex: true, // 是否有序号
             // 表格字段定义
             tabCols: [
+             // { label: '选择', prop: 'checkcolumn', isSort: true },
               { label: '预警日期', prop: 'WARN_DATE', isSort: true },
-              { label: '预警简要信息', prop: 'RULE_ABSTRACT', isSort: true }, // currency：货币
+              { label: '预警简要信息', prop: 'RULE_ABSTRACT', isSort: true },
               { label: '预警情况', prop: 'WARN_INFO', isSort: true },
               { label: '预警等级', prop: 'WARN_LEVEL', isSort: true },
-              { label: '关闭标志', prop: 'CLOSE_FLAG', isSort: true }, // currency：货币
+              { label: '关闭标志', prop: 'CLOSE_FLAG', isSort: true },
               { label: '关闭日期', prop: 'CLOSE_DATE', isSort: true },
               { label: '关闭原因', prop: 'CLOSE_REASON', isSort: true }
+
             ]
-          }
+          },
+          buttons: [
+            { label: '查看', funcName: 'findOne' }
+          ]
         }
       }
     },
 
-    components: { CscSingleTable },
+    components: { CscSingleTable }, // 引入的子组件
+
     methods: {
       doPageQuery() {
         // this.contractList(listQuery)
-        // console.log('doPageQuery...')
+         console.log('doPageQuery...')
       },
 
       contractList(listQuery) {
@@ -69,10 +81,10 @@
         console.log('listQuery ....' + listQuery)
         getContractList(params).then(response => {
           this.entity = response
-          // console.log(" response.data.entity"+ response.data.entity)
+          console.log(" response.data.entity"+ response.data.entity)
           this.listLoading = false
         }).catch((error) => {
-          // alert(error)
+         
           console.log(error)
         })
       },
@@ -80,17 +92,9 @@
         alert('查询')
       }
     },
-    computed: { // 计算属性
-      disabled() { // 控制页面渲染
-        // return this.disableQueryForm = true
-      }
 
-    },
     mounted() {
-      // disableQueryForm() {
-      //   console.log('emit disableQueryForm.....')
-      //   return this.disableQueryForm
-      // },
+
       this.contractList() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
     }
 

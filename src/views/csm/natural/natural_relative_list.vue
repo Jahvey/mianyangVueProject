@@ -1,17 +1,22 @@
 <template>
-  <csc-single-table :pageDef="pageDef" :entity="entity" :disableQueryForm="disableQueryForm" @findOne="findOne"
-       :disableRowButtons="disableRowButtons"             @contractList="contractList"       >
+  <csc-single-table 
+  :pageDef="pageDef" 
+  :entity="entity" 
+  @findOne="findOne"
+  :disableQueryForm="disableQueryForm" 
+  :disableRowButtons="disableRowButtons"            
+   @contractList="contractList"   >
   </csc-single-table>
 </template>
 
 <script>
-  // 对私客户关系个人信息 http://192.168.1.105:7001/default/csm/natural/natural_relative_list.jsp
+  // 账户信息
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable' // 引入的这个是子组件，需要把父组件的值传递给子组件修改子组件
-  import { getContractList } from '@/api/contract'// 正常往后+台发送异步请求的类
-  //  import { getContractList } from '@/api/api'//api是自己写的用来测试mock假数据的路径，配置了这个之后mock会拦截正常请求
+  import { getContractList } from '@/api/contract'// 正常往后台发送异步请求的类
+ 
 
   export default {
-    // name: 'mortgageContract',
+    name: 'natural_relative_list',
     data: function() {
       return {
         disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮
@@ -20,14 +25,15 @@
         entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
           data: [
             {
-              partyName: '古田勒',
-              partyTypeCd: '大客户',
-              certType: '港澳台通行证',
-              certNum: 'sx63902198',
-              appellation: '级联删除',
-              partnerCompany: '新希望乳业',
-              partnerPhoneNum: '110',
-              remark: '老酸奶'
+              partyName: '呵呵哒',
+              partyTypeCd: '科学养猪',
+              certType: '身份证',
+              certNum: 'jj237297328',
+              appellation:'xxxxxxx',
+              partnerCompany: '四川大学333',
+              partnerPhoneNum: '729385022',
+              remark:'xxxxx.yyyyyy'
+
             }
           ]
         },
@@ -41,9 +47,10 @@
             isIndex: true, // 是否有序号
             // 表格字段定义
             tabCols: [
+             // { label: '选择', prop: 'checkcolumn', isSort: true },
               { label: '关系人名称', prop: 'partyName', isSort: true },
-              { label: '客户类型', prop: 'partyTypeCd', isSort: true }, // currency：货币
-              { label: '证件类型', prop: 'certType', isSort: true },
+              { label: '客户类型', prop: 'partyTypeCd', isSort: true },
+              { label: '证件类型', prop: 'certType', isSort: true }, // currency：货币
               { label: '证件号码', prop: 'certNum', isSort: true },
               { label: '关联关系', prop: 'appellation', isSort: true },
               { label: '工作单位', prop: 'partnerCompany', isSort: true },
@@ -59,17 +66,11 @@
     },
 
     components: { CscSingleTable }, // 引入的子组件
-    // mounted()页面加载完毕之后进行的渲染
-    // computed: {				// 页面加载完毕之后进行的渲染
-    //   disableQueryForm() {
-    //     return this.disableQueryForm
-    //   }
-    // },
 
     methods: {
       doPageQuery() {
         // this.contractList(listQuery)
-        // console.log('doPageQuery...')
+         console.log('doPageQuery...')
       },
 
       contractList(listQuery) {
@@ -81,10 +82,10 @@
         console.log('listQuery ....' + listQuery)
         getContractList(params).then(response => {
           this.entity = response
-          // console.log(" response.data.entity"+ response.data.entity)
+          console.log(" response.data.entity"+ response.data.entity)
           this.listLoading = false
         }).catch((error) => {
-          // alert(error)
+         
           console.log(error)
         })
       },
@@ -92,17 +93,9 @@
         alert('查询')
       }
     },
-    computed: { // 计算属性
-      disabled() { // 控制页面渲染
-        // return this.disableQueryForm = true
-      }
 
-    },
     mounted() {
-      // disableQueryForm() {
-      //   console.log('emit disableQueryForm.....')
-      //   return this.disableQueryForm
-      // },
+
       this.contractList() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
     }
 

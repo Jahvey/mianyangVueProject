@@ -37,28 +37,29 @@ export default {
         },
         buttons: [
           { label: '新增', funcName: 'create' },
-          { label: '重置密码', funcName: 'resetPassword' }]
+          { label: '重置密码', funcName: 'resetPassword' }
+        ]
       }
     }
   },
 
   components: { CscSingleTable },
 
- 	methods: {
- 		doPageQuery(listQuery) {
- 			this.userList(listQuery)
- 		},
+  methods: {
+    doPageQuery(listQuery) {
+      this.userList(listQuery)
+    },
 
- 		userList(listQuery) {
- 			getUserList(listQuery).then(response => {
- 				this.entity = response
- 			}).catch((error) => {
- 				console.log(error)
- 			})
- 		},
+    userList(listQuery) {
+      getUserList(listQuery).then(response => {
+        this.entity = response
+      }).catch((error) => {
+        console.log(error)
+      })
+    },
 
- 		rowDbclick(row) {
- 			this.$router.push({ path: '/user/add/card/' + row.userId })
+    rowDbclick(row) {
+      this.$router.push({ path: '/user/add/card/' + row.userId })
     },
 
     create() {
