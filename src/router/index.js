@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-const _import = require('./_import_' + process.env.NODE_ENV)// 开发环境不使用懒加载
+const _import = require('./_import_' + process.env.NODE_ENV)//开发环境不使用懒加载
 // in development-env not use lazy-loading, because lazy-loading too many pages will cause webpack hot update too slow. so only in production use lazy-loading;
 // detail: https://panjiachen.github.io/vue-element-admin-site/#/lazy-loading
 
@@ -9,6 +9,8 @@ Vue.use(Router)
 /* Layout */
 import Layout from '../views/layout/Layout'
 import Login from '../views/login/index'
+import securityManagement from '../views/securitymanagement/securityManagement'
+
 /**
 * hidden: true                   if `hidden:true` will not show in the sidebar(default is false)
 * redirect: noredirect           if `redirect:noredirect` will no redirct in the breadcrumb
@@ -24,7 +26,7 @@ export const constantRouterMap = [
   {
     path: '/',
     component: Login,
-    name: '登录'
+    name: '登录',
   },
   {
     path: '/dashboard',
@@ -34,25 +36,14 @@ export const constantRouterMap = [
     menuShow: true,
     // hidden: true,
     meta: { title: '首页', icon: 'organization' },
-    children: [{
-      path: 'index',
-      name: '首页测试1',
-      // menuShow: true,
-      meta: { title: '首页测试', icon: 'manage' },
-      component: _import('dashboard/index')
-    }]
+      children: [{
+        path: 'index',
+        name: '首页测试1',
+        // menuShow: true,
+        meta: { title: '首页测试', icon: 'manage' },
+        component: _import('dashboard/index')
+      }]
   },
-  // 以前可用的登录首页 现在要改掉
-  // {
-  //   path: '/',
-  //   component: Layout,
-  //   redirect: '/dashboard',
-  //   name: '首页1',
-  //   children: [{
-  //     path: 'dashboard',
-  //     component: _import('dashboard/index')
-  //   }]
-  // },
   {
     path: '/org',
     component: Layout,
@@ -64,17 +55,17 @@ export const constantRouterMap = [
       path: 'info',
       name: 'orgInfo',
       component: _import('org/OrgInfo'),
-      meta: { title: '机构维护', icon: 'manage' }// 点击机构维护跳转的路径  org/pageQueryOrg
+      meta: { title: '机构维护', icon: 'manage' }
     }, {
       path: 'add',
       name: 'orgAdd',
-      hidden: true,
+      hidden: false,
       component: _import('org/OrgAdd'),
       meta: { title: '机构新增', icon: 'manage' }
     }, {
       path: 'edit',
       name: 'orgEdit',
-      hidden: true,
+      hidden: false,
       component: _import('org/OrgEdit'),
       meta: { title: '机构修改', icon: 'manage' }
     }]
@@ -97,45 +88,48 @@ export const constantRouterMap = [
       component: _import('user/userList'),
       meta: { title: '用户测试列表', icon: 'manage' }
     }, {
-      path: 'add',
-      name: 'add',
-      hidden: true,
-      component: _import('user/userAdd'),
-      meta: { title: '用户新增', icon: 'manage' }
-    }, {
-      path: 'userAdd',
-      name: 'userAdd',
-      hidden: true,
-      component: _import('user/userAdd1'),
-      meta: { title: '用户测试列表新增新增', icon: 'manage' }
-    }, {
-      path: 'natural',
-      name: 'naturalPersonList',
-      component: _import('user/naturalPersonList'),
-      meta: { title: '自然人客户列表', icon: 'manage' }
-    }, {
+        path: 'add',
+        name: 'add',
+        hidden: true,
+        component: _import('user/userAdd'),
+        meta: { title: '用户新增', icon: 'manage' }
+      }, {
+        path: 'userAdd',
+        name: 'userAdd',
+        hidden: true,
+        component: _import('user/userAdd1'),
+        meta: { title: '用户测试列表新增新增', icon: 'manage' }
+      },{
+        path: 'natural',
+        name: 'naturalPersonList',
+        component: _import('user/naturalPersonList'),
+        meta: { title: '自然人客户列表', icon: 'manage' }
+      },{
+      path: 'natural1',
+      name: 'naturalPersonList1',
+      component: _import('user/naturalPersonList1'),
+      meta: { title: '自然人客户列表1', icon: 'manage' }
+    },{
       path: 'tabtest',
       name: 'tabtest',
       component: _import('user/tabTest'),
-      meta: { title: 'tabtest', icon: 'manage' },
-      children: [{
-        path: 'tabtest1',
-        name: 'tabtest1',
-        component: _import('user/tabTest1'),
-        meta: { title: 'tabtest1', icon: 'manage' }
-      },
-      {
-        path: 'tabtest2',
-        name: 'tabtest2',
-        component: _import('user/tabTest2'),
-        meta: { title: 'tabtest2', icon: 'manage' }
-      }]
+      meta: { title: 'tabtest', icon: 'manage' }
+    },{
+      path: 'user',
+      name: 'user',
+      component: _import('user/user'),
+      meta: { title: 'user', icon: 'manage' }
     }, {
-      path: 'tabtest1',
-      name: 'tabtest1',
-      component: _import('user/tabTest1'),
-      meta: { title: 'tabtest1', icon: 'manage' }
-    }, {
+        path: 'loanCount',
+        name: 'loanCount',
+        component: _import('user/loanCount'),
+        meta: { title: 'loanCount', icon: 'manage' }
+      },{
+      path: 'manyTable',
+      name: 'manyTable',
+      component: _import('user/ManyTable'),
+      meta: { title: 'manyTable', icon: 'manage' }
+    },{
       path: 'userEdit',
       name: 'userEdit',
       hidden: true,
@@ -143,233 +137,11 @@ export const constantRouterMap = [
       meta: { title: '用户测试列表修改', icon: 'manage' }
     }]
   },
-{
-
- path: '/biz', // 主路径需要更改
-    component: Layout,
-    // redirect: '/contract/info',    //重定向需要更改,info改成什么？
-    // redirect: '/contract/list',  //路由，并没有配置这个，404
-    name: '业务结构信息',
-    meta: { title: '业务结构信息', icon: 'organization' },
-    roles: ['admin'], // 这里需要更改
-    children: [
-      {
-        path: 'biz_info',
-        name: '业务结构基本信息', // 这个是组织信息，需要更改    ，为何路由永远走的贷款合同这一栏，下面那个打不开？
-        component: _import('biz/biz_info'), // 更改，这个方法需要再仔细看一下
-        meta: { title: '业务结构基本信息', icon: 'manage' }
-      }
-    ]
-
-
-},
-  {
-    path: '/contract', // 主路径需要更改
-    component: Layout,
-    // redirect: '/contract/info',    //重定向需要更改,info改成什么？
-    // redirect: '/contract/list', 	//路由，并没有配置这个，404
-    name: '合同管理',
-    meta: { title: '合同管理', icon: 'organization' },
-    roles: ['admin'], // 这里需要更改
-    children: [
-      {
-        path: 'info',
-        name: '贷款合同', // 这个是组织信息，需要更改    ，为何路由永远走的贷款合同这一栏，下面那个打不开？
-        component: _import('contract/loanContract'), // 更改，这个方法需要再仔细看一下
-        meta: { title: '贷款合同', icon: 'manage' }
-      },
-      {
-        path: 'add', // 这个算一个映射路径，和上面的拼接/contract/add
-        name: '内部银团合同',
-        // component: _import('contract/contractInfo/mainContractInfo'), // 页面
-        component: _import('contract/innerContract'),
-        meta: { title: '内部银团合同', icon: 'manage' }
-      },
-      {
-        path: 'mainContractInfo', // 这个算一个映射路径，和上面的拼接/contract/mainContractInfo
-        name: '主合同基本信息',
-        component: _import('contract/contractInfo/mainContractInfo'),
-        meta: { title: '主合同基本信息', icon: 'manage' }
-      },
-      {
-        path: 'mainContractDetail', // 这个算一个映射路径，和上面的拼接/contract/mainContractInfo
-        name: '主合同明细信息',
-        component: _import('contract/contractInfo/mainContractItem'), // mainContractDetail
-        meta: { title: '主合同明细信息', icon: 'manage' }
-      },
-      {
-        path: 'mortgageContract',
-        name: '从合同之抵押合同',
-        component: _import('contract/serventContractInfo/mortgageContract'), // mainContractDetail
-        meta: { title: '从合同之抵押合同', icon: 'manage' }
-      },
-      {
-        path: 'pledgeContract',
-        name: '从合同之质押合同',
-        component: _import('contract/serventContractInfo/pledgeContract'), // mainContractDetail
-        meta: { title: '从合同之质押合同', icon: 'manage' }
-      },
-      {
-        path: 'ensureContract',
-        name: '从合同之保证合同',
-        component: _import('contract/serventContractInfo/ensureContract'), // mainContractDetail
-        meta: { title: '从合同之保证合同', icon: 'manage' }
-      },
-      {
-        path: 'relationEnsureMoney',
-        name: '从合同之关联保证金',
-        component: _import('contract/serventContractInfo/relationEnsureMoney'), // mainContractDetail
-        meta: { title: '关联保证金', icon: 'manage' }
-      },
-      {
-        path: 'accountMessage',
-        name: '账户信息',
-        component: _import('contract/accountMessage'), // mainContractDetail
-        meta: { title: '账户信息', icon: 'manage' }
-      },
-      {
-        path: 'receiptMessage',
-        name: '借据信息',
-        component: _import('contract/receiptMessage'), // mainContractDetail
-        meta: { title: '借据信息', icon: 'manage' }
-      }
-    ]
-  },
-
-  {
-    path: '/clientMessage', // 主路径需要更改
-    // redirect: '/contract/list', 	//路由，并没有配置这个，404
-    name: '客户信息',
-    // component: _import('clientMessage'),
-    component: Layout, // 左侧主导航栏
-    meta: { title: '客户信息', icon: 'organization' },
-    roles: ['admin'], // 这里需要更改
-    children: [
-      {
-        path: 'clientBaseInfo',
-        name: '客户概况信息',
-        component: _import('clientMessage/clientBaseInfo'),
-        meta: { title: '客户概况信息', icon: 'manage' }
-      },
-      {
-        path: 'entrustAccountInfo',
-        name: '委托方账户信息',
-        component: _import('clientMessage/entrustAccountInfo'),
-        meta: { title: '委托方账户信息', icon: 'manage' }
-      },
-      {
-        path: 'relativeListInfo',
-        name: '对私客户关系个人信息',
-        component: _import('clientMessage/relativeListInfo/personRelativeInfo'),
-        meta: { title: '对私客户关系个人信息', icon: 'manage' }
-      },
-      {
-        path: 'companyRelativeInfo',
-        name: '对私客户关系企业信息',
-        component: _import('clientMessage/relativeListInfo/companyRelativeInfo'),
-        meta: { title: '对私客户关系企业信息', icon: 'manage' }
-      },
-      {
-        path: 'businessInfo',
-        name: '经营信息',
-        component: _import('clientMessage/businessInfo'),
-        meta: { title: '经营信息', icon: 'manage' }
-      },
-      {
-        path: 'universityInfo',
-        name: '高校信息',
-        component: _import('clientMessage/universityInfo'),
-        meta: { title: '高校信息', icon: 'manage' }
-      },
-      {
-        path: 'creditInfo',
-        name: '信用信息',
-        component: _import('clientMessage/creditInfo'),
-        meta: { title: '信用信息', icon: 'manage' }
-      },
-      {
-        path: 'creditRatingInfo',
-        name: '评级信息',
-        component: _import('clientMessage/creditRatingInfo'),
-        meta: { title: '评级信息', icon: 'manage' }
-      },
-      {
-        path: 'importantEvent',
-        name: '重大事件',
-        component: _import('clientMessage/importantEvent'),
-        meta: { title: '重大事件', icon: 'manage' }
-      },
-      {
-        path: 'warningMessage',
-        name: '预警客户信息',
-        component: _import('clientMessage/warningMessage'),
-        meta: { title: '预警客户信息', icon: 'manage' }
-      },
-      {
-        path: 'otherInfo',
-        name: '附加信息',
-        component: _import('clientMessage/otherInfo'), // financingInfo
-        meta: { title: '附加信息', icon: 'manage' }
-      }
-    ]
-  },
-
-  {
-    path: '/ourBankBusinessInfo', // 主路径需要更改
-    // redirect: '/contract/list', 	//路由，并没有配置这个，404business
-    name: '本行业务信息',
-    component: Layout, // 左侧主导航栏
-    meta: { title: '本行业务信息', icon: 'organization' },
-    roles: ['admin'], // 这里需要更改
-    children: [
-      {
-        path: 'ourBankFinancingInfo/financingInfo',
-        name: '批复信息',
-        component: _import('ourBankBusinessInfo/ourBankFinancingInfo/financingInfo'),
-        meta: { title: '批复信息', icon: 'manage' }
-      },
-      {
-        path: 'ourBankFinancingInfo/businessInfo',
-        name: '业务信息',
-        component: _import('ourBankBusinessInfo/ourBankFinancingInfo/businessInfo'),
-        meta: { title: '业务信息', icon: 'manage' }
-      },
-      {
-        path: 'ourBankClientGuaranteeInfo/ourBankGuaranteeInfo',
-        name: '为我行客户担保情况',
-        component: _import('ourBankBusinessInfo/ourBankClientGuaranteeInfo/ourBankGuaranteeInfo'),
-        meta: { title: '本行保证情况', icon: 'manage' }
-      },
-      {
-        path: 'ourBankClientGuaranteeInfo/ourBankPledgeInfo',
-        name: '本行抵押情况',
-        component: _import('ourBankBusinessInfo/ourBankClientGuaranteeInfo/ourBankPledgeInfo'),
-        meta: { title: '本行抵押情况', icon: 'manage' }
-      },
-      {
-        path: 'ourBankBusinessInfo/illegalRecord',
-        name: '违约记录',
-        component: _import('ourBankBusinessInfo/illegalRecord'),
-        meta: { title: '违约记录', icon: 'manage' }
-      },
-      {
-        path: 'ourBankBusinessInfo/refuseMessage',
-        name: '拒贷信息',
-        component: _import('ourBankBusinessInfo/refuseMessage'),
-        meta: { title: '拒贷信息', icon: 'manage' }
-      },
-      {
-        path: 'ourBankBusinessInfo/manageTeam',
-        name: '我行管理团队',
-        component: _import('ourBankBusinessInfo/manageTeam'),
-        meta: { title: '我行管理团队', icon: 'manage' }
-      }
-    ]
-  },
+<<<<<<< .mine
   {
     path: '/csm', // 主路径需要更改
     component: Layout,
-    // redirect: '/contract/info',    //重定向需要更改,info改成什么？
+    // redirect: '/contract/info',    
     // redirect: '/contract/list',  //路由，并没有配置这个，404
     name: '我的客户',
     meta: { title: '我的客户', icon: 'organization' },
@@ -377,50 +149,50 @@ export const constantRouterMap = [
     children: [
       {
         path: 'workdesk/mycust_natural',
-        name: '自然人客户', // 这个是组织信息，需要更改    ，为何路由永远走的贷款合同这一栏，下面那个打不开？
-        component: _import('csm/workdesk/mycust_natural'), // 更改，这个方法需要再仔细看一下
+        name: '自然人客户', 
+        component: _import('csm/workdesk/mycust_natural'), 
         meta: { title: '自然人客户', icon: 'manage' }
       },
       {
         path: 'natural/natural_info',
-        name: '自然人客户概况信息', // 这个是组织信息，需要更改    ，为何路由永远走的贷款合同这一栏，下面那个打不开？
-        component: _import('csm/natural/natural_info'), // 更改，这个方法需要再仔细看一下
+        name: '自然人客户概况信息', 
+        component: _import('csm/natural/natural_info'), 
         meta: { title: '自然人客户概况信息', icon: 'manage' }
       },
       {
         path: 'account/csm_entrust_account_list',
-        name: '委托方账户信息', // 这个是组织信息，需要更改    ，为何路由永远走的贷款合同这一栏，下面那个打不开？
-        component: _import('csm/account/csm_entrust_account_list'), // 更改，这个方法需要再仔细看一下
+        name: '委托方账户信息', 
+        component: _import('csm/account/csm_entrust_account_list'), 
         meta: { title: '委托方账户信息', icon: 'manage' }
       },
       {
         path: 'natural/natural_relative_list',
-        name: '对私客户关系个人信息', // 这个是组织信息，需要更改    ，为何路由永远走的贷款合同这一栏，下面那个打不开？
-        component: _import('csm/natural/natural_relative_list'), // 更改，这个方法需要再仔细看一下
+        name: '对私客户关系个人信息', 
+        component: _import('csm/natural/natural_relative_list'), 
         meta: { title: '对私客户关系个人信息', icon: 'manage' }
       },
       {
         path: 'natural/natural_business',
-        name: '经营信息', // 这个是组织信息，需要更改    ，为何路由永远走的贷款合同这一栏，下面那个打不开？
-        component: _import('csm/natural/natural_business'), // 更改，这个方法需要再仔细看一下
+        name: '经营信息', 
+        component: _import('csm/natural/natural_business'), 
         meta: { title: '经营信息', icon: 'manage' }
       },
       {
         path: 'natural/natural_school',
-        name: '高校信息', // 这个是组织信息，需要更改    ，为何路由永远走的贷款合同这一栏，下面那个打不开？
-        component: _import('csm/natural/natural_school'), // 更改，这个方法需要再仔细看一下
+        name: '高校信息', 
+        component: _import('csm/natural/natural_school'), 
         meta: { title: '高校信息', icon: 'manage' }
       },
       {
         path: 'natural/natural_credit_list',
-        name: '信用信息', // 这个是组织信息，需要更改    ，为何路由永远走的贷款合同这一栏，下面那个打不开？
-        component: _import('csm/natural/natural_credit_list'), // 更改，这个方法需要再仔细看一下
+        name: '信用信息', 
+        component: _import('csm/natural/natural_credit_list'),
         meta: { title: '信用信息', icon: 'manage' }
       },
       {
         path: 'corporation/csm_external_eval_result_list_in',
-        name: '内部评级信息', // 这个是组织信息，需要更改    ，为何路由永远走的贷款合同这一栏，下面那个打不开？
-        component: _import('csm/corporation/csm_external_eval_result_list_in'), // 更改，这个方法需要再仔细看一下
+        name: '内部评级信息', 
+        component: _import('csm/corporation/csm_external_eval_result_list_in'), 
         meta: { title: '内部评级信息', icon: 'manage' }
       },
       {
@@ -431,17 +203,71 @@ export const constantRouterMap = [
       },
       {
         path: 'corporation/ews_warn_main',
-        name: '预警客户信息',
+        name: '预警信息',
         component: _import('csm/corporation/ews_warn_main'), 
-        meta: { title: '预警客户信息', icon: 'manage' }
+        meta: { title: '预警信息', icon: 'manage' }
+      },
+      {
+        path: 'natural/natural_additive_list',
+        name: '附加信息',
+        component: _import('csm/natural/natural_additive_list'), 
+        meta: { title: '附加信息', icon: 'manage' }
+      },
+      {
+        path: 'myBank/financing_list',
+        name: '本行融资情况批复信息',
+        component: _import('csm/myBank/financing_list'), 
+        meta: { title: '本行融资情况批复信息', icon: 'manage' }
+      },
+      {
+        path: 'myBank/financing_list_yewu',
+        name: '本行融资情况业务信息',
+        component: _import('csm/myBank/financing_list_yewu'), 
+        meta: { title: '本行融资情况业务信息', icon: 'manage' }
+      },
+      {
+        path: 'myBank/guarantee_tab',
+        name: '为我行客户担保情况',
+        component: _import('csm/myBank/guarantee_tab'), 
+        meta: { title: '为我行客户担保情况', icon: 'manage' }
+      },
+      {
+        path: 'myBank/guarantee_list_diya',
+        name: '为我行客户质押情况',
+        component: _import('csm/myBank/guarantee_list_diya'), 
+        meta: { title: '为我行客户质押情况', icon: 'manage' }
+      },
+      {
+        path: 'corporation/csm_illegal_list',
+        name: '违法记录',
+        component: _import('csm/corporation/csm_illegal_list'), 
+        meta: { title: '违法记录', icon: 'manage' }
+      },
+      {
+        path: 'myBank/refuse_list',
+        name: '拒贷信息',
+        component: _import('csm/myBank/refuse_list'), 
+        meta: { title: '拒贷信息', icon: 'manage' }
+      },
+      {
+        path: 'corporation/csm_manage_team_list',
+        name: '我行管理团队',
+        component: _import('csm/corporation/csm_manage_team_list'), 
+        meta: { title: '我行管理团队', icon: 'manage' }
+      },
+      {
+        path: 'biz_info/pro_biz_upload',
+        name: '相关文档',
+        component: _import('csm/biz_info/pro_biz_upload'), 
+        meta: { title: '相关文档', icon: 'manage' }
       }
     ]
   },
     {
-    path: '/crt', // 主路径需要更改
+    path: '/crt', 
     component: Layout,
-    // redirect: '/contract/info',    //重定向需要更改,info改成什么？
-    // redirect: '/contract/list',  //路由，并没有配置这个，404
+    // redirect: '/contract/info',    
+    // redirect: '/contract/list',  
     name: '合同签约',
     meta: { title: '合同签约', icon: 'organization' },
     roles: ['admin'], // 这里需要更改
@@ -463,10 +289,7 @@ export const constantRouterMap = [
         name: '合同打印', 
         component: _import('crt/con_apply/con_apply_print'), 
         meta: { title: '合同打印', icon: 'manage' }
-      }
-	  
-	  /* 
-	  ,
+      },
       {
         path: 'subContractManage/subContarct_dyzy_view',
         name: '抵质押合同基本信息', 
@@ -484,13 +307,51 @@ export const constantRouterMap = [
         name: '主合同关联信息', 
         component: _import('grt/subContractManage/subContarct_OldContractList_view'), 
         meta: { title: '主合同关联信息', icon: 'manage' }
-      } */
+      }
     ]
   },
-  
   { path: '*', redirect: '/404', hidden: true }
+||||||| .r100
+  { path: '*', redirect: '/404', hidden: true }
+=======
+  {
+    path: '/securityManagement',
+    component: securityManagement,
+    name: '担保品管理',
+    meta: { title: '担保品管理', icon: 'organization' },
+    menuShow: true,
+    //redirect: '/securityManagement/mortgagepledge/addMortgagePledge',
+    roles: ['admin'],
+    children: [
+        {
+        path: 'addMortgagePledge',
+        name: '抵质押品新增',
+        component: _import('securitymanagement/mortgagepledge/addMortgagePledge'),//添加抵质押品
+        meta: { title: '抵质押品新增', icon: 'manage' }
+       },
+      {
+        path: 'editMortgagePledge',
+        name: '抵质押品维护',
+        component: _import('securitymanagement/mortgagepledge/editMortgagePledge'),//抵质押品维护
+        meta: { title: '抵质押品维护', icon: 'manage' }
+      },
+      {
+        path: 'addBondedInfo',
+        name: '抵债信息新增',
+        component: _import('securitymanagement/bondedinfo/addBondedInfo'),//添加抵债信息
+        meta: { title: '抵债信息新增', icon: 'manage' }
+      },
+      {
+        path: 'editBondedInfo',
+        name: '抵债信息维护',
+        component: _import('securitymanagement/bondedinfo/editBondedInfo'),//抵债信息维护
+        meta: { title: '抵债信息维护', icon: 'manage' }
+      },
+	  ]
+  },
+  { path: '*', redirect: '/404', hidden: true },
+>>>>>>> .r110
 ]
-
 export default new Router({
   // mode: 'history', //后端支持可开 注意: 这个功能只在 HTML5 history 模式下可用。
   scrollBehavior: () => ({ y: 0 }),

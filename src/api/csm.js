@@ -1,4 +1,5 @@
 import request from '@/utils/request'
+import { myGet, myPost } from '@/utils/request1'
 
 /* export function getUserList(queryParams) {
   return request({
@@ -15,6 +16,31 @@ export function getUserListbyId(queryParams) {
     entity: queryParams
   })
 } */
+
+//查询自然人委托方账户信息
+export function getEntrustAccountsByPartyId(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/account/getEntrustAccountsByPartyId', queryParams)
+}
+
+
+
+
+
+//获取原担保合同中 对应的押品信息
+export function findOldDbList(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/subContractManage/findOldDbList', queryParams)
+}
+
+//获取原担保合同中 对应的押品信息
+export function findOldContractList(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/subContractManage/findOldContractList', queryParams)
+}
+
+
+
 //测试获取自然人客户列表
 export function queryNaturalForDesk(queryParams) {
   return request({

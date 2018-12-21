@@ -13,9 +13,19 @@ import '@/styles/occ.css'
 import '@/styles/element-ui.scss'
 import commonUtil from '@/utils/commonUtil'
 import { addRoutes } from '@/router/dynamicRouter'
+//这里之所以使用 require 而不是 import，是因为 require 可以直接从 node_modules 中查找，而 import 必须把路径写全
+// import echarts from 'echarts'
+// Vue.prototype.$echarts = echarts //将echarts注册成Vue的全局属性
+// Vue.use(echarts);   //可以不用这个了
 
+// Vue.prototype.HOST='/mybatis-service'
 
+// import Mock from './mock'
+// Mock.bootstrap();
+Vue.prototype.CommonUtils = commonUtil
+Vue.use(commonUtil)
 commonUtil.dateformat()
+
 
 window.$script = require('scriptjs')
 

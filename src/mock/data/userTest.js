@@ -14,8 +14,8 @@ const UsersTest = [];
 for (let i = 0; i < 86; i++) {
   UsersTest.push(Mock.mock({
     id: Mock.Random.guid(),
-    // name: Mock.Random.cname(),
-    name: Mock.Random.address,
+    name: Mock.Random.cname(),
+    // name: Mock.Random.address,
     addr: Mock.mock('@county(true)'),
     'age|18-60': 1,
     birth: Mock.Random.date(),

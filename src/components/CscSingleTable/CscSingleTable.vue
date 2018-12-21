@@ -1,13 +1,11 @@
 <template>
   <div class="app-container">
-
     <!--工具条-->
     <el-row :gutter="20" class="queryForm" v-if="!disableQueryForm">
       <el-form ref="form" :model="form" :rules="pageDef.queryRules" label-width="120px" label-position="right">
         <template v-for="(queryCol,idx) in pageDef.queryDef.queryCols">
           <el-col :span="24/pageDef.queryDef.columnNum">
             <template v-if="queryCol.inputType==='select'">
-
               <el-form-item :label="queryCol.label">
                 <el-select clearable v-model="form[queryCol.modelName]" @clear="clearSelect(queryCol.modelName)">
                   <el-option v-for="(value,key) in getEnums(queryCol.enumType)" :key="key" :label="value" :value="key">
@@ -27,7 +25,6 @@
                 </el-select>
               </el-form-item>
             </template>
-
             <template v-else-if="queryCol.inputType==='date'">
               <el-form-item :label="queryCol.label">
                 <!-- <el-date-picker v-model="form[queryCol.modelName]" value-format="yyyyMMdd" type="date"
@@ -36,8 +33,6 @@
                 <csc-date :value.sync="form[queryCol.modelName]" type="date"></csc-date>
               </el-form-item>
             </template>
-
-
             <template v-else-if="queryCol.inputType==='datetime'">
               <el-form-item :label="queryCol.label">
                 <!-- <el-date-picker v-model="form[queryCol.modelName]" type="datetime" placeholder="选择日期时间">
@@ -65,7 +60,7 @@
       </el-form>
     </el-row>
     <!-- 查询 -->
-    <el-row align="middle" v-if="!disableQueryForm && !disableQueryButtons  "><!--增加了一个button按钮属性-->
+    <el-row align="middle" v-if="!disableQueryForm">
       <el-col align="center">
         <el-button size="medium" type="primary" @click="doQuery">查询</el-button>
         <el-button size="medium" type="primary" @click="doReset">重置</el-button>
@@ -80,10 +75,12 @@
       </el-button>
       <!-- <el-button size="mini" class="filter-item" style="margin-left: 10px;" @click="doClick" type="primary" icon="el-icon-edit">新增</el-button> -->
     </el-row>
-    <!--列表，使用element-ui加入动态数据-->
+    <!--列表-->
     <el-row class="singleTable">
-    <el-table  :data="entity.data" highlight-current-row v-loading="listLoading" @selection-change="selectionChange"
-              @row-click="rowChange" @select="rowChange" @row-dblclick="rowDbclick">
+    <!--<el-table  :data="entity.data" highlight-current-row v-loading="listLoading" @selection-change="selectionChange"-->
+              <!--@row-click="rowChange" @select="rowChange" @row-dblclick="rowDbclick">-->
+      <el-table  :data="entity.data" highlight-current-row v-loading="listLoading" @selection-change="selectionChange"
+      @row-click="rowChange" @select="rowChange" @row-dblclick="rowDbclick">
       <template v-if="pageDef.tabDef.isExpand">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -98,27 +95,19 @@
           </template>
         </el-table-column>
       </template>
-
-
       <el-table-column v-if="pageDef.tabDef.isSelect" type="selection" width="55" header-align="center" align="center">
       </el-table-column>
-
       <el-table-column v-if="pageDef.tabDef.isIndex" label="序号" type="index" width="60" header-align="center"
                        align="center">
         <template slot-scope="scope">
-          {{(listQuery.pageJump-1)*listQuery.recInPage+scope.$index+1}}
+          {{(listQuery.pageNum-1)*listQuery.pageSize+scope.$index+1}}
         </template>
       </el-table-column>
-
-
-
       <template v-for="tabCol in pageDef.tabDef.tabCols">
-
         <!-- 是否排序 -->
         <!--<template v-if="tabCol.isSort">-->
         <!-- 枚举类是否需要格式化 -->
         <template v-if="tabCol.isFormat">
-
           <csc-table-column :label="tabCol.label" :prop="tabCol.prop" :sortable="tabCol.isSort" :formatter="formatVal"
             :enumType="tabCol.enumType" header-align="center" align="center" :fit="tabCol.isFit">
           </csc-table-column>
@@ -139,6 +128,61 @@
                            :width="135" header-align="center" align="center">
           </el-table-column>
         </template>
+
+        
+        <template v-else-if="tabCol.isLink">
+          <el-table-column :label="tabCol.label" :prop="tabCol.prop" :sortable="tabCol.isSort" :width="135"
+                           show-overflow-tooltip header-align="center" align="center" >
+            <template slot-scope="scope">
+<<<<<<< .mine
+         
+             <!-- 
+               <router-link to="/crt/con_apply/con_apply_print">{{scope.row[tabCol.prop]}}</router-link>
+              -->
+               <!--
+              <router-link :to="{path:'/crt/con_apply/con_apply_print',query:{queryParam:scope.row[tabCol.prop]}}">{{scope.row[tabCol.prop]}}</router-link>
+                 -->
+             <!--  <router-link  :to="{path:tabCol.url,query:{id:scope.row[tabCol.prop],key:requestUrlParam}}"   @click.native="getRequestUrlParams2('12345')">{{scope.row[tabCol.prop]}}</router-link> -->
+            {{appendRequestUrlParam(tabCol.prop,scope.row[tabCol.prop],tabCol.url)}}
+
+            <router-link  :to="{path:tabCol.url,query:{[tabCol.prop]:scope.row[tabCol.prop]}}">{{scope.row[tabCol.prop]}}</router-link>
+            <!-- <router-link  :to="{path:tabCol.url,query:{id:scope.row[tabCol.prop],key:requestUrlParam}}"   @click.native="getRequestUrlParams2(requestUrlParam)">{{scope.row[tabCol.prop]}}</router-link> -->
+||||||| .r100
+             <!-- <a href="www.baidu.com"
+                  >{{scope.row[tabCol.prop]}}</a>--><!--先写死，获得合同编号@click="tabCol.fn(scope.row)"-->
+              <!--<router-link :to="{path:'/crt/con_info/con_info_ht_xw',query:{queryParam:scope.row[tabCol.prop]}}">{{scope.row[tabCol.prop]}}</router-link>-->
+              <router-link class="isLink" :to="{path:tabCol.url,query:{[tabCol.modelName]:scope.row[tabCol.prop]}}">{{scope.row[tabCol.prop]}}</router-link>
+              {{appendRequestUrlParam(tabCol.prop,scope.row[tabCol.prop],tabCol.url)}}
+=======
+             <!-- <a href="www.baidu.com"
+                  >{{scope.row[tabCol.prop]}}</a>--><!--先写死，获得合同编号@click="tabCol.fn(scope.row)"-->
+              <!--<router-link :to="{path:'/crt/con_info/con_info_ht_xw',query:{queryParam:scope.row[tabCol.prop]}}">{{scope.row[tabCol.prop]}}</router-link>-->
+              <!--<router-link class="isLink" :to="{path:tabCol.url,query:{[tabCol.prop]:scope.row[tabCol.prop]}}"-->
+                           <!--@click.native="getUrlParam(scope.row,scope.$index,tabCol.param)">-->
+                <!--<u>{{scope.row[tabCol.prop]}}</u></router-link>-->
+              <router-link class="isLink" :to="{path:tabCol.url,query:{}}"
+                           @click.native="getUrlParam(scope.row,scope.$index,tabCol.param)">
+                <u>{{scope.row[tabCol.prop]}}</u></router-link>
+              <!--{{appendRequestUrlParam(tabCol.prop,scope.row[tabCol.prop],tabCol.url)}}-->
+>>>>>>> .r110
+            </template>
+          </el-table-column>
+      </template>
+
+      <template v-else-if="tabCol.isParam">
+          <el-table-column :label="tabCol.label" :prop="tabCol.prop" :sortable="tabCol.isSort" :width="135"
+                           show-overflow-tooltip header-align="center" align="center" >
+                           
+            <template slot-scope="scope">
+                <!-- invoke function  param  scope.row[tabCol.prop]  return val-->
+              <!-- {{tabCol.prop}}-{{scope.row}} -->
+              {{scope.row[tabCol.prop]}}
+              <!--{{appendRequestParam(tabCol.prop,scope.row[tabCol.prop])}}-->
+            </template>
+          </el-table-column>
+      </template>
+
+
         <template v-else-if="tabCol.isCustom">
           <el-table-column :label="tabCol.label" :prop="tabCol.prop" :sortable="tabCol.isSort" :formatter="customFormat"
                            :width="tabCol.width" header-align="center" align="center" :show-overflow-tooltip="tabCol.isOverflow">
@@ -149,24 +193,20 @@
                            </template>
           </el-table-column>
         </template>
+
         <template v-else>
           <el-table-column :label="tabCol.label"  :prop="tabCol.prop" :sortable="tabCol.isSort" header-align="center"
                            align="center" :width="tabCol.width" :show-overflow-tooltip="tabCol.isOverflow">
           </el-table-column>
         </template>
       </template>
-
-
-
       <el-table-column label="操作" width="180" header-align="center" align="center" fixed="right"
         v-if="(pageDef.rowButtons == undefined || pageDef.rowButtons.length > 0) && !disableRowButtons">
         <template scope="scope">
-
           <template v-if="pageDef.rowButtons == undefined">
             <el-button type="primary" size="mini" @click="doEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button type="danger" size="mini" @click="doDelete(scope.$index, scope.row)">删除</el-button>
           </template>
-
           <template v-else>
             <el-button v-for="rowButton in pageDef.rowButtons"
                        @click="doRowClick(rowButton.funcName, scope.$index, scope.row)"
@@ -180,25 +220,41 @@
     </el-table>
     </el-row>
 
-
-
     <div v-show="!listLoading" class="pagination-container">
       <el-pagination background @size-change="doSizeChange" @current-change="doCurrentChange"
+<<<<<<< .mine
+                     :current-page.sync="listQuery.pageNum" :page-sizes="[10,20,30,40,50]" :page-size="listQuery.pageSize"
+                     layout="total, sizes, prev, pager, next, jumper" :total="total">
+||||||| .r100
                      :current-page.sync="listQuery.pageJump" :page-sizes="[10,20,30,40,50]" :page-size="listQuery.recInPage"
                      layout="total, sizes, prev, pager, next, jumper" :total="totalRec">
+=======
+                     :current-page.sync="listQuery.pageJump" :page-sizes="[10,20,30,40,50]" :page-size="listQuery.recInPage"
+                     layout="total, sizes, prev, pager, next, jumper" :total="total">
+>>>>>>> .r110
       </el-pagination>
     </div>
+
+    <!--<div v-show="!listLoading" class="pagination-container">-->
+      <!--<el-pagination background @size-change="doSizeChange" @current-change="doCurrentChange"-->
+                     <!--:current-page.sync="listQuery.pageNum" :page-sizes="[10,20,30,40,50]" :page-size="listQuery.pageSize"-->
+                     <!--layout="total, sizes, prev, pager, next, jumper" :total="total">-->
+      <!--</el-pagination>-->
+    <!--</div>-->
+
   </div>
 </template>
 <script>
-import { formatter, getEnumObj } from '@/utils/formatter'
-import { extend } from '@/utils/validate'
-import commonUtil from '@/utils/commonUtil'
-import CscTableColumn from '@/components/CscTableColumn/CscTableColumn'
+import { formatter, getEnumObj } from '@/utils/formatter';
+import { extend } from '@/utils/validate';
+import commonUtil from '@/utils/commonUtil';
+import CscTableColumn from '@/components/CscTableColumn/CscTableColumn';
+
 
 export default {
   name: 'CscSingleTable',
   props: {
+    
     pageDef: {
       type: Object,
       required: true
@@ -206,12 +262,7 @@ export default {
     dataList: Array,
     matchObj: Object,
     entity: Object,
-    // disableRowButtons: Boolean,
     disableQueryForm: {
-      type: Boolean,
-      default: false
-    },
-    disableQueryButtons: {
       type: Boolean,
       default: false
     },
@@ -226,126 +277,193 @@ export default {
   },
   data() {
     return {
+      //全局使用处理传递多参数
+      requestUrlParam: this.CommonUtils.requestUrlParam,
+   
       selection: [],
       currentRow: undefined, // 当前行
       // 分页查询参数
       matchRefList: [],
+      // form: {curUserNum:"200555",orgcode:"0700"},
       form: {},
       loading: false,
       listQuery: {
-        pageJump: 1, // 多页查询跳转页码
-        recInPage: 20 // 多页查询每页笔数
+        // pageJump: 1, // 多页查询跳转页码
+        // recInPage: 20 // 多页查询每页笔数
+        curUserNum: '200555',// 2018-11-30  当前操作员号 如何动态放入
+        orgcode: '0700',//2018-11-30  当前操作员所在机构  如何动态放入
+        pageNum: 1, // 多页查询跳转页码
+        pageSize: 20 // 多页查询每页笔数
       }
-    }
+    };
+  },
+  beforeCreate(){
+    console.log("子组件beforeCreate:"+new Date());
   },
   created() {
+    //console.log("create requestUrlParam"+requestUrlParam)
+    
+    console.log("子组件created:"+new Date());
+    // if(this.disableQueryForm)
+    //   this.disableQueryForm=true;
     if (this.pageDef.defaultConditions) {
-      Object.assign(this.listQuery, this.pageDef.defaultConditions)
+      Object.assign(this.listQuery, this.pageDef.defaultConditions);
     }
-    if (this.autoQuery) this.doPageQuery()
+    if (this.autoQuery) this.doPageQuery();
   },
 
   components: { CscTableColumn },
 
   computed: {
+<<<<<<< .mine
+    // 分页查询总笔数
+    // totalRec: function() {
+    //   console.log("子组件中分页查询记录数:"+new Date());
+    //   return this.entity.totalRec;
+    // },
+    total: function() {
+      console.log("子组件中分页查询记录数:"+new Date()+"-"+this.entity.total+"---"+this.entity.totalRec);
+      return this.entity.total;
+||||||| .r100
+
+
+
     totalRec: function() {
       return this.entity.totalRec
+=======
+    total: function() {
+      return this.entity.total;
+>>>>>>> .r110
     },
     buttonStates() {
-      const disableds = []
+      console.log("子组件加载完成与否1:"+this.$store.getters.listLoading);
+      const disableds = [];
       for (var idx in this.pageDef.buttons) {
-        var button = this.pageDef.buttons[idx]
+        var button = this.pageDef.buttons[idx];
         if (button.regulation) {
-          let evalStr = button.regulation
-          var reg = /\w+\s*\(\s*\)/g
-          var result = evalStr.match(reg)
+          let evalStr = button.regulation;
+          var reg = /\w+\s*\(\s*\)/g;
+          var result = evalStr.match(reg);
           if (result != null) {
             for (var index = 0; index < result.length; index++) {
               evalStr = evalStr.replace(
                 result[index],
                 'this.pageDef.methods.' +
                   result[index].replace('()', '(this.selection)')
-              )
+              );
             }
-            disableds.push(!eval(evalStr))
+            disableds.push(!eval(evalStr));
           } else {
-            disableds.push(!eval(button.regulation))
+            disableds.push(!eval(button.regulation));
           }
         } else {
-          disableds.push(false)
+          disableds.push(false);
         }
       }
-      return disableds
+      return disableds;
     },
     listLoading() {
-      return this.$store.getters.listLoading
+      console.log("子组件加载完成与否2:"+this.$store.getters.listLoading);
+      return this.$store.getters.listLoading;
     }
   },
   methods: {
+
+         appendRequestUrlParam(key, value, url) {
+        // console.log("url参数:" + key + "..." + value);
+
+        let target = "targetUrl";
+
+        let urlData = {
+          "targetUrl": url
+        };
+        // var str=eval('('+ '{"'+ key +'": "'+ value +'"  "," + "targetUrl:" + "'+url+'" }' +')');
+        // console.log("拼接字符串:"+'('+ '{"'+ key +'": "'+ value +'"  "," + "targetUrl:" + "'+url+'" }' +')' );
+        var str = eval('(' + '{"' + key + '"  : "' + value + '","' + target + '" : "' + url + '"  }' + ')');
+         console.log("拼接字符串:" + '(' + '{"' + key + '"  : "' + value + '","' + target + '" : "' + url + '"  }' + ')');
+        let targetUrl = this.$store.state.urlParam.targetUrl;
+         console.log("打开url:" + targetUrl);
+        if (!targetUrl) {
+          console.log(" this.$store.commit invoke  getUrlParam.....")
+          this.$store.commit("getUrlParam", str);
+        }
+
+
+      },
+
+      appendRequestParam(key, value) {
+        // console.log(key+"appendRequestParam"+value);
+        var str1 = eval('(' + '{"' + key + '"  : "' + value + '"}' + ')');
+         console.log("拼接字符串:" + '(' + '{"' + key + '"  : "' + value + '"}' + ')');
+        console.log(" this.$store.commit invoke   getParam.....")
+        this.$store.commit("getParam", str1);
+      },
+
+
     matchIdChange(val) {},
     // 模糊查询方法
     queryallRef(val) {
-      this.matchRefList = []
+        this.matchRefList = [];
     },
 
     // 格式化表格字段
     formatVal(row, column, cellValue, enumType) {
       if (enumType) {
-        return formatter(enumType, cellValue)
+        return formatter(enumType, cellValue);
       }
-      return formatter(column.property, cellValue)
+      return formatter(column.property, cellValue);
     },
 
     getEnums(enumType) {
-      return getEnumObj(enumType)
+      return getEnumObj(enumType);
     },
 
     // 子组件按钮事件
     doClick(funcName) {
-      extend(this.form, this.listQuery)
-      this.$emit(funcName, this.selection, this.form)
+      extend(this.form, this.listQuery);
+      this.$emit(funcName, this.selection, this.form);
     },
 
     doRowClick(funcName, index, row) {
-      extend(this.form, this.listQuery)
-      this.$emit(funcName, row, this.form, index)
+      extend(this.form, this.listQuery);
+      this.$emit(funcName, row, this.form, index);
     },
     // 带查询条件的查询
     doQuery() {
-      // alert(1)
-      // alert('disableQueryForm   ' + this.disableQueryForm)
-      // alert('disableQueryButtons   ' + this.disableQueryButtons)
-      this.listQuery.pageJump = 1
-      this.doPageQuery()
+      // this.listQuery.pageJump = 1;
+      this.listQuery.pageNum = 1;
+      this.doPageQuery();
     },
 
     // 重置
     doReset() {
-      this.form = {}
-      this.$emit('doReset')
+      this.form = {};
+      this.$emit('doReset');
     },
 
     doPageQuery() {
-      this.$store.dispatch('setListLoading', true)
-      extend(this.form, this.listQuery)
-      this.$emit('pageQuery', this.form)
+      this.$store.dispatch('setListLoading', true);//查询时增加遮罩
+      extend(this.form, this.listQuery);
+      this.$emit('pageQuery', this.form);
     },
 
     // 查询每页笔数变化事件
     doSizeChange(val) {
-      this.listQuery.recInPage = val
-      this.doPageQuery()
+      // this.listQuery.recInPage = val;
+      this.listQuery.pageSize = val;
+      this.doPageQuery();
     },
 
     // 页码变化事件
     doCurrentChange(val) {
-      this.listQuery.pageJump = val
-      this.doPageQuery()
+      // this.listQuery.pageJump = val;
+      this.listQuery.pageNum = val;
+      this.doPageQuery();
     },
 
     // 编辑
     doEdit(index, row) {
-      this.$emit('doEdit', row)
+      this.$emit('doEdit', row);
     },
 
     // 删除
@@ -357,104 +475,138 @@ export default {
         center: true
       })
         .then(() => {
-          this.$emit('doDelete', row, this.listQuery, index)
+          this.$emit('doDelete', row, this.listQuery, index);
         })
         .catch(() => {
           this.$message({
             type: 'info',
             message: '已取消删除'
-          })
-        })
+          });
+        });
     },
     // 行点击和行选中事件
     rowChange(row, event, column) {
-      this.currentRow = row
+      this.currentRow = row;
       if (!this.pageDef.tabDef.isSelect) {
-        this.selection = [row]
+        this.selection = [row];
       }
-      this.$emit('rowChange', row)
+      this.$emit('rowChange', row);
     },
 
     selectionChange(selection) {
-      this.selection = selection
-      this.$emit('selectionChange', selection)
+      this.selection = selection;
+      this.$emit('selectionChange', selection);
     },
 
     evalRegulation(regulation, row) {
-      let evalStr = regulation
+      let evalStr = regulation;
       if (regulation) {
-        var reg = /\w+\s*(=|!)=\s*'*\w+'*/g
-        var result = regulation.match(reg)
+        var reg = /\w+\s*(=|!)=\s*'*\w+'*/g;
+        var result = regulation.match(reg);
         if (result != null) {
           for (var idx in result) {
-            evalStr = evalStr.replace(result[idx], 'row.' + result[idx])
+            evalStr = evalStr.replace(result[idx], 'row.' + result[idx]);
           }
-          return !eval(evalStr)
+          return !eval(evalStr);
         } else {
-          return !eval(regulation)
+          return !eval(regulation);
         }
       } else {
-        return false
+        return false;
       }
     },
 
     evalVisible(visible, row) {
-      let evalStr = visible
+      let evalStr = visible;
       if (visible) {
-        var reg = /\w+\s*(=|!)=\s*'*\w+'*/g
-        var result = visible.match(reg)
+        var reg = /\w+\s*(=|!)=\s*'*\w+'*/g;
+        var result = visible.match(reg);
         if (result != null) {
           for (var idx in result) {
-            evalStr = evalStr.replace(result[idx], 'row.' + result[idx])
+            evalStr = evalStr.replace(result[idx], 'row.' + result[idx]);
           }
-          return eval(evalStr)
+          return eval(evalStr);
         } else {
-          return eval(visible)
+          return eval(visible);
         }
       } else {
-        return true
+        return true;
       }
     },
 
     rowDbclick(row, event) {
-      this.$emit('rowDbclick', row)
+      this.$emit('rowDbclick', row);
     },
 
     queryRef(row, column, cellValue) {
-      var fval = ''
+      var fval = '';
       if (cellValue !== '' && cellValue != undefined) {
         this.$emit('queryRef', column.property, cellValue, function(val) {
-          fval = val
-        })
-        return fval
+          fval = val;
+        });
+        return fval;
       }
     },
 
     formatDateTime(row, column, cellValue) {
-      return commonUtil.formatDateString(cellValue, 'yyyy-MM-dd hh:mm:ss')
+      return commonUtil.formatDateString(cellValue, 'yyyy-MM-dd hh:mm:ss');
     },
 
     clearSelect(colName) {
-      delete this.form[colName]
+      delete this.form[colName];
     },
 
     formatDate(row, column, cellValue) {
-      return commonUtil.formatDateString(cellValue, 'yyyy-MM-dd')
+      return commonUtil.formatDateString(cellValue, 'yyyy-MM-dd');
     },
 
     customFormat(row, column, cellValue) {
       if (cellValue !== '' && cellValue != undefined) {
-        let fval = ''
+        let fval = '';
         this.$emit('customFormat', row, column, cellValue, function(val) {
-          fval = val
-        })
-        return fval
+          fval = val;
+        });
+        return fval;
       } else {
-        return cellValue
+        return cellValue;
       }
+    },
+    //点击行时获取参数
+    getUrlParam(row,index,param){
+      let queryKey=this.$store.state.urlParam.queryKey;
+      let queryParam={};
+      this.$store.state.urlParam.queryParam=queryParam;
+      console.log("urlParam的key值:"+JSON.stringify(param));
+      console.log("urlParam的row值:"+JSON.stringify(row));
+      console.log("urlParam的row值:"+index);
+      // var str=eval(  '('  +  '{"'+ key +'"  : "'+ value +'","'+ target +'" : "'+ url +'"  }'    +')'  );
+      // console.log("拼接字符串:"+    '('  +  '{"'+ key +'"  : "'+ value +'","'+ target +'" : "'+ url +'"  }'    +')'   );
+
+      // this.$route.query=
+
+      var str='(';
+      str+= '{' ;
+      console.log("拼接字符串的值1:"+str);
+      for(var i=0;i<param.length;++i){
+        console.log("key值分别是:"+param[i]);
+        // console.log("urlParam的age值:"+row["age"]+"urlParam的name值:"+row["name"]);
+        console.log("urlParam的动态值:"+row[param[i]]);
+        if(i+1<param.length){
+          str += '"'+param[i]+'": "'+row[param[i]]+'", ';
+        }else{
+          str += '"'+param[i]+'": "'+row[param[i]]+'"  ';
+        }
+
+        console.log("拼接字符串的值2:"+str);
+      }
+      str+=' }'    +')';
+      console.log("拼接字符串的值3:"+str);
+      console.log("拼接字符串的值4:"+eval(str));
+      this.$store.state.urlParam.queryParam=eval(str);
+      console.log("shijizhi:"+JSON.stringify(this.$store.state.urlParam.queryParam));
     }
   }
-}
+};
 </script>
 <style rel='stylesheet/scss' lang='scss' scoped>
 .el-main {

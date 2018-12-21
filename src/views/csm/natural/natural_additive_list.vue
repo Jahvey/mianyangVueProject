@@ -1,17 +1,22 @@
 <template>
-  <csc-single-table :pageDef="pageDef" :entity="entity" :disableQueryForm="disableQueryForm" @findOne="findOne"
-       :disableRowButtons="disableRowButtons"             @contractList="contractList"       >
+  <csc-single-table 
+  :pageDef="pageDef" 
+  :entity="entity" 
+  @findOne="findOne"
+  :disableQueryForm="disableQueryForm" 
+  :disableRowButtons="disableRowButtons"            
+   @contractList="contractList"   >
   </csc-single-table>
 </template>
 
 <script>
-  // 附加信息 http://192.168.1.105:7001/default/csm/natural/natural_additive_list.jsp
+  // 账户信息
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable' // 引入的这个是子组件，需要把父组件的值传递给子组件修改子组件
-  import { getContractList } from '@/api/contract'// 正常往后+台发送异步请求的类
-  //  import { getContractList } from '@/api/api'//api是自己写的用来测试mock假数据的路径，配置了这个之后mock会拦截正常请求
+  import { getContractList } from '@/api/contract'// 正常往后台发送异步请求的类
+ 
 
   export default {
-    // name: 'mortgageContract',
+    name: 'natural_additive_list',
     data: function() {
       return {
         disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮
@@ -20,26 +25,32 @@
         entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
           data: [
             {
-              partyNum: 'KH13342124',
-              partyName: '八神庵',
-              title: '野炊',
-              detailInfo: '小明参加班级春游进行了一场有趣的野炊'
+              partyNum: '2017-09-23',
+              partyName: '紧急事件',
+              title: '中度紧急',
+              detailInfo: '0'
+
+
             }
           ]
         },
-        // disableQueryForm: true,credit
+
         pageDef: {
           // 查询条件定义
           queryDef: {},
+
           tabDef: {
             isSelect: false, // 是否可以多选
             isIndex: true, // 是否有序号
             // 表格字段定义
             tabCols: [
+             // { label: '选择', prop: 'checkcolumn', isSort: true },
               { label: '客户编号', prop: 'partyNum', isSort: true },
-              { label: '客户名称', prop: 'partyName', isSort: true }, // currency：货币
+              { label: '客户名称', prop: 'partyName', isSort: true },
               { label: '标题', prop: 'title', isSort: true },
-              { label: '详细信息', prop: 'detailInfo', isSort: true }
+              { label: '详情', prop: 'detailInfo', isSort: true }
+
+
             ]
           },
           buttons: [
@@ -49,11 +60,12 @@
       }
     },
 
-    components: { CscSingleTable },
+    components: { CscSingleTable }, // 引入的子组件
+
     methods: {
       doPageQuery() {
         // this.contractList(listQuery)
-        // console.log('doPageQuery...')
+         console.log('doPageQuery...')
       },
 
       contractList(listQuery) {
@@ -61,14 +73,14 @@
           listQuery: this.listQuery
         }
 
-        this.listLoading = true
+       // this.listLoading = true
         console.log('listQuery ....' + listQuery)
         getContractList(params).then(response => {
           this.entity = response
-          // console.log(" response.data.entity"+ response.data.entity)
+          console.log(" response.data.entity"+ response.data.entity)
           this.listLoading = false
         }).catch((error) => {
-          // alert(error)
+         
           console.log(error)
         })
       },
@@ -76,17 +88,9 @@
         alert('查询')
       }
     },
-    computed: { // 计算属性
-      disabled() { // 控制页面渲染
-        // return this.disableQueryForm = true
-      }
 
-    },
     mounted() {
-      // disableQueryForm() {
-      //   console.log('emit disableQueryForm.....')
-      //   return this.disableQueryForm
-      // },
+
       this.contractList() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
     }
 

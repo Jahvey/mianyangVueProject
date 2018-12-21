@@ -1,12 +1,16 @@
 import request from '@/utils/request'
 
 export function getOrgList(queryParams) {
-  return request({
-    url: 'csc-plat/org/pageQueryOrg',
-    method: 'post',
-    entity: queryParams
-    // entity:queryParams
-  })
+
+
+  // return request({
+  //   url: 'csc-plat/org/pageQueryOrg',
+  //   method: 'post',
+  //   entity: queryParams
+  //   // entity:queryParams
+  // })
+
+
 }
 
 export function getAllServices() {

@@ -1,18 +1,23 @@
 <template>
   <csc-single-table 
   :pageDef="pageDef" 
-  :entity="entity" 
-  @findOne="findOne"
+  :entity="entity"
+
+@pageQuery="doPageQuery"
+@view="view" 
+@doEdit="doEdit"
+@doDelete="doDelete"
   :disableQueryForm="disableQueryForm" 
-  :disableRowButtons="disableRowButtons"            
-   @contractList="contractList"   >
+  :disableRowButtons="disableRowButtons"  
+
+   >
   </csc-single-table>
 </template>
 
 <script>
   // 账户信息
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable' // 引入的这个是子组件，需要把父组件的值传递给子组件修改子组件
-  import { getContractList } from '@/api/contract'// 正常往后台发送异步请求的类
+  import { getEntrustAccountsByPartyId } from '@/api/csm'
  
 
   export default {
@@ -23,17 +28,7 @@
         disableRowButtons: true, // 隐藏tab表单按钮
         listLoading: false,
         entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
-          data: [
-            {
-              accName: '你的账户',
-              entrustProjectName: '科学养猪',
-              entrustAcc: '2S4K09685474',
-              entrustLoanAcc: 'jj237297328',
-              entrustReturnAcc:'xxxxxxx',
-              entrustReturnPrincipalAcc: 'sx63902198',
-              entrustReturnInterestAcc: '729385022'
-            }
-          ]
+
         },
         // disableQueryForm: true,
         pageDef: {
@@ -64,36 +59,44 @@
     components: { CscSingleTable }, // 引入的子组件
 
     methods: {
-      doPageQuery() {
-        // this.contractList(listQuery)
-         console.log('doPageQuery...')
-      },
 
-      contractList(listQuery) {
-        const params = {
-          listQuery: this.listQuery
-        }
+      doPageQuery(listQuery) {
 
-        this.listLoading = true
-        console.log('listQuery ....' + listQuery)
-        getContractList(params).then(response => {
-          this.entity = response
-          console.log(" response.data.entity"+ response.data.entity)
-          this.listLoading = false
+  
+        getEntrustAccountsByPartyId(listQuery).then(response => {
+          this.entity = response.data
+          this.$store.dispatch('setListLoading', false)
+
+     
         }).catch((error) => {
-         
+    
           console.log(error)
         })
       },
-      findOne() { // 重置表单就是直接清空表单里面的数据
-        alert('查询')
+
+      view(){
+        console.log("view.....")
+      },
+      // 行事件
+      doEdit(row) {
+        console.log('row ....')
+      //  this.$router.push({path: '/contract/add/edit/' + row.contractId})
+      },
+
+      doDelete() {
+        // deleteContract(row).then(response => {
+        //   this.contractList(listQuery)
+        //   this.$message({
+        //     type: 'success',
+        //     message: '删除成功!'
+        //   })
+        // })
+        console.log('del ....')
       }
     },
-
-    mounted() {
-
-      this.contractList() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
-    }
+    mounted() {     
+      this.doPageQuery() 
+  }
 
   }
 </script>

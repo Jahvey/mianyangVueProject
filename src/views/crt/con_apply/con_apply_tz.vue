@@ -9,15 +9,15 @@
 @pageQuery="doPageQuery" 
 @doEdit="doEdit"
 @doDelete="doDelete"
-@contractList="contractList"   
+
   >
   </csc-single-table>
 </template>
 
 <script>
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import { getContractList } from '@/api/contract'// 正常往后台发送异步请求的类
-//  import { getContractList } from '@/api/api'//
+  import { getApproveCons } from '@/api/contract'// 正常往后台发送异步请求的类
+
 
   // 合同模块也是需要引入用户的，以后需要根据用户查询对应的合同（高级查询）
 
@@ -26,19 +26,7 @@
       return {
         listLoading: false,
         entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
-          data: [
 
-            {
-              CREDIT_MODE: '112',
-              CONTRACT_NUM: '123456789',
-              PRODUCT_TYPE: '贷款',
-              CURRENCY_CD: '人民币',
-              CONTRACT_AMT: '1729.97',
-              CON_BALANCE: '13.11',
-              BEGIN_DATE: '1998-12-1',
-              END_DATE: '2002-01-22',
-            }
-          ]
         },
         pageDef: {
           // 查询条件定义
@@ -54,14 +42,16 @@
             isIndex: true, // 是否有序号
             // 表格字段定义
             tabCols: [
-              { label: '合同性质', prop: 'CREDIT_MODE', isSort: true },
-              { label: '合同编号', prop: 'CONTRACT_NUM', isSort: true },
-              { label: '合同品种', prop: 'PRODUCT_TYPE', isSort: true },
-              { label: '币种', prop: 'CURRENCY_CD', isSort: true },
-              { label: '合同金额', prop: 'CONTRACT_AMT', isSort: true },
-              { label: '可用金额(元)', prop: 'CON_BALANCE', isSort: true },
-              { label: '合同起期', prop: 'BEGIN_DATE', isSort: true },
-              { label: '合同止期', prop: 'END_DATE', isSort: true }
+
+              { label: '合同性质', prop: 'creditMode', isSort: true,isParam: true },
+              { label: '合同编号', prop: 'contractNum', isSort: true, isLink: true,url: '/crt/con_apply/con_apply_print' },
+              { label: '合同品种', prop: 'productType', isSort: true ,isParam: true},
+              { label: '币种', prop: 'currencyCd', isSort: true },
+              { label: '合同金额', prop: 'contractAmt', isSort: true,isParam: true },
+              { label: '可用金额(元)', prop: 'conBalance', isSort: true },
+              { label: '合同起期', prop: 'beginDate', isSort: true },
+              { label: '合同止期', prop: 'endDate', isSort: true }
+
 
             ]
           },
@@ -79,24 +69,15 @@
 
     methods: {
 
-      doPageQuery() {
-        // this.contractList(listQuery)
-        // console.log('doPageQuery...')
-      },
+      doPageQuery(listQuery) {
 
-      contractList(listQuery) {
-        const params = {
-          listQuery: this.listQuery
-        }
-
-
-        this.listLoading = true
-
-        console.log('listQuery ....' + listQuery)
-        getContractList(params).then(response => {
-          this.entity = response
-          // console.log(" response.data.entity"+ response.data.entity)
-          this.listLoading = false
+        //console.log('listQuery ....' + listQuery)
+        getApproveCons(listQuery).then(response => {
+          this.entity = response.data
+          this.$store.dispatch('setListLoading', false)
+          // console.log('response.data.entity...')
+          //  console.log( response.data.entity)
+     
         }).catch((error) => {
     
           console.log(error)
@@ -131,8 +112,8 @@
         console.log('del ....')
       }
     },
-    mounted() {				// 骑马的，安装好的
-      this.contractList() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
+    mounted() {				
+      this.doPageQuery() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
   }
 
   }

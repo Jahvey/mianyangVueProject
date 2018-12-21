@@ -7,6 +7,7 @@ import loading from './modules/loading'
 import getters from './getters'
 import nav from './modules/nav'
 import menu from './modules/menu'
+import urlParam from './modules/urlParam'
 
 Vue.use(Vuex)
 
@@ -18,7 +19,8 @@ const store = new Vuex.Store({
     loading,
     nav,
 
-    menu
+    menu,
+    urlParam
   },
   getters
 
