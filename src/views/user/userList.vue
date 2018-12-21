@@ -1,7 +1,7 @@
 <template>
   <csc-single-table :pageDef="pageDef" :entity="entity" @pageQuery="doPageQuery" @create="create" @doEdit="doEdit"
-                             @doDelete="doDelete"  @rowDbclick="rowDbclick">
-</csc-single-table>
+  @doDelete="doDelete"  @rowDbclick="rowDbclick">
+  </csc-single-table>
 </template>
 
 <script>
@@ -35,9 +35,9 @@ export default {
           ]
         },
         buttons: [
-          { label: '新增', funcName: 'create',disabled:false },
-          { label: '修改', funcName: 'doEdit',disabled:false },
-          { label: '删除', funcName: 'delete',disabled:true }
+          { label: '新增', funcName: 'create', disabled: false },
+          { label: '修改', funcName: 'doEdit', disabled: false },
+          { label: '删除', funcName: 'delete', disabled: true }
         ]
       }
     }
@@ -46,9 +46,10 @@ export default {
 
   methods: {
     doPageQuery(listQuery) {
+      console.log('user listQuery...' + listQuery)
       getUserList(listQuery).then(response => {
         this.entity = response
-        this.$store.dispatch('setListLoading', false);//切记查询成功后取消遮罩
+        console.log('response ....' + response)
       }).catch((error) => {
         console.log(error)
       })
@@ -63,7 +64,7 @@ export default {
     },
 
     doEdit(row) {
-      this.$router.push({ path: '/user/userEdit',query:{method:'doEdit'} })
+      this.$router.push({ path: '/user/userEdit', query: { method: 'doEdit' }})
     },
 
     doDelete(row, listQuery) {

@@ -5,9 +5,8 @@
 </template>
 
 <script>
-import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-import { getUserList,getUserList1,deleteUser } from '@/api/user'
-// import axios from 'axios'
+import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'		//不引入这个整个页面都出不来
+import { getUserList, deleteUser } from '@/api/user'		//序号，用户编号和页脚等
 
 export default {
   data() {
@@ -18,10 +17,9 @@ export default {
         queryDef: {
           columnNum: 3, // 一行几列
           queryCols: [
-            { label: '客户名称', inputType: 'input', modelName: 'partyName' },
-            { label: '证件类型', inputType: 'input', modelName: 'certType' },
-            { label: '证件号码', inputType: 'input', modelName: 'certNum' },
-            { label: '中征码',inputType: 'input',modeleName:'middleCode'}
+            { label: 'ID', inputType: 'input', modelName: 'id' },
+            { label: '姓名', inputType: 'input', modelName: 'name' },
+            { label: '机构号', inputType: 'input', modelName: 'orgid' }
           ]
         },
         tabDef: {
@@ -29,17 +27,18 @@ export default {
           isIndex: true, // 是否有序号
           // 表格字段定义
           tabCols: [
-            { label: '客户名称', prop: 'partyName', isSort: true },
-            { label: '证件类型', prop: 'certType', isSort: true },
-            { label: '证件号码', prop: 'certNum', isSort: true },
-            { label: '中征码', prop: 'middleCode', isSort: true },
-            { label: '消费性评级', prop: 'generalAdjustRatIingCD', isSort: true },
-            { label: '经营性评级', prop: 'generalAdjustRatingCD', isSort: true },
-            { label: '批复金额', prop: 'creditAmt', isSort: true },
-            { label: '批复已用金额', prop: 'usedAmtReal', isSort: true },
-            { label: '管户客户经理', prop: 'userNum', isSort: true }
+            { label: '用户编号', prop: 'ID', isSort: true },
+            { label: '姓名', prop: 'NAME', isSort: true },
+            { label: '机构号', prop: 'ORGID', isSort: true },
+            { label: '机构名称', prop: 'ORGNAME', isSort: true },
+            { label: '更新日期', prop: 'UPDATE_DATE', isSort: true }
           ]
-        }
+        },
+        buttons: [
+          { label: '新增', funcName: 'create',disabled:false },
+          { label: '修改', funcName: 'doEdit',disabled:false },
+          { label: '删除', funcName: 'delete',disabled:true }
+        ]
       }
     }
   },
@@ -47,31 +46,11 @@ export default {
 
   methods: {
     doPageQuery(listQuery) {
-
-      console.log("到底执行没有1:"+222111);
-
-      // getUserList(listQuery).then(response => {
-      //   console.log("到底执行没有:"+111222);
-      //   this.entity = response
-      // }).catch((error) => {
-      //   console.log(error)
-      // })
-
-
-
-      // var params={"partyId":"5AF8119026E0FABDE05010AC57DD79A2"};
-      // var url="mybatis-service/mynatureal/queryNaturalForDesk";
-      // axios.get(url, {
-      //   params: { 'orgcode': '0700' }
-      // }).then(function (response) {
-      //   alert(''.concat(response.data, '\r\n', response.status, '\r\n', response.statusText, '\r\n', response.headers, '\r\n', response.config));
-      //   this.entity = response
-      // }).catch(function (error) {
-      //   alert("111222:"+error);
-      // });
-
-
-
+      getUserList(listQuery).then(response => {
+        this.entity = response
+      }).catch((error) => {
+        console.log(error)
+      })
     },
 
     rowDbclick(row) {

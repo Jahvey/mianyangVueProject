@@ -16,7 +16,7 @@
  
 
   export default {
-    //name: 'csm_entrust_account_list',
+    name: 'csm_entrust_account_list',
     data: function() {
       return {
         disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮

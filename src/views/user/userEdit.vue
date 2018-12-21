@@ -11,8 +11,6 @@
               </template>
             </el-checkbox-group>
           </el-form-item>
-      <!-- 父传子插槽 -->
-      <hr slot="selfDefine"></hr>
     </csc-form-page>
   </div>
 </template>
@@ -92,7 +90,7 @@ export  default {
           let rowdata = {};
           Object.assign(rowdata, response);
           rowdata.userRoleIdForShow=[];
-          rowdata.userRoleList.forEach((userRoleT, index) => {
+          rowdata.userRoleList.forEach((userRoleT, index) => {  
             rowdata.userRoleIdForShow.push(userRoleT.roleName);
           });
           this.form = rowdata;

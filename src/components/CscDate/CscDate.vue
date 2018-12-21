@@ -24,10 +24,10 @@ export default {
     }
   },
 
-  watch: {
+  watch: {// 侦听属性：如果 `value1` 发生改变，这个函数就会运行
     value1: function(val) {
       if (val != null && val != undefined) {
-        this.$emit('update:value', val.format('yyyyMMddhhmmss'))
+        this.$emit('update:value', val.format('yyyyMMddhhmmss'))    //触发自定义函数
       } else {
         this.$emit('update:value', null)
       }

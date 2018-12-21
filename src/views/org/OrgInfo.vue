@@ -55,10 +55,9 @@
         this.selectedRow = row
       },
       doPageQuery(listQuery){
-
-        // getOrgList(listQuery).then(response => {
-        //   this.entity = response
-        // })
+        getOrgList(listQuery).then(response => {
+          this.entity = response
+        })
       },
       doAdd(){
         this.$router.push({ name: 'orgAdd',query:{method:'add'}})

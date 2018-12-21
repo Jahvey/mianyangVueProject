@@ -82,7 +82,7 @@
       for (var i = 0; i < this.pageDef.tabCols.length; i++) {
         var tabCol = this.pageDef.tabCols[i]
         let pageCol = {}
-        Object.assign(pageCol, tabCol)
+        Object.assign(pageCol, tabCol)        //assign：分配
         pageCol.modelName = pageCol.prop
         if (pageCol.isFormat) {
           pageCol.inputType = "select"
@@ -98,7 +98,7 @@
     },
 
     components:{CscTableColumn, CscFormDialog},
-    computed: {
+    computed: {                                     //计算属性
     },
     methods: {
       //格式化表格字段

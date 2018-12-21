@@ -60,9 +60,9 @@
   </el-col>
 </template>
 <script>
-import { getEnumObj } from "@/utils/formatter"
+import { getEnumObj } from '@/utils/formatter'
 export default {
-  name: "CscFormColumn",
+  name: 'CscFormColumn',
   props: {
     col: {
       type: Object,
@@ -71,13 +71,13 @@ export default {
     form: {
       type: Object
     },
-    disabled:Boolean,
-    span:Number,
-    idx:Number
+    disabled: Boolean,
+    span: Number,
+    idx: Number
   },
 
-  mounted() {
-    if (this.col.inputType === "select") {
+  mounted() { // 钩子函数，在页面模板渲染完毕之后会执行的一些操作
+    if (this.col.inputType === 'select') {
       this.col.options = this.getEnums(this.col)
     }
   },

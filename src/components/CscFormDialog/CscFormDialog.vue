@@ -47,7 +47,7 @@ export default {
 
   methods: {
     getEnums(enumType) {
-      return getEnumObj(enumType)
+      return getEnumObj(enumType)     //格式化
     },
 
     getCasOptions(colName) {
@@ -57,10 +57,10 @@ export default {
 
     doSave() {
       if (this.pageDef.formRules !== undefined) {
-        this.$refs[this.pageDef.name].validate((valid) => {
+        this.$refs[this.pageDef.name].validate((valid) => {     //父组件调用当前页面的页面定义名字属性进行验证
           if (valid) {
             this.$set(this.pageDef, 'dialogFormVisible', false)
-            this.$emit("doSave", this.index, this.form);
+            this.$emit("doSave", this.index, this.form);      //触发自定义函数，后面2个是参数，这参数什么效果？
           } else {
             return false;
           }

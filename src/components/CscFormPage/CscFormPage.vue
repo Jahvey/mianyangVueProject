@@ -31,13 +31,13 @@
   </section>
 </template>
 <script>
-import { getEnumObj } from "@/utils/formatter"
+import { getEnumObj } from '@/utils/formatter'
 // import cascade from "@/utils/cascade"
-import { extend } from "@/utils/validate"
-import CscFormColumn from "@/components/CscFormColumn/CscFormColumn"
+import { extend } from '@/utils/validate'
+import CscFormColumn from '@/components/CscFormColumn/CscFormColumn'
 
 export default {
-  name: "CscFormPage",
+  name: 'CscFormPage',
   props: {
     pageDef: {
       type: Object,
@@ -68,19 +68,19 @@ export default {
 
   mounted() {
     this.pageDef.pageCols.forEach((item, idx) => {
-      if (item.inputType === "select") {
+      if (item.inputType === 'select') {
         this.formData[item.options] = this.getEnums(item.enumType)
       }
-    });
+    })
   },
-  
-  computed:{
+
+  computed: {
     disabled() {
       return this.pageDef.disabled
     }
   },
 
-  components:{CscFormColumn},
+  components: { CscFormColumn },
 
   watch: {
   },
@@ -91,7 +91,7 @@ export default {
     },
 
     getCasOptions(colName) {
-      return null//cascade(colName)
+      return null// cascade(colName)
     },
 
     doReset() {
@@ -103,35 +103,32 @@ export default {
       if (this.pageDef.formRules !== undefined) {
         this.$refs[this.pageDef.name].validate((valid) => {
           if (valid) {
-            this.$emit("doSave", this.formData);
+            this.$emit('doSave', this.formData)
           } else {
-            return false;
+            return false
           }
-        });
+        })
       } else {
-        this.$emit("doSave", this.formData);
+        this.$emit('doSave', this.formData)
       }
-
-
     },
 
     doCancel() {
-      this.$emit("doCancel")
+      this.$emit('doCancel')
     },
 
     checkNumber(rule, value, callback) {
       //          alert(1)
       if (value) {
-        return callback(new Error('年龄不能为空'));
+        return callback(new Error('年龄不能为空'))
       }
 
-      callback();
+      callback()
     },
 
-    fieldChange(modelName, val){
+    fieldChange(modelName, val) {
       this.$emit('fieldChange', modelName, val)
     }
-
 
   }
 }
