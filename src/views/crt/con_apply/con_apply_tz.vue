@@ -42,12 +42,13 @@
             isIndex: true, // 是否有序号
             // 表格字段定义
             tabCols: [
+               //合同性质 dictTypeId="XD_BIZ0003"
+              { label: '合同性质', prop: 'creditMode', isSort: true,isFormat:true,enumType:'creditMode' },
+              { label: '合同编号', prop: 'contractNum', isSort: true, isLink: true,url: '/crt/con_apply/con_apply_print',param:["creditMode","productType","contractAmt"] },
+              { label: '合同品种', prop: 'productType', isSort: true,isFormat:true,enumType:'productType' },
+              { label: '币种', prop: 'currencyCd', isSort: true ,isFormat:true,enumType:'currencyCd'},
+              { label: '合同金额', prop: 'contractAmt', isSort: true },
 
-              { label: '合同性质', prop: 'creditMode', isSort: true,isParam: true },
-              { label: '合同编号', prop: 'contractNum', isSort: true, isLink: true,url: '/crt/con_apply/con_apply_print' },
-              { label: '合同品种', prop: 'productType', isSort: true ,isParam: true},
-              { label: '币种', prop: 'currencyCd', isSort: true },
-              { label: '合同金额', prop: 'contractAmt', isSort: true,isParam: true },
               { label: '可用金额(元)', prop: 'conBalance', isSort: true },
               { label: '合同起期', prop: 'beginDate', isSort: true },
               { label: '合同止期', prop: 'endDate', isSort: true }

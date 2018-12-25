@@ -137,7 +137,43 @@ export const constantRouterMap = [
       meta: { title: '用户测试列表修改', icon: 'manage' }
     }]
   },
-<<<<<<< .mine
+  
+  {
+    path: '/securityManagement',
+    component: securityManagement,
+    name: '担保品管理',
+    meta: { title: '担保品管理', icon: 'organization' },
+    menuShow: true,
+    //redirect: '/securityManagement/mortgagepledge/addMortgagePledge',
+    roles: ['admin'],
+    children: [
+        {
+        path: 'addMortgagePledge',
+        name: '抵质押品新增',
+        component: _import('securitymanagement/mortgagepledge/addMortgagePledge'),//添加抵质押品
+        meta: { title: '抵质押品新增', icon: 'manage' }
+       },
+      {
+        path: 'editMortgagePledge',
+        name: '抵质押品维护',
+        component: _import('securitymanagement/mortgagepledge/editMortgagePledge'),//抵质押品维护
+        meta: { title: '抵质押品维护', icon: 'manage' }
+      },
+      {
+        path: 'addBondedInfo',
+        name: '抵债信息新增',
+        component: _import('securitymanagement/bondedinfo/addBondedInfo'),//添加抵债信息
+        meta: { title: '抵债信息新增', icon: 'manage' }
+      },
+      {
+        path: 'editBondedInfo',
+        name: '抵债信息维护',
+        component: _import('securitymanagement/bondedinfo/editBondedInfo'),//抵债信息维护
+        meta: { title: '抵债信息维护', icon: 'manage' }
+      },
+	  ]
+  },
+
   {
     path: '/csm', // 主路径需要更改
     component: Layout,
@@ -311,46 +347,9 @@ export const constantRouterMap = [
     ]
   },
   { path: '*', redirect: '/404', hidden: true }
-||||||| .r100
-  { path: '*', redirect: '/404', hidden: true }
-=======
-  {
-    path: '/securityManagement',
-    component: securityManagement,
-    name: '担保品管理',
-    meta: { title: '担保品管理', icon: 'organization' },
-    menuShow: true,
-    //redirect: '/securityManagement/mortgagepledge/addMortgagePledge',
-    roles: ['admin'],
-    children: [
-        {
-        path: 'addMortgagePledge',
-        name: '抵质押品新增',
-        component: _import('securitymanagement/mortgagepledge/addMortgagePledge'),//添加抵质押品
-        meta: { title: '抵质押品新增', icon: 'manage' }
-       },
-      {
-        path: 'editMortgagePledge',
-        name: '抵质押品维护',
-        component: _import('securitymanagement/mortgagepledge/editMortgagePledge'),//抵质押品维护
-        meta: { title: '抵质押品维护', icon: 'manage' }
-      },
-      {
-        path: 'addBondedInfo',
-        name: '抵债信息新增',
-        component: _import('securitymanagement/bondedinfo/addBondedInfo'),//添加抵债信息
-        meta: { title: '抵债信息新增', icon: 'manage' }
-      },
-      {
-        path: 'editBondedInfo',
-        name: '抵债信息维护',
-        component: _import('securitymanagement/bondedinfo/editBondedInfo'),//抵债信息维护
-        meta: { title: '抵债信息维护', icon: 'manage' }
-      },
-	  ]
-  },
-  { path: '*', redirect: '/404', hidden: true },
->>>>>>> .r110
+
+
+
 ]
 export default new Router({
   // mode: 'history', //后端支持可开 注意: 这个功能只在 HTML5 history 模式下可用。

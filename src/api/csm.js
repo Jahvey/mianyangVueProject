@@ -40,22 +40,27 @@ export function findOldContractList(queryParams) {
 }
 
 
+export function queryNaturalForDesk(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/natural/queryNaturalForDesk', queryParams)
+}
+
 
 //测试获取自然人客户列表
-export function queryNaturalForDesk(queryParams) {
-  return request({
-    url: 'mybatis-service/user/queryNaturalForDesk',
-    method: 'post',
-    entity: queryParams
-  })
-}
+// export function queryNaturalForDesk(queryParams) {
+//   return request({
+//     url: 'mybatis-service/user/queryNaturalForDesk',
+//     method: 'post',
+//     entity: queryParams
+//   })
+// }
 
 //测试获取自然人客户信息
-export function getNaturalPersonInfoById(queryParams) {
-  return request({
-    url: 'mybatis-service/user/getNaturalPersonInfoById',
-    method: 'post',
-    entity: queryParams
-  })
-}
+// export function getNaturalPersonInfoById(queryParams) {
+//   return request({
+//     url: 'mybatis-service/user/getNaturalPersonInfoById',
+//     method: 'post',
+//     entity: queryParams
+//   })
+// }
 

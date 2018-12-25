@@ -64,9 +64,8 @@
     components: { CscSingleTable }, // 这个没有问题
 
     created(){
-      console.log("多参数传递:" + JSON.stringify(this.$store.state.urlParam.queryParam));
-       //  console.log("params:...."+this.$route.query.id+".."+this.$route.query.key)
-        // console.log(this.$route.query.abc)	
+      console.log("目标页面：合同打印：多参数传递....."+JSON.stringify(this.$store.state.urlParam.queryParam));
+
     },
     
     methods: {

@@ -46,7 +46,7 @@
 
               { label: '担保合同编号', prop: 'subcontractNum', isSort: true },
               { label: '担保人名称', prop: 'partyName', isSort: true },
-              { label: '币种', prop: 'currencyCdn', isSort: true },
+              { label: '币种', prop: 'currencyCdn', isSort: true,isFormat:true,enumType:'currencyCd' },
               { label: '担保合同金额', prop: 'subcontractAmt', isSort: true },
               { label: '担保合同类型', prop: 'subcontractTypeName', isSort: true },
               { label: '是否最高额', prop: 'ifTopSubcon', isSort: true },
