@@ -17,8 +17,9 @@
   </div>
 </template>
 <script>
-  // import TableBasicInfo from './TableBasicInfo.vue'
-  // import TableSubjectInfo from './TableSubjectInfo.vue'
+ // import TableBasicInfo from './TableBasicInfo.vue'
+ // import TableSubjectInfo from './TableSubjectInfo.vue'
+
 
   export default {
     data() {

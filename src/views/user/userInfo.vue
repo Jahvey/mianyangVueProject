@@ -12,7 +12,17 @@ import { getUserList, deleteUser } from '@/api/user'
 export default {
   data() {
     return {
-      entity: {},
+      entity: {
+        data:[
+          {
+            username:'123',
+            personName:'wh',
+          }
+
+        ]
+
+        
+      },
       pageDef: {
         // 查询条件定义
         queryDef: {

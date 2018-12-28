@@ -15,7 +15,7 @@
 
 <script>
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import { getPrintCons } from '@/api/contract'// 正常往后台发送异步请求的类
+  import { getPrintCons } from '@/api/csm'// 正常往后台发送异步请求的类
 
 
 
@@ -31,7 +31,7 @@
             columnNum: 2, // 一行几列
             queryCols: [
               { label: '合同编号', inputType: 'input', modelName: 'contractNum' },
-              { label: '合同类型', inputType: 'input', modelName: 'conTypeCn' },
+              { label: '合同类型', inputType: 'select', modelName: 'conTypeCn',enumType:'conTypeCn' },
               
             ]
           },
@@ -43,8 +43,8 @@
              
               { label: '合同编号', prop: 'contractNum', isSort: true },
               { label: '借款/担保人', prop: 'partyName', isSort: true },
-              { label: '合同类型', prop: 'conTypeCn', isSort: true },
-              { label: '业务品种', prop: 'productType', isSort: true },
+              { label: '合同类型', prop: 'conTypeCn', isSort: true ,isFormat:true,enumType:'conTypeCn'},
+              { label: '业务品种', prop: 'productType', isSort: true ,isFormat:true,enumType:'productType'},
               { label: '合同金额', prop: 'contractAmt', isSort: true },
               { label: '展期协议号', prop: 'periodNum', isSort: true },
               { label: '合同起期', prop: 'beginDate', isSort: true },

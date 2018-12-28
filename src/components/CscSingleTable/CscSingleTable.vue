@@ -6,6 +6,7 @@
       <el-form ref="form" :model="form" :rules="pageDef.queryRules" label-width="120px" label-position="right">
         <template v-for="(queryCol,idx) in pageDef.queryDef.queryCols">
           <el-col :span="24/pageDef.queryDef.columnNum">
+
             <template v-if="queryCol.inputType==='select'">
 
               <el-form-item :label="queryCol.label">
@@ -50,6 +51,7 @@
                 <el-input v-model.number="form[queryCol.modelName]"></el-input>
               </el-form-item>
             </template>
+
             <template v-else-if="queryCol.inputType==='slot'" >
               <slot :name="queryCol.modelName" ></slot>
             </template>
@@ -86,6 +88,7 @@
               <!--@row-click="rowChange" @select="rowChange" @row-dblclick="rowDbclick">-->
     <el-table  :data="entity.data" highlight-current-row v-loading="listLoading" @selection-change="selectionChange" @cell-click=""
               @row-click="rowChange" @select="rowChange" @row-dblclick="rowDbclick">
+        <!--设置表格是否点击扩展-->
       <template v-if="pageDef.tabDef.isExpand">
         <el-table-column type="expand">
           <template slot-scope="props">
@@ -100,20 +103,17 @@
           </template>
         </el-table-column>
       </template>
-
-
+        <!--设置表格是否可以全选-->
       <el-table-column v-if="pageDef.tabDef.isSelect" type="selection" width="55" header-align="center" align="center">
       </el-table-column>
-
+        <!--设置显示序号-->
       <el-table-column v-if="pageDef.tabDef.isIndex" label="序号" type="index" width="60" header-align="center"
                        align="center">
         <template slot-scope="scope">
           {{(listQuery.pageNum-1)*listQuery.pageSize+scope.$index+1}}
         </template>
       </el-table-column>
-
-
-
+        <!--遍历表头 start-->
       <template v-for="tabCol in pageDef.tabDef.tabCols">
 
         <!-- 是否排序 -->
@@ -167,6 +167,7 @@
             </template>
           </el-table-column>
         </template>
+
         <template v-else-if="tabCol.isCustom">
           <el-table-column :label="tabCol.label" :prop="tabCol.prop" :sortable="tabCol.isSort" :formatter="customFormat"
                            :width="tabCol.width" header-align="center" align="center" :show-overflow-tooltip="tabCol.isOverflow">
@@ -177,15 +178,14 @@
                            </template>
           </el-table-column>
         </template>
+        <!--一般默认的表头样式-->
         <template v-else>
           <el-table-column :label="tabCol.label"  :prop="tabCol.prop" :sortable="tabCol.isSort" header-align="center"
                            align="center" :width="tabCol.width" :show-overflow-tooltip="tabCol.isOverflow">
           </el-table-column>
         </template>
       </template>
-
-
-
+        <!--遍历表头 end-->
       <el-table-column label="操作" width="180" header-align="center" align="center" fixed="right"
         v-if="(pageDef.rowButtons == undefined || pageDef.rowButtons.length > 0) && !disableRowButtons">
         <template scope="scope">
@@ -194,7 +194,7 @@
             <el-button type="primary" size="mini" @click="doEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button type="danger" size="mini" @click="doDelete(scope.$index, scope.row)">删除</el-button>
           </template>
-
+          <!--操作按钮自定义-->
           <template v-else>
             <el-button v-for="rowButton in pageDef.rowButtons"
                        @click="doRowClick(rowButton.funcName, scope.$index, scope.row)"

@@ -4,9 +4,9 @@
   :entity="entity"
   @view="view"      
 
-@pageQuery="doPageQuery" 
-@doEdit="doEdit"
-@doDelete="doDelete"
+  @pageQuery="doPageQuery" 
+  @doEdit="doEdit"
+  @doDelete="doDelete"
   :disableQueryForm="disableQueryForm" 
   :disableRowButtons="disableRowButtons"  
   >
@@ -39,11 +39,11 @@
             // 表格字段定义
             tabCols: [
 
-              { label: '抵质押类型', prop: 'subconractType', isSort: true },
+              { label: '抵质押类型', prop: 'subconractType', isSort: true,isFormat:true,enumType:'collType' },
               { label: '抵质押人名称', prop: 'partyName', isSort: true },
               { label: '抵质押物编号', prop: 'suretyNo', isSort: true },
-              { label: '抵质押物类型', prop: 'sortType', isSort: true },
-              { label: '币种', prop: 'currencyCdn', isSort: true },
+              { label: '抵质押物类型', prop: 'sortType', isSort: true,isFormat:true,enumType:'sortType' },
+              { label: '币种', prop: 'currencyCdn', isSort: true,isFormat:true,enumType:'currencyCd' },
               { label: '评估价值（元）', prop: 'assessValue', isSort: true },
               { label: '权利价值（元）', prop: 'mortgageValue', isSort: true },
               { label: '已担保金额（元）', prop: 'usedAmt', isSort: true },

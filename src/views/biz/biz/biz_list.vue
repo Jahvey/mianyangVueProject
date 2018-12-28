@@ -3,12 +3,15 @@
   :pageDef="pageDef" 
   :entity="entity"
   @view="view"     
-  @create="create" 
+  @bizApply="bizApply" 
+  @newly="newly"
   @disab="disab" 
   @update="update" 
 @pageQuery="doPageQuery" 
 @doEdit="doEdit"
 @doDelete="doDelete"
+  :disableQueryForm="disableQueryForm" 
+  :disableRowButtons="disableRowButtons"  
 
   >
   </csc-single-table>
@@ -16,17 +19,16 @@
 
 <script>
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import { getApproveCons } from '@/api/csm'// 正常往后台发送异步请求的类
+  import { getBizList } from '@/api/csm'// 正常往后台发送异步请求的类
 
-
-  // 合同模块也是需要引入用户的，以后需要根据用户查询对应的合同（高级查询）
 
   export default {
     data() {
       return {
-        //conStatus:'03',
+        disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮
+        disableRowButtons: true, // 隐藏tab表单按钮
         listLoading: false,
-        entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
+        entity: {
 
         },
         pageDef: {
@@ -34,9 +36,6 @@
           queryDef: {
             columnNum: 2, // 一行几列
             queryCols: [
-              { label: '主合同编号', inputType: 'input', modelName: 'contractNum' },
-             // { label: '合同状态', inputType: 'hidden',modelName:'conStatus',inputValue:'03'},
-
             ]
           },
           tabDef: {
@@ -45,26 +44,32 @@
             isIndex: true, // 是否有序号
             // 表格字段定义
             tabCols: [
-               //合同性质 dictTypeId="XD_BIZ0003"
-              
-              { label: '合同性质', prop: 'creditMode', isSort: true,isFormat:true,enumType:'creditMode' },
-              { label: '合同编号', prop: 'contractNum', isSort: true,isLink: true,url:'/crt/con_info/con_info_ht_xw',param:["contractNum","conStatus"]  },
-              { label: '合同品种', prop: 'productType', isSort: true,isFormat:true,enumType:'productType' },
-              { label: '币种', prop: 'currencyCd', isSort: true ,isFormat:true,enumType:'currencyCd'},
-              { label: '合同金额', prop: 'contractAmt', isSort: true },
-
-              { label: '可用金额(元)', prop: 'conBalance', isSort: true },
-              { label: '合同起期', prop: 'beginDate', isSort: true },
-              { label: '合同止期', prop: 'endDate', isSort: true }
+            
+              { label: '客户编号', prop: 'partyNum', isSort: true},
+              { label: '客户名称', prop: 'partyName', isSort: true},
+              { label: '业务编号', prop: 'bizNum', isSort: true},
+              { label: '业务产品', prop: 'productType', isSort: true,isFormat:true,enumType:'productType'},
+              { label: '业务类型', prop: 'bizHappenType', isSort: true,isFormat:true,enumType:'bizHappenType'},//XD_SXYW0001
+              { label: '业务性质', prop: 'creditMode', isSort: true,isFormat:true,enumType:'creditMode' },//XD_BIZ0003
+              { label: '银团', prop: 'isBankTeamLoan', isSort: true,isFormat:true,enumType:'isBankTeamLoan' },//XD_0002
+              { label: '合同起期', prop: 'validDate', isSort: true },
+              { label: '合同止期', prop: 'endDate', isSort: true },
+              { label: '业务金额（元）', prop: 'rmbAmt', isSort: true },
+              { label: '可用金额（元）', prop: 'boUse', isSort: true },
+              { label: '经办人', prop: 'userNum', isSort: true },
+              { label: '经办机构', prop: 'orgNum', isSort: true },
 
 
             ]
           },
           buttons: [
+            { label: '业务申请', funcName: 'bizApply' },
             { label: '查看', funcName: 'view' },
-            { label: '合同创建', funcName: 'create' },
+            
+            { label: '失效', funcName: 'disab' },
             { label: '调整', funcName: 'update' },
-            { label: '合同失效', funcName: 'disab' },
+            { label: '重算额度', funcName: 'newly' },
+            
             ]
         }
       }
@@ -77,11 +82,10 @@
       doPageQuery(listQuery) {
 
         //console.log('listQuery ....' + listQuery)
-        getApproveCons(listQuery).then(response => {
+        getBizList(listQuery).then(response => {
           this.entity = response.data
           this.$store.dispatch('setListLoading', false)
-          // console.log('response.data.entity...')
-          //  console.log( response.data.entity)
+
      
         }).catch((error) => {
     
@@ -97,14 +101,17 @@
         console.log('view 合同...')
         // this.$router.push({path: '/contract/contractAdd'})
       },
-      create() { 
-       console.log('create合同...')
+      newly() { 
+       console.log('newly...')
       },
       update() { 
        console.log('update合同...')
       },
       disab() { 
        console.log('disable 合同...')
+      },
+      bizApply() { 
+       console.log('bizApply 合同...')
       },
       doDelete() {
         // deleteContract(row).then(response => {

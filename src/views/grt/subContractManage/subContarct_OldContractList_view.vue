@@ -43,8 +43,8 @@
             tabCols: [
 
               { label: '合同编号', prop: 'contractNum', isSort: true },
-              { label: '币种', prop: 'currencyCd', isSort: true },
-              { label: '业务品种', prop: 'productType', isSort: true },
+              { label: '币种', prop: 'currencyCd', isSort: true,isFormat:true,enumType:'currencyCd' },
+              { label: '业务品种', prop: 'productType', isSort: true ,isFormat:true,enumType:'productType'},
               { label: '合同起期', prop: 'beginDate', isSort: true },
               { label: '合同止期', prop: 'endDate', isSort: true },
               { label: '合同金额', prop: 'contractAmt', isSort: true },

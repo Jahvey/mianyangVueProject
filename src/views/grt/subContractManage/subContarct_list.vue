@@ -15,7 +15,7 @@
 
 <script>
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import { findSubContractList } from '@/api/contract'// 正常往后台发送异步请求的类
+  import { findSubContractList } from '@/api/csm'// 正常往后台发送异步请求的类
 
 
   // 合同模块也是需要引入用户的，以后需要根据用户查询对应的合同（高级查询）
@@ -34,7 +34,7 @@
             queryCols: [
               { label: '担保人名称', inputType: 'input', modelName: 'partyName' },
               { label: '担保合同编号', inputType: 'input', modelName: 'subcontractNum' },
-              { label: '担保合同类型', inputType: 'input', modelName: 'subcontractTypeName' },
+              { label: '担保合同类型', inputType: 'select', modelName: 'subcontractType',enumType:'subcontractType_list' },
 
             ]
           },
@@ -48,7 +48,8 @@
               { label: '担保人名称', prop: 'partyName', isSort: true },
               { label: '币种', prop: 'currencyCdn', isSort: true,isFormat:true,enumType:'currencyCd' },
               { label: '担保合同金额', prop: 'subcontractAmt', isSort: true },
-              { label: '担保合同类型', prop: 'subcontractTypeName', isSort: true },
+              { label: '担保合同类型', prop: 'subcontractType', isSort: true,isFormat: true,
+              enumType:'subcontractType_list'},
               { label: '是否最高额', prop: 'ifTopSubcon', isSort: true },
               { label: '担保合同起期', prop: 'beginDate', isSort: true },
               { label: '担保合同止期', prop: 'endDate', isSort: true },
