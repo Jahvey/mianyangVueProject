@@ -6,7 +6,6 @@
       <el-form ref="form" :model="form" :rules="pageDef.queryRules" label-width="120px" label-position="right">
         <template v-for="(queryCol,idx) in pageDef.queryDef.queryCols">
           <el-col :span="24/pageDef.queryDef.columnNum">
-
             <template v-if="queryCol.inputType==='select'">
 
               <el-form-item :label="queryCol.label">
@@ -51,7 +50,6 @@
                 <el-input v-model.number="form[queryCol.modelName]"></el-input>
               </el-form-item>
             </template>
-
             <template v-else-if="queryCol.inputType==='slot'" >
               <slot :name="queryCol.modelName" ></slot>
             </template>
@@ -167,7 +165,6 @@
             </template>
           </el-table-column>
         </template>
-
         <template v-else-if="tabCol.isCustom">
           <el-table-column :label="tabCol.label" :prop="tabCol.prop" :sortable="tabCol.isSort" :formatter="customFormat"
                            :width="tabCol.width" header-align="center" align="center" :show-overflow-tooltip="tabCol.isOverflow">

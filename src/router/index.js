@@ -137,7 +137,6 @@ export const constantRouterMap = [
       meta: { title: '用户测试列表修改', icon: 'manage' }
     }]
   },
-  
   {
     path: '/securityManagement',
     component: securityManagement,
@@ -173,8 +172,71 @@ export const constantRouterMap = [
       },
 	  ]
   },
-
-
+  {
+    path: '/crt',
+    component: Layout,
+    // redirect: '/contract/info',    //重定向需要更改,info改成什么？
+    name: '合同管理',
+    meta: { title: '合同管理', icon: 'organization' },
+    roles: ['admin'], // 这里需要更改
+    children: [
+      {
+        path: 'con_pub/con_apv_list',
+        name: '贷款合同',
+        component: _import('crt/con_pub/con_apv_list'),
+        meta: { title: '贷款合同', icon: 'manage' }
+      },
+      {
+        path: 'con_pub/con_apv_list2',
+        name: '内部银团合同',
+        component: _import('crt/con_pub/con_apv_list2'),
+        meta: { title: '内部银团合同', icon: 'manage' }
+      },
+      {
+        path: 'con_info/con_info_ht_xw',
+        name: '主合同基本信息',
+        component: _import('crt/con_info/con_info_ht_xw'),
+        meta: { title: '主合同基本信息', icon: 'manage' }
+      },
+      {
+        path: 'con_info/con_detail_ht_xw_uncycle',
+        name: '主合同明细信息',
+        component: _import('crt/con_info/con_detail_ht_xw_uncycle'),
+        meta: { title: '主合同明细信息', icon: 'manage' }
+      },
+      {
+        path: 'con_grt/con_dy_list',
+        name: '从合同之抵押合同',
+        component: _import('crt/con_grt/con_dy_list'),
+        meta: { title: '从合同之抵押合同', icon: 'manage' }
+      },
+      {
+        path: 'con_grt/con_zy_list',
+        name: '从合同之质押合同',
+        component: _import('crt/con_grt/con_zy_list'),
+        meta: { title: '从合同之质押合同', icon: 'manage' }
+      },
+      {
+        path: 'con_grt/con_bzr_list',
+        name: '从合同之保证合同',
+        component: _import('crt/con_grt/con_bzr_list'),
+        meta: { title: '从合同之保证合同', icon: 'manage' }
+      },
+      {
+        path: 'con_grt/con_bzj_list',
+        name: '从合同之关联保证金',
+        component: _import('crt/con_grt/con_bzj_list'),
+        meta: { title: '关联保证金', icon: 'manage' }
+      },
+      {
+        path: 'accountInfo/account_list',
+        name: '账户信息',
+        component: _import('crt/accountInfo/account_list'),
+        meta: { title: '账户信息', icon: 'manage' }
+      }
+    ]
+  },
+  
   {//by wanghao
     path: '/csm', // 主路径需要更改
     component: Layout,
@@ -388,74 +450,7 @@ export const constantRouterMap = [
 
     ]
   },
-
-
-  {
-    path: '/crt',
-    component: Layout,
-    // redirect: '/contract/info',    //重定向需要更改,info改成什么？
-    name: '合同管理',
-    meta: { title: '合同管理', icon: 'organization' },
-    roles: ['admin'], // 这里需要更改
-    children: [
-      {
-        path: 'con_pub/con_apv_list',
-        name: '贷款合同',
-        component: _import('crt/con_pub/con_apv_list'),
-        meta: { title: '贷款合同', icon: 'manage' }
-      },
-      {
-        path: 'con_pub/con_apv_list2',
-        name: '内部银团合同',
-        component: _import('crt/con_pub/con_apv_list2'),
-        meta: { title: '内部银团合同', icon: 'manage' }
-      },
-      {
-        path: 'con_info/con_info_ht_xw',
-        name: '主合同基本信息',
-        component: _import('crt/con_info/con_info_ht_xw'),
-        meta: { title: '主合同基本信息', icon: 'manage' }
-      },
-      {
-        path: 'con_info/con_detail_ht_xw_uncycle',
-        name: '主合同明细信息',
-        component: _import('crt/con_info/con_detail_ht_xw_uncycle'),
-        meta: { title: '主合同明细信息', icon: 'manage' }
-      },
-      {
-        path: 'con_grt/con_dy_list',
-        name: '从合同之抵押合同',
-        component: _import('crt/con_grt/con_dy_list'),
-        meta: { title: '从合同之抵押合同', icon: 'manage' }
-      },
-      {
-        path: 'con_grt/con_zy_list',
-        name: '从合同之质押合同',
-        component: _import('crt/con_grt/con_zy_list'),
-        meta: { title: '从合同之质押合同', icon: 'manage' }
-      },
-      {
-        path: 'con_grt/con_bzr_list',
-        name: '从合同之保证合同',
-        component: _import('crt/con_grt/con_bzr_list'),
-        meta: { title: '从合同之保证合同', icon: 'manage' }
-      },
-      {
-        path: 'con_grt/con_bzj_list',
-        name: '从合同之关联保证金',
-        component: _import('crt/con_grt/con_bzj_list'),
-        meta: { title: '关联保证金', icon: 'manage' }
-      },
-      {
-        path: 'accountInfo/account_list',
-        name: '账户信息',
-        component: _import('crt/accountInfo/account_list'),
-        meta: { title: '账户信息', icon: 'manage' }
-      }
-    ]
-  },
   { path: '*', redirect: '/404', hidden: true },
-
 ]
 export default new Router({
   // mode: 'history', //后端支持可开 注意: 这个功能只在 HTML5 history 模式下可用。

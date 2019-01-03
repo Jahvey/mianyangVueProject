@@ -22,10 +22,8 @@ import { addRoutes } from '@/router/dynamicRouter'
 
 // import Mock from './mock'
 // Mock.bootstrap();
-Vue.prototype.CommonUtils = commonUtil
-Vue.use(commonUtil)
-commonUtil.dateformat()
 
+commonUtil.dateformat()
 
 window.$script = require('scriptjs')
 

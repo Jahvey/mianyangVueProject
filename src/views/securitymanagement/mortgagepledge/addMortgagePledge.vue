@@ -1,33 +1,30 @@
 <template>
     <div class="app-container">
         <el-row :gutter="20" type="flex" justify="center">
-            <el-form ref="mpCustomerBasicInfoValidate" :model="mpCustomerBasicInfo" :rules="rulesCustomerBasicInfo" label-width="120px" label-position="right">
+            <el-form ref="mpCustomerBasicInfoValidate" :model="grtCollateralInfo" :rules="rulesCustomerBasicInfo" label-width="120px" label-position="right">
               <el-col :span="24">
-                <el-form-item  label="抵质押人类型" prop="mpType">
-                  <el-radio  v-model="mpCustomerBasicInfo.mpType" label="法人客户">法人客户</el-radio>
-                  <el-radio v-model="mpCustomerBasicInfo.mpType" label="个人客户">个人客户</el-radio>
+                <el-form-item  label="抵质押人类型" >
+                  <el-radio-group v-model="grtCollateralInfo.customerType" @change="switchMyType" prop="mpType" disabled >
+                    <el-radio :label="1">法人客户</el-radio>
+                    <el-radio :label="2">个人客户</el-radio>
+                  </el-radio-group>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item label="客户类型" prop="customerType">
-                  <el-select :disabled="inputComponentDisable" v-model="mpCustomerBasicInfo.customerType" placeholder="请选择">
-                    <el-option
-                      v-for="item in customerTypeOption"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                <el-form-item label="客户类型" prop="partyTypeCd">
+                  <el-select :disabled="inputComponentDisable"  v-model="grtCollateralInfo.partyTypeCd" placeholder="请选择" >
+                    <el-option v-for="(value,key) in customerTypeOption" :key="key" :label="value" :value="key"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
                   <el-form-item label="组织机构代码" prop="organizationCode">
-                    <el-input :disabled="inputComponentDisable" v-model="mpCustomerBasicInfo.organizationCode" ></el-input>
+                    <el-input :disabled="inputComponentDisable" v-model="grtCollateralInfo.organizationCode" ></el-input>
                   </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item label="客户编号" prop="customerNumber">
-                  <el-input :disabled="inputComponentDisable" v-model="mpCustomerBasicInfo.customerNumber" ></el-input>
+                <el-form-item label="客户编号" prop="customerNum">
+                  <el-input disabled v-model="grtCollateralInfo.customerNum" ></el-input>
                 </el-form-item>
               </el-col>
               <!--客户名全称开始-->
@@ -35,31 +32,13 @@
                 <el-form-item label="客户名全称" prop="customerFullName">
                   <el-popover
                     placement="top-start"
-                    width="400"
+                    width="900"
                     v-model="customerPopoverIsVisible"
                     trigger="click">
-                    <el-row>
-                      <el-col :span="18">
-                        <el-form-item label="">
-                          <el-input placeholder="请输入关键字" ></el-input>
-                        </el-form-item>
-                      </el-col>
-                      <el-col :span="5" :offset="1">
-                        <el-button size="medium" type="primary" @click="doCustomerSearch">搜索</el-button>
-                      </el-col>
-                    </el-row>
-                    <el-table :data="gridData" @row-click="chooseSelect">
-                      <el-table-column width="150" property="date" label="日期"></el-table-column>
-                      <el-table-column width="100" property="name" label="姓名"></el-table-column>
-                      <el-table-column width="300" property="address" label="地址"></el-table-column>
-                    </el-table>
-                    <el-row type="flex" justify="center">
-                      <el-button-group>
-                        <el-button type="primary" icon="el-icon-arrow-left" size="mini">上一页</el-button>
-                        <el-button type="primary" size="mini">下一页<i class="el-icon-arrow-right el-icon--right"></i></el-button>
-                      </el-button-group>
-                    </el-row>
-                    <el-input disabled="true" v-model="mpCustomerBasicInfo.customerFullName" slot="reference" @click="customerPopoverIsVisible = !customerPopoverIsVisible"></el-input>
+                    <!--法人客户和个人客户查询界面不一样，所有这里用动态组件-->
+                    <compoment v-bind:is="currentCustomerView" @customerInfo="customerInfo">
+                    </compoment>
+                    <el-input disabled="true" v-model="grtCollateralInfo.customerFullName" slot="reference" ></el-input>
                   </el-popover>
                 </el-form-item>
               </el-col>
@@ -79,27 +58,22 @@
         width="50%"
         :before-close="handleGoodsBasicInfoClose">
         <el-row :gutter="20">
-            <el-form ref="mpGoodsBasicInfoValidate" :model="mpGoodsBasicInfo" :rules="rulesMpGoodsBasicInfo" label-width="120px" label-position="right">
+            <el-form ref="mpGoodsBasicInfoValidate" :model="grtCollateralInfo" :rules="rulesMpGoodsBasicInfo" label-width="120px" label-position="right">
               <el-col :span="24">
                 <el-form-item label="抵质押人" >
-                  <el-input v-model="mpCustomerBasicInfo.customerFullName" disabled="true"></el-input>
+                  <el-input v-model="grtCollateralInfo.customerFullName" disabled="true"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item label="抵质押品类别" prop="mpGoodsType">
-                  <el-select v-model="mpGoodsBasicInfo.mpGoodsType" placeholder="请选择">
-                    <el-option
-                      v-for="item in mpGoodsTypeOption"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                <el-form-item label="抵质押品类别" prop="collateralTypeCd">
+                  <el-select v-model="grtCollateralInfo.collateralTypeCd" placeholder="请选择">
+                    <el-option v-for="(value,key) in CollateralStatusCd" :key="key" :label="value" :value="key"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
-                <el-form-item label="抵质押品名称" prop="mpGoodsName">
-                  <el-input v-model="mpGoodsBasicInfo.mpGoodsName" ></el-input>
+                <el-form-item label="抵质押品名称" prop="collateralName">
+                  <el-input v-model="grtCollateralInfo.collateralName" ></el-input>
                 </el-form-item>
               </el-col>
             </el-form>
@@ -155,7 +129,7 @@
           <el-col :span="21">
             <!--动态组件-->
             <keep-alive>
-              <compoment v-bind:is="currentView" v-bind:mpBasicInfo="{mpCustomerBasicInfo:mpCustomerBasicInfo,mpGoodsBasicInfo:mpGoodsBasicInfo}">
+              <compoment v-bind:is="currentView" v-bind:grtCollateralInfo="grtCollateralInfo">
 <!--                <summaryInfo/>
                 <insuranceInfo/>
                 <checkInInfo/>
@@ -179,7 +153,7 @@
 
   import salaryAccount from './mpDetailForSalaryAccount'//工资账户
   import landManageRight from './mpDetailForLandManageRight'//土地承包经营权
-  import otherMp from './mpDetailForOtherMp' //其他质押
+  import otherMp from './mpDetailForOtherMp' //其他
   import summaryInfo from './mpSummaryInfo'//概况信息
   import insuranceInfo from './mpInsuranceInfo'//保险信息
   import checkInInfo from './mpCheckInInfo'//登记信息
@@ -206,6 +180,10 @@
   import motorVehicle from './mpDetailForMotorVehicle'//机动车
   import agriculturalImplements from './mpDetailForAgriculturalImplements'//农机具
   import errorPage from './errorPage'//错误页面信息
+  /*查询客户页面*/personCustomerList
+  import personCustomerList from './personCustomerList'//个人客户查询页面
+  import enums from "@/utils/enums"
+  import { saveBasicCollateral} from '@/api/securitymanagement'
 
   export default {
         name: "add-mortgage-pledge",
@@ -238,168 +216,60 @@
           trafficTransportTool,
           motorVehicle,
           agriculturalImplements,
+          personCustomerList,
           errorPage,
         },
       data(){
           return{
+            currentCustomerView:"personCustomerList",//查询客户页面
             currentView:"summaryInfo",//当前页面
+            grtCollateralInfo:{
+              guarantyId:"",//抵质押物id(返回值)
+              customerType:2,//抵质押人类型
+              partyTypeCd:"",//客户类型
+              customerNum:"",//客户编号
+              collateralTypeCd:"",//抵质押品类别
+              collateralName:"",//抵质押品名称
+              collateralNum:"",//抵质押物编号
+              timeMark:"",//建档日期(呈报日期)D
+              customerFullName:'',//客户名全称
+              organizationCode:'',//组织机构代码
+              dataCreatUserNum:"200555",//抵质押物创建人用户编号
+              dataCreatorOrgCd:"0700",//抵质押物创建人所属机构
+              lastUpdateUserNum:"200555",//最后维护人用户编号
+              lastUpdateOrgCd:"0700",//最后维护人所属机构
+            },
             mpCustomerBasicInfo:{ //抵质押品客户信息
-              mpType:'法人客户',//抵质押人类型
+              mpType:2,//抵质押人类型
               customerType:'',//客户类型
               organizationCode:'',//组织机构代码
               customerNumber:'',//客户编号
               customerFullName:'',//客户名全称
+
+              collateralTypeCd:'',//抵质押品类别
+              mpGoodsName:'',//抵质押品名称
+              mpGoodsNumber:'GN003',//抵质押物编号
+              mpDate:"2018-09-12 20:31",//建档日期
             },
             mpGoodsBasicInfo:{
-              mpGoodsType:'',//抵质押品类别
+              collateralTypeCd:'',//抵质押品类别
               mpGoodsName:'',//抵质押品名称
               mpGoodsNumber:'GN003',//抵质押物编号
               mpDate:"2018-09-12 20:31",//建档日期
             },//抵质押品类型和名称基本信息
             customerPopoverIsVisible:false,//是否显示popover
-            gridData: [
-                {
-                date: '2016-05-02',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-              },
-                {
-                date: '2016-05-04',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-              },
-                {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-              },
-                {
-                date: '2016-05-01',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-              },
-                {
-                date: '2016-05-03',
-                name: '王小虎',
-                address: '上海市普陀区金沙江路 1518 弄'
-              }
-            ],//表格数据
-            customerTypeOption:[
-              {
-                value: '企业',
-                label: '企业'
-              }, {
-                value: '个人',
-                label: '个人'
-              },
-            ],//客户类型选项
-            mpGoodsTypeOption:[//抵质押品类型选项卡
-              {
-                value: '房地产',
-                label: '房地产'
-              },
-              {
-                value: '在建工程',
-                label: '在建工程'
-              },
-              {
-                value: '土地承包经营权',
-                label: '土地承包经营权'
-              },
-              {
-                value: '土地使用权',
-                label: '土地使用权'
-              },
-              {
-                value: '船舶',
-                label: '船舶'
-              },
-              {
-                value: '林权',
-                label: '林权'
-              },
-              {
-                value: '存货',
-                label: '存货'
-              },
-              {
-                value: '知识产权',
-                label: '知识产权'
-              },
-              {
-                value: '应收账款',
-                label: '应收账款'
-              },
-              {
-                value: '股权',
-                label: '股权'
-              },
-              {
-                value: '基金',
-                label: '基金'
-              },
-              {
-                value: '存单',
-                label: '存单'
-              },
-              {
-                value: '工资账户',
-                label: '工资账户'
-              },
-              {
-                value: '其他质押',
-                label: '其他质押'
-              },
-              {
-                value: '债券',
-                label: '债券'
-              },
-              {
-                value: '收费权',
-                label: '收费权'
-              },
-              {
-                value: '票据',
-                label: '票据'
-              },
-              {
-                value: '仓单',
-                label: '仓单'
-              },
-              {
-                value: '保单',
-                label: '保单'
-              },
-              {
-                value: '机器设备',
-                label: '机器设备'
-              },
-              {
-                value: '交通运输工具',
-                label: '交通运输工具'
-              },
-              {
-                value: '机动车',
-                label: '机动车'
-              },
-              {
-                value: '农机具',
-                label: '农机具'
-              },
-              {
-                value: '其他',
-                label: '其他'
-              },
-            ],//抵制押品类型
+            customerTypeOption:enums.PersonalTypePCode,//客户类型选项
+            CollateralStatusCd:enums.CollateralStatusCd,//抵制押品类型
+            queryCustomerParameter:{},//查询客户参数信息
             rulesCustomerBasicInfo:{
-              mpType: [
+              customerType: [
                 {
                   required: true,
                   message: "请选择抵质押人类型",
                   trigger: 'change'
                 }
               ],
-              customerType: [
+              partyTypeCd: [
                 {
                   required: true,
                   message: "请选择客户类型",
@@ -417,7 +287,7 @@
                   trigger: 'blur'
                 }
               ],
-              customerNumber: [
+              customerNum: [
                 {
                   required: false,
                   message: "客户编号",
@@ -441,14 +311,14 @@
               ],
             },//客户基本信息校验
             rulesMpGoodsBasicInfo:{
-              mpGoodsType: [
+              collateralTypeCd: [
                 {
                   required: true,
                   message: "请选择抵质押品类型",
                   trigger: 'blur'
                 }
               ],
-              mpGoodsName: [
+              collateralName: [
                 {
                   required: true,
                   message: "请输入抵质押品名称",
@@ -466,10 +336,11 @@
             buttonCommitState:"确定",
           }
       },
+
       computed:{
           transferData:function () {
             var transferData={};
-            transferData.mpGoodsType = this.mpGoodsBasicInfo.mpGoodsType;
+            transferData.collateralTypeCd = this.grtCollateralInfo.collateralTypeCd;
             return transferData;
           },
       },
@@ -478,50 +349,52 @@
            if(index == '1'){
              this.currentView = "summaryInfo";
            } else if(index=="2"){
-             this.currentView = "errorPage";
-             if(obj.mpGoodsType =='工资账户'){
+             this.currentView = "depositReceipt";
+             return;
+
+             if(obj.collateralTypeCd =='工资账户'){
                this.currentView = "salaryAccount";
-             } else if(obj.mpGoodsType =='其他质押'){
+             } else if(obj.collateralTypeCd =='其他'){
                this.currentView = "otherMp";
-             } else if(obj.mpGoodsType =='土地承包经营权'){
+             } else if(obj.collateralTypeCd =='土地承包经营权'){
                this.currentView = "landManageRight";
-             }else if(obj.mpGoodsType =='仓单'){
+             }else if(obj.collateralTypeCd =='仓单'){
                this.currentView = "wareHouseReceipt";
-             } else if(obj.mpGoodsType =='存货'){
+             } else if(obj.collateralTypeCd =='存货'){
                this.currentView = "stock";
-             } else if(obj.mpGoodsType =='收费权'){
+             } else if(obj.collateralTypeCd =='收费权'){
                this.currentView = "chargeRight";
-             }else if(obj.mpGoodsType =='存单'){
+             }else if(obj.collateralTypeCd =='12'){//'12': '存单',
                this.currentView = "depositReceipt";
-             } else if(obj.mpGoodsType =='债券'){
+             } else if(obj.collateralTypeCd =='债券'){
                this.currentView = "bond";
-             } else if(obj.mpGoodsType =='在建工程'){
+             } else if(obj.collateralTypeCd =='在建工程'){
                this.currentView = "buildingProject";
-             }  else if(obj.mpGoodsType =='土地使用权'){
+             }  else if(obj.collateralTypeCd =='土地使用权'){
                this.currentView = "landUseRight";
-             } else if(obj.mpGoodsType =='船舶'){
+             } else if(obj.collateralTypeCd =='船舶'){
                this.currentView = "ship";
-             } else if(obj.mpGoodsType =='林权'){
+             } else if(obj.collateralTypeCd =='林权'){
                this.currentView = "forestRight";
-             } else if(obj.mpGoodsType =='知识产权'){
+             } else if(obj.collateralTypeCd =='知识产权'){
                this.currentView = "intellectualPropertyRight";
-             } else if(obj.mpGoodsType =='应收账款'){
+             } else if(obj.collateralTypeCd =='应收账款'){
                this.currentView = "fundsOnAccount";
-             } else if(obj.mpGoodsType =='股权'){
+             } else if(obj.collateralTypeCd =='股权'){
                this.currentView = "stockRight";
-             } else if(obj.mpGoodsType =='基金'){
+             } else if(obj.collateralTypeCd =='基金'){
                this.currentView = "fund";
-             } else if(obj.mpGoodsType =='票据'){
+             } else if(obj.collateralTypeCd =='票据'){
                this.currentView = "bill";
-             } else if(obj.mpGoodsType =='保单'){
+             } else if(obj.collateralTypeCd =='保单'){
                this.currentView = "warranty";
-             }else if(obj.mpGoodsType =='机器设备'){
+             }else if(obj.collateralTypeCd =='机器设备'){
                this.currentView = "machineEquipment";
-             }else if(obj.mpGoodsType =='交通运输工具'){
+             }else if(obj.collateralTypeCd =='交通运输工具'){
                this.currentView = "trafficTransportTool";
-             } else if(obj.mpGoodsType =='机动车'){
+             } else if(obj.collateralTypeCd =='机动车'){
                this.currentView = "motorVehicle";
-             } else if(obj.mpGoodsType =='农机具'){
+             } else if(obj.collateralTypeCd =='农机具'){
                this.currentView = "agriculturalImplements";
              }else{
                this.currentView = "errorPage";
@@ -553,26 +426,39 @@
          doConfirmMpGoodsBasicInfo:function () { //提交抵质押品信息校验
            this.$refs["mpGoodsBasicInfoValidate"].validate((valid) => {
              if(valid){
-               //访问服务器，返回结果，做判断，这里先直接弹出提示
-               this.$confirm('是否继续填写抵质押品信息？', '数据已提交！', {
-                 confirmButtonText: '确定',
-                 cancelButtonText: '取消',
-                 type: 'warning'
-               }).then(() => {
-                 //确定后，清空弹出框数据，客户基本信息内容不可编辑，弹出编辑详细信息dialog
-                 this.mpGoodsDetailInfoDialogVisible = true;
-               }).catch(() => {
-                 //取消后，清空弹出框数据，客户基本信息内容不可编辑
-                 this.$message({
-                   message: '你可在抵质押品维护继续编辑详情信息',
-                   type: 'success'
-                 });
+               saveBasicCollateral(this.grtCollateralInfo).then(response =>{
+                 if(response.data.flag=='true'){
+                   console.log(response.data);
+                   this.grtCollateralInfo.collateralNum = response.data.grtCollateral.collateralNum;
+                   this.grtCollateralInfo.guarantyId = response.data.grtCollateral.guarantyId;
+                   console.log(this.grtCollateralInfo);
+                   this.grtCollateralInfo.timeMark = response.data.grtCollateral.timeMark;
+                   this.$confirm('是否继续填写抵质押品信息？', '数据已提交！', {
+                     confirmButtonText: '确定',
+                     cancelButtonText: '取消',
+                     type: 'warning'
+                   }).then(() => {
+                     //确定后，清空弹出框数据，客户基本信息内容不可编辑，弹出编辑详细信息dialog
+                     this.mpGoodsDetailInfoDialogVisible = true;
+                   }).catch(() => {
+                     //取消后，清空弹出框数据，客户基本信息内容不可编辑
+                     this.$message({
+                       message: '你可在抵质押品维护继续编辑详情信息',
+                       type: 'success'
+                     });
+                   });
+                   this.mpGoodsBasicInfoDialogVisible= false;
+                   //先暂时不重置表单，会导致详细页面拿不到数据
+                   //this.$refs["mpGoodsBasicInfoValidate"].resetFields();
+                   this.buttonCommitState = "已提交";
+                   this.inputComponentDisable = true;
+                 } else{
+                   this.$message({
+                     message: '提交失败'+JSON.stringify(response.data),
+                     type: 'error'
+                   });
+                 }
                });
-               this.mpGoodsBasicInfoDialogVisible= false;
-               //先暂时不重置表单，会导致详细页面拿不到数据
-               //this.$refs["mpGoodsBasicInfoValidate"].resetFields();
-               this.buttonCommitState = "已提交";
-               this.inputComponentDisable = true;
              } else{
                this.$message({
                  message: '请将信息填写完整',
@@ -589,11 +475,6 @@
          doCustomerSearch:function(){
            //访问服务器数据更新表格
          },
-         chooseSelect:function (row) {
-           //alert(JSON.stringify(row));
-           this.mpCustomerBasicInfo.customerFullName = row.name;
-           this.customerPopoverIsVisible = false;
-         },
          handleGoodsBasicInfoClose:function (done) {
            this.$confirm('确认关闭？')
              .then(_ => {
@@ -609,6 +490,19 @@
              })
              .catch(_ => {});
          },
+         switchMyType:function (data) {
+           if(data==1){ //法人客户
+             this.customerTypeOption = enums.AABBCode;
+           } else{  //个人客户
+              this.customerTypeOption = enums.PersonalTypePCode;
+              this.currentCustomerView = "personCustomerList";
+           }
+         },
+         customerInfo:function (info) {
+           this.grtCollateralInfo.customerFullName = info.partyName;
+           this.grtCollateralInfo.customerNum =info.partyNum;
+           this.customerPopoverIsVisible = false;
+         },
        },
     }
 </script>
@@ -621,5 +515,10 @@
   .el-menu-item{
     height: 40px;
     line-height: 40px;
+  }
+  .div-button-center{
+    width: 100%;
+    height: 100%;
+    text-align: center;
   }
 </style>

@@ -1,17 +1,4 @@
-//添加的全局处理UrlParam动态传参的变量
-const requestUrlParam= 'begin'
-function getRequestUrlParams(requestUrlParam) {
-  
-  alert(requestUrlParam)
-}
 export default  {
-  requestUrlParam,
-
-  // Vue.js的插件应当有一个公开方法 install。这个方法的第一个参数是 Vue 构造器，第二个参数是一个可选的选项对象。
-  install: function (Vue) {
-    Vue.prototype.getRequestUrlParams = (param) => getRequestUrlParams(param)
-  },
-
   isArray: function (o) {
     return Object.prototype.toString.call(o) == '[object Array]';
   },

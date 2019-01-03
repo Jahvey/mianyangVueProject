@@ -1,12 +1,12 @@
 <template>
-  <div class="add-accident-info">
+  <div class="edit-accident-info">
     <el-row>
       <el-form el-form ref="validate" label-width="200px" :model="grtCollateralAccident" label-position="right" :rules="rules" >
         <el-col :span="12">
           <el-form-item label="意外情况类型" prop="accidentTypeCd">
             <el-select v-model="grtCollateralAccident.accidentTypeCd" placeholder="请选择">
-                <el-option v-for="(value,key) in accidentInfoTypeOpt" :key="key" :label="value" :value="key">
-                </el-option>
+              <el-option v-for="(value,key) in accidentInfoTypeOpt" :key="key" :label="value" :value="key">
+              </el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -35,7 +35,6 @@
     <el-row>
       <el-col :span="6" :offset="10">
         <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="comfirm">{{buttonText}}</el-button>
-        <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="doReset">重置</el-button>
       </el-col>
     </el-row>
   </div>
@@ -43,18 +42,15 @@
 
 <script>
   import enums from "@/utils/enums"
-  import { saveGrtCollateralAccident} from '@/api/securitymanagement'
+  import { updateGrtCollateralAccident} from '@/api/securitymanagement'
+  import commonUtil from '@/utils/commonUtil'
     export default {
-      name: "add-accident-info",
+        name: "edit-accident-info",
+      props:{
+        grtCollateralAccident:Object,
+      },
       data(){
           return{
-            grtCollateralAccident:{
-              accidentTypeCd:"",//意外情况类型
-              occurDate:"",//发生日期
-              reason:'',//原因
-              priceLosses:'',//损失价值(元)
-              pricesCompensation:'',//补偿价值(元)
-            },
             rules:{
               accidentTypeCd: [
                 {
@@ -114,9 +110,10 @@
               ],
             },
             accidentInfoTypeOpt:enums.CollateralState,
-            buttonText:"提交",
-            buttonDisable:false,
           }
+      },
+      beforeMount(){
+        this.grtCollateralAccident.occurDate = commonUtil.timeStampToDate(this.grtCollateralAccident.occurDate);
       },
       methods:{
         comfirm:function () {
@@ -124,7 +121,7 @@
             if(valid){
               this.buttonDisable = true;
               this.buttonText = "提交中";
-              saveGrtCollateralAccident(this.grtCollateralRegistration).then(response => {
+              updateGrtCollateralAccident(this.grtCollateralRegistration).then(response => {
                 if(response.data.flag == enums.stateCode.flag.success){//返回数据成功
                   //提示父组件关闭dialog,并且刷新，重置当前表单
                   this.$refs["validate"].resetFields();
@@ -150,21 +147,18 @@
             }
           });
         },
-        doReset:function () {
-          this.$refs["validate"].resetFields();
-        },
       },
     }
 </script>
 
 <style scoped>
-  .add-accident-info{
+  .edit-accident-info{
     width:100%;
     height:100%;
     padding-left: 10px;
     padding-right: 10px;
   }
-  .add-accident-info p{
+  .edit-accident-info p{
     border-bottom: 1px solid #CCCCCC;
     font-size: 18px;
   }

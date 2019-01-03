@@ -1,5 +1,5 @@
 <template>
-  <div class="add-check-in-info">
+  <div class="edit-check-in-info">
     <el-row>
       <el-form el-form ref="validate" label-width="200px" :model="grtCollateralRegistration" label-position="right" :rules="rules" >
         <el-col :span="12">
@@ -31,12 +31,12 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="登记生效日期" prop="registerDate" >
+          <el-form-item label="登记生效日期"  >
             <el-date-picker  :disabled="inputComponentDisable" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="grtCollateralRegistration.registerDate" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="登记到期日期"  prop="registerExpirationDate">
+          <el-form-item label="登记到期日期"  >
             <el-date-picker  :disabled="inputComponentDisable" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="grtCollateralRegistration.registerExpirationDate" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
           </el-form-item>
         </el-col>
@@ -45,7 +45,6 @@
     <el-row>
       <el-col :span="6" :offset="10">
         <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="comfirm">{{buttonText}}</el-button>
-        <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="doReset">重置</el-button>
       </el-col>
     </el-row>
   </div>
@@ -53,92 +52,86 @@
 
 <script>
   import enums from "@/utils/enums"
-  import { saveCollateralRegistration} from '@/api/securitymanagement'
+  import { updateCollateralRegistration} from '@/api/securitymanagement'
+  import commonUtil from '@/utils/commonUtil'
     export default {
-      name: "add-check-in-info",
+        name: "edit-check-in-info",
       props:{
-        grtCollateralInfo:Object,
+        grtCollateralRegistration:Object,
+      },
+      beforeMount(){
+        this.grtCollateralRegistration.registerDate = commonUtil.timeStampToDate(this.grtCollateralRegistration.registerDate);
+        this.grtCollateralRegistration.registerExpirationDate = commonUtil.timeStampToDate(this.grtCollateralRegistration.registerExpirationDate);
       },
       data(){
-          return{
-            grtCollateralRegistration:{
-              guarantyId:this.grtCollateralInfo.guarantyId,//担保id
-              registerNum:'',//登记编号
-              registerOrgTypeCd:'',//登记机构类型
-              registerOrgName: '', //登记机构名称
-              registerDate: '',//登记生效日期
-              registerExpirationDate: '',//登记到期日期
-              registerValue:"",//登记价值(元)
-              /*查找带回*/
-              contractNum:"",//借款合同号
-            },
-            checkInInstitutionTypeOpt:enums.RegisterOrgTypeCode,//登记机构类型选项
-            rules:{
-              registerNum: [
-                {
-                  required: true,
-                  message: "登记编号不能为空",
-                  trigger: 'change'
-                }
-              ],
-              registerOrgTypeCd: [
-                {
-                  required: true,
-                  message: "请选择登记部门类型",
-                  trigger: 'change'
-                }
-              ],
-              registerOrgName: [
-                {
-                  required: true,
-                  message: "请输入登记机构名称",
-                  trigger: 'change'
-                }
-              ],
-              contractNum: [
-                {
-                  required: true,
-                  message: "借款合同号不能为空",
-                  trigger: 'change'
-                }
-              ],
-              registerValue: [
-                {
-                  required: true,
-                  message: "登记价值不能为空",
-                  trigger: 'change'
-                },
-                {
-                  max: 20,
-                  message: '长度不超过 20 个字符',
-                  trigger: 'blur'
-                },
-                {
-                  pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
-                  message: '请输入正确的金额',
-                  trigger: 'blur'
-                }
-              ],
-              registerDate:[
-                {
-                  required: true,
-                  message: "请选择日期",
-                  trigger: 'change',
-                  //type: 'date'
-                },
-              ],
-              registerExpirationDate:[
-                {
-                  required: true,
-                  message: "请选择日期",
-                  trigger: 'change',
-                  //type: 'date'
-                },
-              ],
-            },
-            buttonText:"提交",
-            buttonDisable:false,
-          }
+        return{
+          checkInInstitutionTypeOpt:enums.RegisterOrgTypeCode,//登记机构类型选项
+          rules:{
+            registerNum: [
+              {
+                required: true,
+                message: "登记编号不能为空",
+                trigger: 'change'
+              }
+            ],
+            registerOrgTypeCd: [
+              {
+                required: true,
+                message: "请选择登记部门类型",
+                trigger: 'change'
+              }
+            ],
+            registerOrgName: [
+              {
+                required: true,
+                message: "请输入登记机构名称",
+                trigger: 'change'
+              }
+            ],
+            contractNum: [
+              {
+                required: true,
+                message: "借款合同号不能为空",
+                trigger: 'change'
+              }
+            ],
+            registerValue: [
+              {
+                required: true,
+                message: "登记价值不能为空",
+                trigger: 'change'
+              },
+              {
+                max: 20,
+                message: '长度不超过 20 个字符',
+                trigger: 'blur'
+              },
+              {
+                pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
+                message: '请输入正确的金额',
+                trigger: 'blur'
+              }
+            ],
+            registerDate:[
+              {
+                required: true,
+                message: "请选择日期",
+                trigger: 'change',
+                //type: 'date'
+              },
+            ],
+            registerExpirationDate:[
+              {
+                required: true,
+                message: "请选择日期",
+                trigger: 'change',
+                //type: 'date'
+              },
+            ],
+          },
+          buttonText:"提交",
+          buttonDisable:false,
+        }
       },
       methods:{
         comfirm:function () {
@@ -146,7 +139,7 @@
             if(valid){
               this.buttonDisable = true;
               this.buttonText = "提交中";
-              saveCollateralRegistration(this.grtCollateralRegistration).then(response => {
+              updateCollateralRegistration(this.grtCollateralRegistration).then(response => {
                 if(response.data.flag == enums.stateCode.flag.success){//返回数据成功
                   //提示父组件关闭dialog,并且刷新，重置当前表单
                   this.$refs["validate"].resetFields();
@@ -172,21 +165,18 @@
             }
           });
         },
-        doReset:function () {
-          this.$refs["validate"].resetFields();
-        },
       },
     }
 </script>
 
 <style scoped>
-  .add-check-in-info{
+  .edit-check-in-info{
     width:100%;
     height:100%;
     padding-left: 10px;
     padding-right: 10px;
   }
-  .add-check-in-info p{
+  .edit-check-in-info p{
     border-bottom: 1px solid #CCCCCC;
     font-size: 18px;
   }

@@ -79,7 +79,6 @@
       async getConInfoByContractNum(param) {
         console.log('contractNum:'+param.contractNum+'  '+'conStatus:'+param.conStatus)// 打印一下这里拿到参数没有
         getConInfoByContractNum(param).then(response => {  // { contractNum: contractNum },{ conStatus: conStatus }
-          console.log(response)
           this.form = response.data
           console.log(this.form)
         }).catch((error) => {

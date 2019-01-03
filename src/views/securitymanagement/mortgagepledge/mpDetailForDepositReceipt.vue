@@ -7,89 +7,69 @@
                 <p>价值信息</p>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="币种" prop="customerType" >
-                  <el-select :disabled="inputComponentDisable"  v-model="depositoryReceiptInfo.currency" placeholder="请选择" style="width:100%">
-                    <el-option
-                      v-for="item in currencyOption"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                <el-form-item label="币种" prop="currencyCd" >
+                  <el-select :disabled="inputComponentDisable"  v-model="depositoryReceiptInfo.currencyCd" placeholder="请选择" style="width:100%">
+                    <el-option v-for="(value,key) in currencyOption" :key="key" :label="value" :value="key"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="抵质押物认定价值(元)" prop="evaluateWorth" >
-                  <el-input :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.evaluateWorth" style="width:100%"></el-input>
+                <el-form-item label="抵质押物认定价值(元)" prop="marketValue" >
+                  <el-input :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.marketValue" style="width:100%"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="价值认定方式" prop="customerType" >
-                  <el-select :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.worthEvaluateWay" placeholder="请选择" style="width:100%">
-                    <el-option
-                      v-for="item in worthEvaluateWayOption"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                <el-form-item label="价值认定方式" prop="assetStatus" >
+                  <el-select :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.assetStatus" placeholder="请选择" style="width:100%">
+                    <el-option v-for="(value,key) in worthEvaluateWayOption" :key="key" :label="value" :value="key"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="账面原值/取得价值(元)" prop="originalWorth" >
-                  <el-input :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.originalWorth" style="width:100%"></el-input>
+                <el-form-item label="账面原值/取得价值(元)" prop="bookValue" >
+                  <el-input :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.bookValue" style="width:100%"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="价值认定时间"  >
-                  <el-date-picker v-model="depositoryReceiptInfo.worthEvaluateTime" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+                <el-form-item label="价值认定时间" prop="evaluateDate" >
+                  <el-date-picker :disabled="inputComponentDisable" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="depositoryReceiptInfo.evaluateDate" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="价值认定到期日"  >
-                  <el-date-picker v-model="depositoryReceiptInfo.worthEvaluateTimeExpire" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+                <el-form-item label="价值认定到期日"  prop="submittingDate">
+                  <el-date-picker :disabled="inputComponentDisable" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="depositoryReceiptInfo.submittingDate" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
                 </el-form-item>
               </el-col>
               <el-col :span="24">
                 <p>存单质押信息</p>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="存单号码" prop="number" >
-                  <el-input :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.number" style="width:100%"></el-input>
+                <el-form-item label="存单号码" prop="depositReceiptNum" >
+                  <el-input :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.depositReceiptNum" style="width:100%"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="存单类型" prop="type" >
-                  <el-select :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.type" placeholder="请选择" style="width:100%">
-                    <el-option
-                      v-for="item in typeOpt"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                <el-form-item label="存单类型" prop="depositType" >
+                  <el-select :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.depositType" placeholder="请选择" style="width:100%">
+                    <el-option v-for="(value,key) in typeOpt" :key="key" :label="value" :value="key"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="币种" prop="drCurrency" >
                   <el-select :disabled="inputComponentDisable"  v-model="depositoryReceiptInfo.drCurrency" placeholder="请选择" style="width:100%">
-                    <el-option
-                      v-for="item in currencyOption"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                    <el-option v-for="(value,key) in currencyOption" :key="key" :label="value" :value="key"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="金额(元)" prop="amount" >
-                  <el-input :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.amount" style="width:100%"></el-input>
+                <el-form-item label="金额(元)" prop="amt" >
+                  <el-input :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.amt" style="width:100%"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="账号" prop="account" >
-                  <el-input :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.account" style="width:100%"></el-input>
+                <el-form-item label="账号" prop="accountNum" >
+                  <el-input :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.accountNum" style="width:100%"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -98,47 +78,38 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="存单开户日"  >
-                  <el-date-picker v-model="depositoryReceiptInfo.openTime" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+                <el-form-item label="存单开户日" prop="startDate"  >
+                  <el-date-picker :disabled="inputComponentDisable" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="depositoryReceiptInfo.startDate" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="存单到期日"  >
-                  <el-date-picker v-model="depositoryReceiptInfo.endTime" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+                <el-form-item label="存单到期日" prop="expireDate" >
+                  <el-date-picker :disabled="inputComponentDisable" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="depositoryReceiptInfo.expireDate" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="开户银行全称" prop="bankName" >
-                  <el-input :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.bankName" style="width:100%"></el-input>
+                <el-form-item label="开户银行全称" prop="openBank" >
+                  <el-input :disabled="inputComponentDisable" v-model="depositoryReceiptInfo.openBank" style="width:100%"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="是否止付" prop="ifStopPayment" >
-                  <el-select :disabled="inputComponentDisable"  v-model="depositoryReceiptInfo.ifStopPayment" placeholder="请选择" style="width:100%">
-                    <el-option
-                      v-for="item in yesNotOption"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
-                    </el-option>
+                <el-form-item label="是否止付" prop="stopPaymentInd" >
+                  <el-select :disabled="inputComponentDisable"  v-model="depositoryReceiptInfo.stopPaymentInd" placeholder="请选择" style="width:100%">
+                    <el-option v-for="(value,key) in yesNotOption" :key="key" :label="value" :value="key"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="是否共有人" prop="ifPartOwner" >
-                  <el-select :disabled="inputComponentDisable" v-on:change="onSelectChange" v-model="depositoryReceiptInfo.ifPartOwner" placeholder="请选择" style="width:100%">
-                    <el-option
-                      v-for="item in yesNotOption"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value">
+                <el-form-item label="是否共有人" prop="commonAssetsInd" >
+                  <el-select :disabled="inputComponentDisable" v-on:change="onSelectChange" v-model="depositoryReceiptInfo.commonAssetsInd" placeholder="请选择" style="width:100%">
+                    <el-option v-for="(value,key) in yesNotOption" :key="key" :label="value" :value="key">
                     </el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
               <el-col :span="24" >
-                <el-form-item label="其他情况说明" prop="otherSituationExplain" >
-                  <el-input :disabled="inputComponentDisable" type="textarea" v-model="depositoryReceiptInfo.otherSituationExplain" style="width:100%"></el-input>
+                <el-form-item label="其他情况说明" prop="otherNote" >
+                  <el-input :disabled="inputComponentDisable" type="textarea" v-model="depositoryReceiptInfo.otherNote" style="width:100%"></el-input>
                 </el-form-item>
               </el-col>
           </el-form>
@@ -151,113 +122,181 @@
         </el-row>
       <!--共有人信息页面-->
         <template v-if="ifShowPartOwnerInfo">
-            <partOwnerInfo/>
+            <partOwnerInfo v-bind:info="grtCollateralInfo"/>
         </template>
     </div>
 </template>
 
 <script>
     import partOwnerInfo from './mpPartOwnerInfo'
+    import enums from "@/utils/enums"
+    import { updateGrtDepositAndGrtCollateral} from '@/api/securitymanagement'
     export default {
       name: "mp-detail-for-deposit-receipt",
       components:{
         partOwnerInfo
       },
+      props:{
+        grtCollateralInfo:Object,
+      },
       data(){
         return{
           depositoryReceiptInfo:{
-            currency:"人民币",//币种
-            evaluateWorth:"",//抵质押物认定价值(元)
-            originalWorth:"",//账面原值/取得价值(元)
-            worthEvaluateWay:"评估确定",//价值认定方式
-            worthEvaluateTime:"",//价值认定时间
-            worthEvaluateTimeExpire:"",//价值认定到期日
+            lastUpdateUserNum:this.grtCollateralInfo.lastUpdateUserNum,//最后维护人用户编号
+            lastUpdateOrgCd:this.grtCollateralInfo.lastUpdateOrgCd,//最后维护人所属机构
+            guarantyId:this.grtCollateralInfo.guarantyId,//担保ID
+            currencyCd:"",//币种
+            marketValue:"",//抵质押物认定价值(元)
+            bookValue:"",//账面原值/取得价值(元)
+            assetStatus:"",//价值认定方式
+            evaluateDate:"",//价值认定时间
+            submittingDate:"",//价值认定到期日
             /*存单质押信息*/
-            number:"",//存单号码
-            type:"活期",//存单类型
-            drCurrency:"人民币",//币种
-            amount:"",//金额
-            account:"",//账号
+            depositReceiptNum:"",//存单号码
+            depositType:"",//存单类型
+            drCurrency:"",//币种
+            amt:"",//金额
+            accountNum:"",//账号
             depositTerm:"",//存期
-            openTime:"",//存单开户日
-            endTime:"",//存单到期日
-            bankName:"",//开户银行全称
-            ifStopPayment:"是",//是否止付
-            ifPartOwner:"否",//是否共有人
-            otherSituationExplain:"",//其他情况说明
+            startDate:"",//存单开户日
+            expireDate:"",//存单到期日
+            openBank:"",//开户银行全称
+            stopPaymentInd:"",//是否止付
+            commonAssetsInd:"0",//是否共有人
+            otherNote:"",//其他情况说明
           },
           rules:{
-            number: [
+            depositReceiptNum: [
               {
                 required: true,
-                message: "",
+                message: "存单号码不能为空!",
                 trigger: 'change'
-              }
+              },
+              {
+                pattern: /^[0-9]*$/,
+                message: '请输入正确的存单号',
+                trigger: 'blur'
+              },
+              {
+                max: 25,
+                message: '长度不超过 25 个字符',
+                trigger: 'blur'
+              },
             ],
-            type: [
+            depositType: [
               {
                 required: true,
-                message: "",
+                message: "请选择存单类型",
                 trigger: 'change'
               }
             ],
             drCurrency: [
               {
                 required: true,
-                message: "",
+                message: "请选择币种",
                 trigger: 'change'
-              }
+              },
             ],
-            amount: [
+            startDate:[
               {
                 required: true,
-                message: "",
-                trigger: 'change'
-              }
+                message: "请选择日期",
+                trigger: 'change',
+                //type: 'date'
+              },
             ],
-            account: [
+            submittingDate:[
               {
                 required: true,
-                message: "",
+                message: "请选择日期",
+                trigger: 'change',
+                //type: 'date'
+              },
+            ],
+            evaluateDate:[
+              {
+                required: true,
+                message: "请选择日期",
+                trigger: 'change',
+                //type: 'date'
+              },
+            ],
+            expireDate:[
+              {
+                required: true,
+                message: "请选择日期",
+                trigger: 'change',
+                //type: 'date'
+              },
+            ],
+            amt: [
+              {
+                required: true,
+                message: "请输入金额",
                 trigger: 'change'
               }
             ],
             depositTerm: [
               {
                 required: true,
-                message: "",
+                message: "存期",
                 trigger: 'change'
+              },
+              {
+                max: 10,
+                message: '长度不超过 10 个字符',
+                trigger: 'blur'
+              },
+              {
+                pattern: /^[1-9]\d*$/,
+                message: '请输入正确的存期',
+                trigger: 'blur'
               }
             ],
-            account: [
+            accountNum: [
               {
                 required: true,
-                message: "",
+                message: "请输入账号",
                 trigger: 'change'
+              },
+              {
+                max: 19,
+                message: '长度不超过 19 个字符',
+                trigger: 'blur'
+              },
+              {
+                pattern: /^[0-9]{16,19}$/,
+                message: '请输入正确的银行账号',
+                trigger: 'blur'
               }
             ],
-            bankName: [
+            openBank: [
               {
                 required: true,
-                message: "",
+                message: "请输入开户行",
                 trigger: 'change'
-              }
+              },
+              {
+                max: 40,
+                message: '长度不超过 40 个字符',
+                trigger: 'blur'
+              },
             ],
-            ifStopPayment: [
+            stopPaymentInd: [
               {
                 required: true,
-                message: "",
+                message: "选择是否止付",
                 trigger: 'change'
               }
             ],
-            ifPartOwner: [
+            commonAssetsInd: [
               {
                 required: true,
-                message: "",
+                message: "请选择",
                 trigger: 'change'
               }
             ],
-            otherSituationExplain: [
+            otherNote: [
               {
                 required: false,
                 message: "请输入其他说明",
@@ -269,21 +308,21 @@
               },
             ],
             /*价值*/
-            currency: [
+            currencyCd: [
               {
                 required: true,
                 message: "请选择币种",
                 trigger: 'change'
               }
             ],
-            worthEvaluateWay: [
+            assetStatus: [
               {
                 required: true,
                 message: "请选择评估方式",
                 trigger: 'change'
               }
             ],
-            evaluateWorth: [
+            marketValue: [
               {
                 required: true,
                 message: "请输入抵质押物认定价值",
@@ -299,7 +338,7 @@
                 trigger: 'blur'
               }
             ],
-            originalWorth: [
+            bookValue: [
               {
                 required: true,
                 message: "请输入账面原值/取得价值",
@@ -320,56 +359,33 @@
           buttonDisable:false,
           buttonText:"提交",
           inputComponentDisable:false,
-          currencyOption:[
-            {
-              value: '人民币',
-              label: '人民币'
-            }, {
-              value: '美元',
-              label: '美元'
-            },
-          ],//币种类型选项
-          worthEvaluateWayOption:[
-            {
-              value: '评估确定',
-              label: '评估确定'
-            }, {
-              value: '协商确定',
-              label: '协商确定'
-            },
-          ],//价值认定方式
-          yesNotOption:[
-            {
-              value: '是',
-              label: '是'
-            }, {
-              value: '否',
-              label: '否'
-            },
-          ],//是否选择
-          typeOpt:[
-            {
-              value: '定期',
-              label: '定期'
-            }, {
-              value: '活期',
-              label: '活期'
-            },
-          ],//是否选择
+          currencyOption:enums.currencyCd,//币种类型选项
+          worthEvaluateWayOption:enums.GuarantyValueEvaluationMethod,//价值认定方式
+          yesNotOption:enums.commonYesAndNotCd,//是否选择
+          typeOpt:enums.SecurityMoneyInterestTypeCd,//定期活期
         }
       },
       methods:{
         doConfirmRepositoryReceiptDetail:function () {
           this.$refs["mpRepositoryReceiptDetailValidate"].validate((valid) => {
             if(valid){
-              //访问服务器，返回结果，做判断，提交成功，输入框不可获取焦点，确定和重置按钮不可点击
-              this.buttonDisable = true;
-              this.buttonText = "已提交";
-              this.inputComponentDisable = true;
-              this.$message({
-                message: '数据提交成功！',
-                type: 'success'
-              });
+              updateGrtDepositAndGrtCollateral(this.depositoryReceiptInfo).then(response =>{
+                if(response.data.flag=='true') {
+                  //访问服务器，返回结果，做判断，提交成功，输入框不可获取焦点，确定和重置按钮不可点击
+                  this.buttonDisable = true;
+                  this.buttonText = "已提交";
+                  this.inputComponentDisable = true;
+                  this.$message({
+                    message: '提交成功',
+                    type: 'success'
+                  });
+                } else{
+                  this.$message({
+                    message: '提交失败'+JSON.stringify(response.data),
+                    type: 'error'
+                  });
+                }
+                });
             } else{
               this.$message({
                 message: '请将信息填写完整',
@@ -382,7 +398,7 @@
           this.$refs["mpRepositoryReceiptDetailValidate"].resetFields();
         },
         onSelectChange:function (data) {//是否共有人选择事件
-          if(data == '是'){
+          if(data == enums.stateCode.result.yes){
             this.ifShowPartOwnerInfo = true;
           } else{
             this.ifShowPartOwnerInfo = false;

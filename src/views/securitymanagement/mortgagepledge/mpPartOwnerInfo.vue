@@ -5,47 +5,22 @@
           <p>共有人信息</p>
         </el-row>
         <el-row>
-          <el-table
-            class="part-owner-t"
-            max-height="350"
-            ref="multipleTable"
-            :data="partOwnerInfo"
-            tooltip-effect="dark"
-            style="width: 100%"
-            @selection-change="handleSelectionChange">
-            <el-table-column align="center" type="selection" label="选择"></el-table-column>
-            <el-table-column align="center" label="共有人姓名"  prop="name" show-overflow-tooltip></el-table-column>
-            <el-table-column align="center" prop="certificateType" label="共有人证件类型" show-overflow-tooltip></el-table-column>
-            <el-table-column align="center" prop="number" label="证件号码" show-overflow-tooltip></el-table-column>
-            <el-table-column align="center" label="操作" width="100">
-              <template slot-scope="scope">
-                <el-button
-                  size="mini"
-                  @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-                <el-button
-                  size="mini"
-                  type="danger"
-                  @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-row>
-        <el-row>
-          <el-pagination
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-            :current-page="currentPage4"
-            :page-sizes="[100, 200, 300, 400]"
-            :page-size="100"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="400">
-          </el-pagination>
-        </el-row>
-        <el-row>
-          <el-col :span="6" :offset="10">
-            <el-button size="medium"  type="primary" @click="dialogVisible = true" >{{buttonAdd}}</el-button>
-            <el-button size="medium"  type="primary" @click="doReset">{{buttonDelete}}</el-button>
-          </el-col>
+          <csc-single-table
+            :pageDef="pageDef"
+            :entity="entity"
+            :disableRowButtons="disableRowButtons"
+            :disableQueryForm="disableQueryForm"
+            :disableQueryButtons="disableQueryButtons"
+            @add="doAdd"
+            @deleteBatch="deleteBatch"
+            @refresh="refresh"
+            @doEdit="doEdit"
+            @pageQuery="doPageQuery"
+            @rowChange="rowChange"
+            @doDelete="doDelete"
+            @rowDbclick="rowDbclick"
+          >
+          </csc-single-table>
         </el-row>
         <template>
           <el-dialog
@@ -54,81 +29,166 @@
             width="80%"
             :before-close="handleClose"
             append-to-body>
-            <addPartOwnerInfo v-on:backFlag="getMsg"/>
+            <addPartOwnerInfo v-on:backFlag="getMsg" v-bind:info="info"/>
           </el-dialog>
         </template>
+
+      <template>
+        <el-dialog
+          title="更新共有人信息"
+          :visible.sync="dialogVisible2"
+          width="80%"
+          :before-close="handleClose"
+          append-to-body>
+          <editPartOwnerInfo v-on:backFlag="getMsg2" v-bind:grtTogetherCorrelative="grtTogetherCorrelative"/>
+        </el-dialog>
+      </template>
     </div>
 </template>
 
 <script>
   import addPartOwnerInfo from './addPartOwnerInfo'
+  import editPartOwnerInfo from './editPartOwnerInfo'
+  import { getAllTogetherCorrelative,deleteTogetherCorrelativeById,deleteTogetherCorrelativedBatch} from '@/api/securitymanagement'
+  import enums from "@/utils/enums"
     export default {
         name: "mp-part-owner-info",
+      props:{
+        info:Object,
+      },
       components:{
-        addPartOwnerInfo
+        addPartOwnerInfo,
+        editPartOwnerInfo
       },
       data() {
         return {
-          partOwnerInfo: [
-            {
-              name: '张山',
-              certificateType: '身份证',
-              number: '510902199312019872',
+          entity: {},
+          disableRowButtons:false,//显示查询删除按钮
+          disableQueryForm:true,//禁止查询表单
+          disableQueryButtons:true,//不显示刷新重置按钮
+          selectedRow:{},
+          pageDef: {
+            queryDef: {
+              columnNum: 3, //一行几列
+              queryCols: [
+                {label: "共有人姓名", inputType: "input", modelName: "togetherCorrelativeName"},
+                {label: "证件号码", inputType: "input", modelName: "togetherCertificateNum"},
+                {label: "共有人证件类型", inputType: "select", modelName: "togetherCertificateType",enumType:"idTypeCd"},
+              ]
             },
-            {
-              name: '张山',
-              certificateType: '身份证',
-              number: '510902199312019872',
+            tabDef: {
+              isSelect: true, //是否可以多选
+              isIndex: false,  //是否有序号
+              //表格字段定义
+              tabCols: [
+                {label: "共有人姓名", prop: "togetherCorrelativeName"},
+                {label: "共有人证件类型", prop: "togetherCertificateType",isFormat: true,enumType:"idTypeCd"},
+                {label: "证件号码", prop: "togetherCertificateNum"},
+              ]
             },
-            {
-              name: '张山',
-              certificateType: '身份证',
-              number: '510902199312019872',
-            },
-            {
-              name: '张山',
-              certificateType: '身份证',
-              number: '510902199312019872',
-            },
-            {
-              name: '张山',
-              certificateType: '身份证',
-              number: '510902199312019872',
-            },
-            {
-              name: '张山',
-              certificateType: '身份证',
-              number: '510902199312019872',
-            },
-          ],
+            buttons: [
+              {label: "新增", funcName: "add", disabled: false},
+              {label: "批量删除", funcName: "deleteBatch", disabled: false},
+              {label: "刷新", funcName: "refresh", disabled: false},
+            ]
+          },
           multipleSelection: [],
           buttonAdd: "新增",
           buttonDelete: "删除",
-          currentPage1: 5,
-          currentPage2: 5,
-          currentPage3: 5,
-          currentPage4: 4,
-          dialogVisible: false
+          dialogVisible: false,//添加共有人dialog
+          dialogVisible2: false,//更新共有人dialog
+          grtTogetherCorrelative:{},
         }
       },
       methods: {
-        toggleSelection(rows) {
-          if (rows) {
-            rows.forEach(row => {
-              this.$refs.multipleTable.toggleRowSelection(row);
+        rowChange(row){
+          this.selectedRow = row;
+          //this.$emit('customerInfo',row);
+        },
+        doPageQuery(listQuery){
+          listQuery.guarantyId = this.info.guarantyId;
+          getAllTogetherCorrelative(listQuery).then(response => {
+            if(response.data.flag == enums.stateCode.flag.success){//返回数据成功
+              var myEntity = {};
+              myEntity.total=response.data.data.total;
+              myEntity.data = response.data.data.list;
+              this.entity = myEntity;
+              this.$store.dispatch('setListLoading', false);
+            } else{
+              this.$message({
+                message: '获取数据失败啦！',
+                type: 'error'
+              });
+            }
+          })
+        },
+        doAdd(){
+          this.dialogVisible = true;
+        },
+        doEdit(row){
+          this.dialogVisible2 = true;
+          this.grtTogetherCorrelative = row;
+          //this.$router.push({ name: 'orgEdit', query: { orgInfoId: row.orgInfoId,method:'doEdit' }})
+        },
+        refresh(row,listquery,index){
+          this.$store.dispatch('setListLoading', true);
+          this.doPageQuery(listquery);
+        },
+        deleteBatch(row,listquery,index){
+          if(row.length<=0){
+            this.$message({
+              message: '请选择要删除的数据!',
+              type: 'error'
             });
-          } else {
-            this.$refs.multipleTable.clearSelection();
+            return;
           }
+          this.$confirm('此操作将永久删除该单据, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+            center: true
+          }).then(() => {
+             deleteTogetherCorrelativedBatch(row).then(response => {
+                if(response.data.flag == enums.stateCode.flag.success){//
+                  this.$message({
+                    message: '删除机构信息成功',
+                    type: 'success'
+                  });
+                  this.$store.dispatch('setListLoading', true);
+                  this.doPageQuery(listquery);
+                } else{
+                  this.$message({
+                    message: '删除失败!'+JSON.stringify(response.data),
+                    type: 'error'
+                  });
+                }
+              });
+            }).catch(() => {
+             this.$message({
+                type: 'info',
+                message: '已取消删除'
+              })
+            });
         },
-        handleSelectionChange(val) {
-          this.multipleSelection = val;
+        doDelete(row,listquery,index){
+         deleteTogetherCorrelativeById(row).then(response => {
+           if(response.data.flag == enums.stateCode.flag.success){//
+             this.$message({
+               message: '删除机构信息成功',
+               type: 'success'
+             });
+             this.$store.dispatch('setListLoading', true);
+             this.doPageQuery(listquery);
+           } else{
+             this.$message({
+               message: '删除失败!'+JSON.stringify(response.data),
+               type: 'error'
+             });
+           }
+          });
         },
-        handleSizeChange(val) {
-          console.log(`每页 ${val} 条`);
-        },
-        handleCurrentChange(val) {
-          console.log(`当前页: ${val}`);
+        rowDbclick(row){
+          this.$router.push({ name: 'orgEdit', query: { orgInfoId: row.orgInfoId,method:'detail' }})
         },
         handleClose: function (done) {
           this.$confirm('确认关闭？')
@@ -138,11 +198,29 @@
             .catch(_ => {
             });
         },
-        getMsg: function (flag) {//关闭增加保险信息dialog
+        getMsg: function (flag) {
           if (flag === 'ok') {
             this.dialogVisible = false;
+            var listquery = {};
+            listquery.pageNum=1;
+            listquery.pageSize=20;
+            listquery.guarantyId = this.info.guarantyId;
+            this.$store.dispatch('setListLoading', true);
+            this.doPageQuery(listquery);
           }
         },
+        getMsg2: function (flag) {
+          if (flag === 'ok') {
+            this.dialogVisible2 = false;
+            var listquery = {};
+            listquery.pageNum=1;
+            listquery.pageSize=20;
+            listquery.guarantyId = this.info.guarantyId;
+            this.$store.dispatch('setListLoading', true);
+            this.doPageQuery(listquery);
+          }
+        },
+
       },
     }
 </script>

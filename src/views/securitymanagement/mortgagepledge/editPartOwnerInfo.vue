@@ -1,52 +1,53 @@
-<!--添加共有人页面-->
+<!--编辑 共有人信息页面-->
 <template>
-    <div class="add-part-owner-info">
-        <el-row>
-          <el-form el-form ref="addPartOwnerInfoValidate" label-width="200px" :model="grtTogetherCorrelative" label-position="right" :rules="rules" >
-            <el-col :span="12">
-              <el-form-item label="共有人名称" prop="togetherCorrelativeName">
-                <el-input  v-model="grtTogetherCorrelative.togetherCorrelativeName" style="width:100%"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="共有人证件类型" prop="togetherCertificateType" >
-                <el-select :disabled="inputComponentDisable"  v-model="grtTogetherCorrelative.togetherCertificateType" placeholder="请选择" style="width:100%">
-                  <el-option v-for="(value,key) in certificateTypeOpt" :key="key" :label="value" :value="key"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="共有人证件号码" prop="togetherCertificateNum">
-                <el-input  v-model="grtTogetherCorrelative.togetherCertificateNum" style="width:100%"></el-input>
-              </el-form-item>
-            </el-col>
-          </el-form>
-        </el-row>
-        <el-row>
-          <el-col :span="6" :offset="10">
-            <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="doConfirmAddNotarizationInfo">{{buttonText}}</el-button>
-            <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="doReset">重置</el-button>
+    <div class="edit-part-owner-info">
+      <el-row>
+        <el-form el-form ref="updatePartOwnerInfoValidate" label-width="200px" :model="grtTogetherCorrelative" label-position="right" :rules="rules" >
+          <el-col :span="12">
+            <el-form-item label="共有人名称" prop="togetherCorrelativeName">
+              <el-input  v-model="grtTogetherCorrelative.togetherCorrelativeName" style="width:100%"></el-input>
+            </el-form-item>
           </el-col>
-        </el-row>
+          <el-col :span="12">
+            <el-form-item label="共有人证件类型" prop="togetherCertificateType" >
+              <el-select :disabled="inputComponentDisable"  v-model="grtTogetherCorrelative.togetherCertificateType" placeholder="请选择" style="width:100%">
+                <el-option v-for="(value,key) in certificateTypeOpt" :key="key" :label="value" :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="共有人证件号码" prop="togetherCertificateNum">
+              <el-input  v-model="grtTogetherCorrelative.togetherCertificateNum" style="width:100%"></el-input>
+            </el-form-item>
+          </el-col>
+        </el-form>
+      </el-row>
+      <el-row>
+        <el-col :span="6" :offset="10">
+          <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="doConfirmUpdateNotarizationInfo">{{buttonText}}</el-button>
+          <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="doReset">重置</el-button>
+        </el-col>
+      </el-row>
+
     </div>
 </template>
 
 <script>
   import enums from "@/utils/enums"
-  import { saveTogetherCorrelatived} from '@/api/securitymanagement'
+  import { updateTogetherCorrelatived} from '@/api/securitymanagement'
     export default {
-        togetherCorrelativeName: "add-part-owner-info",
+        name: "edit-part-owner-info",
       props:{
-        info:Object,
+        grtTogetherCorrelative:Object,
       },
       data(){
         return{
-          grtTogetherCorrelative:{
+/*          grtTogetherCorrelative:{
             togetherCorrelativeName:"",//共有人名称
             togetherCertificateType:"",//共有人证件类型
             togetherCertificateNum:'',//共有人证件号码
             guarantyId:this.info.guarantyId,//担保id
-          },
+          },*/
           certificateTypeOpt: enums.idTypeCd,
           rules:{
             togetherCorrelativeName: [
@@ -81,16 +82,16 @@
         }
       },
       methods:{
-        doConfirmAddNotarizationInfo:function () {
-          this.$refs["addPartOwnerInfoValidate"].validate((valid) => {
+        doConfirmUpdateNotarizationInfo:function () {
+          this.$refs["updatePartOwnerInfoValidate"].validate((valid) => {
             if(valid){
               //访问服务器，返回结果，做判断，提交成功，输入框不可获取焦点，确定和重置按钮不可点击,清楚输入框数据
               this.buttonDisable = true;
               this.buttonText = "提交中";
-              saveTogetherCorrelatived(this.grtTogetherCorrelative).then(response => {
+              updateTogetherCorrelatived(this.grtTogetherCorrelative).then(response => {
                 if(response.data.flag == enums.stateCode.flag.success){//返回数据成功
                   //提示父组件关闭dialog,并且刷新，重置当前表单
-                  this.$refs["addPartOwnerInfoValidate"].resetFields();
+                  this.$refs["updatePartOwnerInfoValidate"].resetFields();
                   this.$emit('backFlag',"ok");
                   this.$message({
                     message: '数据提交成功！',
@@ -114,20 +115,21 @@
           });
         },
         doReset:function () {
-          this.$refs["addPartOwnerInfoValidate"].resetFields();
+          this.$refs["updatePartOwnerInfoValidate"].resetFields();
         },
       },
+
     }
 </script>
 
 <style scoped>
-  .add-part-owner-info{
+  .edit-part-owner-info{
     width:100%;
     height:100%;
     padding-left: 10px;
     padding-right: 10px;
   }
-  .add-part-owner-info p{
+  .edit-part-owner-info p{
     border-bottom: 1px solid #CCCCCC;
     font-size: 18px;
   }

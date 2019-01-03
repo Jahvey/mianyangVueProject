@@ -4,27 +4,27 @@
         <el-form label-width="120px" label-position="right">
           <el-col :span="24">
             <el-form-item label="抵质押物类别" >
-              <el-input  v-model="mpBasicInfo.mpGoodsBasicInfo.mpGoodsType" disabled="true"></el-input>
+              <el-input  v-model="grtCollateralInfo.collateralTypeCd" disabled="true" ></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="抵质押物编号" >
-              <el-input  v-model="mpBasicInfo.mpGoodsBasicInfo.mpGoodsNumber" disabled="true"></el-input>
+              <el-input  v-model="grtCollateralInfo.collateralNum" disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="抵质押物名称" >
-              <el-input  v-model="mpBasicInfo.mpGoodsBasicInfo.mpGoodsName" disabled="true"></el-input>
+              <el-input  v-model="grtCollateralInfo.collateralName" disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="抵质押人编号">
-              <el-input  v-model="mpBasicInfo.mpCustomerBasicInfo.customerNumber" disabled="true"></el-input>
+              <el-input  v-model="grtCollateralInfo.customerNum" disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="建档日期" >
-              <el-input  v-model="mpBasicInfo.mpGoodsBasicInfo.mpDate" disabled="true"></el-input>
+              <el-input  v-model="grtCollateralInfo.timeMark" disabled="true"></el-input>
             </el-form-item>
           </el-col>
         </el-form>
@@ -33,28 +33,39 @@
 </template>
 
 <script>
+  import enums from "@/utils/enums"
+  import commonUtil from '@/utils/commonUtil'
     export default {
         name: "summary-info",
+      beforeMount(){
+        //alert(JSON.stringify(enums.CollateralStatusCd));
+        //alert(JSON.stringify(this.grtCollateralInfo));
+        //alert(this.grtCollateralInfo.collateralTypeCd);
+        //var obj = enums.CollateralStatusCd;
+        //this.grtCollateralInfo.collateralTypeCd = enums.CollateralStatusCd[this.grtCollateralInfo.collateralTypeCd];
+        this.grtCollateralInfo.timeMark = commonUtil.timeStampToDate(this.grtCollateralInfo.timeMark);
+        },
       props:{
-        mpBasicInfo:{
-          type:Object,
-          default:{
-            mpCustomerBasicInfo:{
-              mpType:'',//抵质押人类型
-              customerType:'',//客户类型
-              organizationCode:'',//组织机构代码
-              customerNumber:'',//客户编号
-              customerFullName:'',//客户名全称
-            },
-            mpGoodsBasicInfo:{
-              mpGoodsType:'',//抵质押品类别
-              mpGoodsName:'',//抵质押品名称
-              mpGoodsNumber:'',//抵质押物编号
-              mpDate:"",//建档日期
-            },
-          },
-        }
-      }
+        grtCollateralInfo:{
+          collateralTypeCd:'',//抵质押物类别
+          collateralNum:'',//抵质押物编号
+          collateralName:'',//抵质押物名称
+          customerNum:'',//抵质押人编号
+          timeMark:'',//建档日期
+        },
+      },
+      methods:{
+
+      },
+      compute:{
+          getTypeValue:function () {
+            var value='';
+            //value = enums.CollateralStatusCd[this.collateralTypeCd];
+            alert(enums.CollateralStatusCd);
+            alert(this.collateralTypeCd);
+            return value;
+          }
+      },
     }
 </script>
 

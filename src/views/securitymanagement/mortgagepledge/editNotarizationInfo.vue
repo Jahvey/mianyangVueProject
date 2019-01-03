@@ -1,8 +1,8 @@
-<!--添加公证信息-->
+<!--更新公证信息-->
 <template>
-  <div class="add-notarization-info">
+  <div class="edit-notarization-info">
     <el-row>
-      <el-form el-form ref="addNotarizationInfoValidate" label-width="200px" :model="grtCollateralNotarization" label-position="right" :rules="rules" >
+      <el-form el-form ref="validate" label-width="200px" :model="grtCollateralNotarization" label-position="right" :rules="rules" >
         <el-col :span="12">
           <el-form-item label="借款合同号" prop="loanContractNum">
             <el-input  v-model="grtCollateralNotarization.loanContractNum" style="width:100%"></el-input>
@@ -32,8 +32,7 @@
     </el-row>
     <el-row>
       <el-col :span="6" :offset="10">
-        <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="doConfirmAddNotarizationInfo">{{buttonText}}</el-button>
-        <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="doReset">重置</el-button>
+        <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="comfirm">{{buttonText}}</el-button>
       </el-col>
     </el-row>
   </div>
@@ -41,78 +40,82 @@
 
 <script>
   import enums from "@/utils/enums"
-  import { saveCollateralNotarization} from '@/api/securitymanagement'
+  import { updateCollateralNotarization} from '@/api/securitymanagement'
+  import commonUtil from '@/utils/commonUtil'
     export default {
-      name: "add-notarization-info",
+        name: "edit-notarization-info",
       props:{
-        grtCollateralInfo:Object,
+        grtCollateralNotarization:Object,
+      },
+      beforeMount(){
+        this.grtCollateralNotarization.recordDate = commonUtil.timeStampToDate(this.grtCollateralNotarization.recordDate);
       },
       data(){
-          return{
-            grtCollateralNotarization:{
-              guarantyId:this.grtCollateralInfo.guarantyId,//担保id
-              notarialDeedNo:'',//公证书编号
-              notarialOrg:'',//公证处名称
-              recordDate: '',//公证日期
-              /*查找带回参数*/
-              loanContractNum:"",//借款合同号
-              loanManName:"",//借款人名称
-              loanCertificateType:"",//借款证件类型
-              certificateCode:"",//证件号码
-            },
-            rules:{
-              loanContractNum: [
-                {
-                  required: true,
-                  message: "借款合同号不能为空",
-                  trigger: 'change'
-                }
-              ],
-              loanManName: [
-                {
-                  required: true,
-                  message: "借款人名称不能为空",
-                  trigger: 'change'
-                }
-              ],
-              notarialDeedNo: [
-                {
-                  required: true,
-                  message: "公证书编号不能为空",
-                  trigger: 'change'
-                }
-              ],
-              notarialOrg: [
-                {
-                  required: true,
-                  message: "公证处名称不能为空",
-                  trigger: 'change'
-                }
-              ],
-              recordDate:[
-                {
-                  required: true,
-                  message: "请选择日期",
-                  trigger: 'change',
-                  //type: 'date'
-                },
-              ],
-            },
-            buttonText:"提交",
-            buttonDisable:false,
-          }
+        return{
+/*          grtCollateralNotarization:{
+            guarantyId:this.grtCollateralInfo.guarantyId,//担保id
+            notarialDeedNo:'',//公证书编号
+            notarialOrg:'',//公证处名称
+            recordDate: '',//公证日期
+            /!*查找带回参数*!/
+            loanContractNum:"",//借款合同号
+            loanManName:"",//借款人名称
+            loanCertificateType:"1",//借款证件类型
+            certificateCode:"510902199312017623",//证件号码
+          },*/
+          rules:{
+            loanContractNum: [
+              {
+                required: true,
+                message: "借款合同号不能为空",
+                trigger: 'change'
+              }
+            ],
+            loanManName: [
+              {
+                required: true,
+                message: "借款人名称不能为空",
+                trigger: 'change'
+              }
+            ],
+            notarialDeedNo: [
+              {
+                required: true,
+                message: "公证书编号不能为空",
+                trigger: 'change'
+              }
+            ],
+            notarialOrg: [
+              {
+                required: true,
+                message: "公证处名称不能为空",
+                trigger: 'change'
+              }
+            ],
+            recordDate:[
+              {
+                required: true,
+                message: "请选择日期",
+                trigger: 'change',
+                //type: 'date'
+              },
+            ],
+          },
+          buttonText:"提交",
+          buttonDisable:false,
+        }
       },
       methods:{
-        doConfirmAddNotarizationInfo:function () {
-          this.$refs["addNotarizationInfoValidate"].validate((valid) => {
+        comfirm:function () {
+          this.$refs["validate"].validate((valid) => {
             if(valid){
               //访问服务器，返回结果，做判断，提交成功，输入框不可获取焦点，确定和重置按钮不可点击,清楚输入框数据
               this.buttonDisable = true;
               this.buttonText = "提交中";
-              saveCollateralNotarization(this.grtCollateralNotarization).then(response => {
+              updateCollateralNotarization(this.grtCollateralNotarization).then(response => {
                 if(response.data.flag == enums.stateCode.flag.success){//返回数据成功
                   //提示父组件关闭dialog,并且刷新，重置当前表单
-                  this.$refs["addNotarizationInfoValidate"].resetFields();
+                  this.$refs["validate"].resetFields();
                   this.$emit('backFlag',"ok");
                   this.$message({
                     message: '数据提交成功！',
@@ -135,21 +138,18 @@
             }
           });
         },
-        doReset:function () {
-          this.$refs["addNotarizationInfoValidate"].resetFields();
-        },
       },
     }
 </script>
 
 <style scoped>
-  .add-notarization-info{
+  .edit-notarization-info{
     width:100%;
     height:100%;
     padding-left: 10px;
     padding-right: 10px;
   }
-  .add-notarization-info p{
+  .edit-notarization-info p{
     border-bottom: 1px solid #CCCCCC;
     font-size: 18px;
   }

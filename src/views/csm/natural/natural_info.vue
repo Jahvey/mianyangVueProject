@@ -130,7 +130,8 @@
             { label: '是否农户:', inputType: 'input', modelName: 'isFarmer' },            
             { label: '户籍所在地:', inputType: 'input', modelName: 'hukouRegisted' }, // 有问题，这里应该是一个checkbox，但是报错
             { label: '高校名称/毕业院校名称:', inputType: 'input', modelName: 'schName' },
-            { label: '最高学位:', inputType: 'select', modelName: 'educationBackgroudCd' },            
+            { label: '最高学历:', inputType: 'select', modelName: 'educationBackgroudCd' },  
+            { label: '最高学位:', inputType: 'select', modelName: 'degreeCd' },           
             { label: '职业:', inputType: 'select', modelName: 'profession' },        
             { label: '职称:', inputType: 'select', modelName: 'professionalTitle' },
             { label: '职务:', inputType: 'select', modelName: 'accountingAssistant' },
@@ -139,7 +140,9 @@
             { label: '单位规模:', inputType: 'select', modelName: 'scaleOfUnit' },           
             { label: '目前工作持续年限:', inputType: 'input', modelName: 'workYears' },  // 注明分割
             { label: '家庭人口:', inputType: 'input', modelName: 'familyNumber' },            
-            { label: '家庭住址:', inputType: 'input', modelName: 'familyAddress' },            
+            { label: '家庭住址:', inputType: 'input', modelName: 'familyAddress' },   
+            { label: '住宅性质:', inputType: 'input', modelName: 'houseProperty' },   
+                   
             { label: '家庭电话:', inputType: 'input', modelName: 'familyPhone' },  // 贷款分割线           
             { label: '通讯地址:', inputType: 'input', modelName: 'communicationAddress' },
             { label: '通讯地址邮编:', inputType: 'input', modelName: 'communicationAddressCode' },

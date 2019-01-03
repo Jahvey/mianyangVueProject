@@ -4,50 +4,23 @@
         <p>公证信息</p>
       </el-row>
       <el-row>
-        <el-table
-          class="notarization-t"
-          max-height="350"
-          ref="multipleTable"
-          :data="notarizationInfo"
-          tooltip-effect="dark"
-          style="width: 100%"
-          @selection-change="handleSelectionChange">
-          <el-table-column align="center" type="selection" ></el-table-column>
-          <el-table-column align="center" label="借款合同号"  prop="borrowMoneyContractNumber" show-overflow-tooltip></el-table-column>
-          <el-table-column align="center" prop="borrowMoneyPerson" label="借款人名称" show-overflow-tooltip></el-table-column>
-          <el-table-column align="center" prop="notarizationNumber" label="公证书编号" show-overflow-tooltip></el-table-column>
-          <el-table-column align="center" prop="notarizationConstitution" label="公证处名称" show-overflow-tooltip></el-table-column>
-          <el-table-column align="center" prop="notarizationTime" label="公证日期" show-overflow-tooltip></el-table-column>
-          <el-table-column align="center" label="操作" width="100">
-            <template slot-scope="scope">
-              <el-button
-                size="mini"
-                @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-              <el-button
-                size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)">删除</el-button>
-            </template>
-          </el-table-column>
-        </el-table>
+        <csc-single-table
+          :pageDef="pageDef"
+          :entity="entity"
+          :disableRowButtons="disableRowButtons"
+          :disableQueryForm="disableQueryForm"
+          :disableQueryButtons="disableQueryButtons"
+          @add="doAdd"
+          @deleteBatch="deleteBatch"
+          @refresh="refresh"
+          @doEdit="doEdit"
+          @pageQuery="doPageQuery"
+          @doDelete="doDelete"
+        >
+        </csc-single-table>
       </el-row>
-      <el-row>
-        <el-pagination
-          @size-change="handleSizeChange"
-          @current-change="handleCurrentChange"
-          :current-page="currentPage4"
-          :page-sizes="[100, 200, 300, 400]"
-          :page-size="100"
-          layout="total, sizes, prev, pager, next, jumper"
-          :total="400">
-        </el-pagination>
-      </el-row>
-      <el-row>
-        <el-col :span="6" :offset="10">
-          <el-button size="medium"  type="primary" @click="dialogVisible = true" >{{buttonAdd}}</el-button>
-          <el-button size="medium"  type="primary" @click="doReset">{{buttonDelete}}</el-button>
-        </el-col>
-      </el-row>
+
+
       <template>
         <el-dialog
           title="添加公证信息"
@@ -55,7 +28,17 @@
           width="80%"
           :before-close="handleClose"
           append-to-body>
-          <addNotarizationInfo v-on:backFlag="getMsg"/>
+          <addNotarizationInfo v-on:backFlag="getMsg" v-bind:grtCollateralInfo="grtCollateralInfo"/>
+        </el-dialog>
+      </template>
+      <template>
+        <el-dialog
+          title="添加公证信息"
+          :visible.sync="dialogVisible2"
+          width="80%"
+          :before-close="handleClose"
+          append-to-body>
+          <editNotarizationInfo v-on:backFlag="getMsg2" v-bind:grtCollateralNotarization="grtCollateralNotarization"/>
         </el-dialog>
       </template>
     </div>
@@ -63,86 +46,58 @@
 
 <script>
   import addNotarizationInfo from './addNotarizationInfo'
-    export default {
+  import editNotarizationInfo from './editNotarizationInfo'
+  import { getAllCollateralNotarization,deleteCollateralNotarizationById,deleteCollateralNotarizationBatch} from '@/api/securitymanagement'
+  import enums from "@/utils/enums"
+  export default {
       name: "mp-notarization-info",
       components:{
         addNotarizationInfo,
+        editNotarizationInfo,
+      },
+      props:{
+        grtCollateralInfo:Object,
       },
       data(){
         return{
-          notarizationInfo:[
-            {
-              borrowMoneyContractNumber: 'HT12132112',
-              borrowMoneyPerson: '张三',
-              notarizationNumber: 'NN999098',
-              notarizationConstitution:"大中华公证处",
-              notarizationTime:"2019-09-10",
+          entity: {},
+          disableRowButtons:false,//显示查询删除按钮
+          disableQueryForm:true,//禁止查询表单
+          disableQueryButtons:true,//不显示刷新重置按钮
+          pageDef: {
+            queryDef: {
+              columnNum: 3, //一行几列
+              queryCols: [
+                {label: "借款合同号", inputType: "input", modelName: "loanContractNum"},
+                {label: "借款人名称", inputType: "input", modelName: "loanManName"},
+                {label: "公证书编号", inputType: "input", modelName: "notarialDeedNo"},
+              ]
             },
-            {
-              borrowMoneyContractNumber: 'HT12132112',
-              borrowMoneyPerson: '张三',
-              notarizationNumber: 'NN999098',
-              notarizationConstitution:"大中华公证处",
-              notarizationTime:"2019-09-10",
+            tabDef: {
+              isSelect: true, //是否可以多选
+              isIndex: false,  //是否有序号
+              //表格字段定义
+              tabCols: [
+                {label: "借款合同号", prop: "loanContractNum"},
+                {label: "借款人名称", prop: "loanManName"},
+                {label: "公证书编号", prop: "notarialDeedNo"},
+                {label: "公证处名称", prop: "notarialOrg"},
+                {label: "公证日期", prop: "recordDate"},
+              ]
             },
-            {
-              borrowMoneyContractNumber: 'HT12132112',
-              borrowMoneyPerson: '张三',
-              notarizationNumber: 'NN999098',
-              notarizationConstitution:"大中华公证处",
-              notarizationTime:"2019-09-10",
-            },
-            {
-              borrowMoneyContractNumber: 'HT12132112',
-              borrowMoneyPerson: '张三',
-              notarizationNumber: 'NN999098',
-              notarizationConstitution:"大中华公证处",
-              notarizationTime:"2019-09-10",
-            },
-            {
-              borrowMoneyContractNumber: 'HT12132112',
-              borrowMoneyPerson: '张三',
-              notarizationNumber: 'NN999098',
-              notarizationConstitution:"大中华公证处",
-              notarizationTime:"2019-09-10",
-            },
-            {
-              borrowMoneyContractNumber: 'HT12132112',
-              borrowMoneyPerson: '张三',
-              notarizationNumber: 'NN999098',
-              notarizationConstitution:"大中华公证处",
-              notarizationTime:"2019-09-10",
-            },
-          ],
+            buttons: [
+              {label: "新增", funcName: "add", disabled: false},
+              {label: "批量删除", funcName: "deleteBatch", disabled: false},
+              {label: "刷新", funcName: "refresh", disabled: false},
+            ]
+          },
           multipleSelection: [],
-          buttonAdd:"新增",
-          buttonDelete:"删除",
-          currentPage1: 5,
-          currentPage2: 5,
-          currentPage3: 5,
-          currentPage4: 4,
-          dialogVisible: false
+          dialogVisible: false,//添加公证信息dialog
+          dialogVisible2: false,//更新公证信息dialog
+          grtCollateralNotarization:{},
         }
       },
       methods: {
-        toggleSelection(rows) {
-          if (rows) {
-            rows.forEach(row => {
-              this.$refs.multipleTable.toggleRowSelection(row);
-            });
-          } else {
-            this.$refs.multipleTable.clearSelection();
-          }
-        },
-        handleSelectionChange(val) {
-          this.multipleSelection = val;
-        },
-        handleSizeChange(val) {
-          console.log(`每页 ${val} 条`);
-        },
-        handleCurrentChange(val) {
-          console.log(`当前页: ${val}`);
-        },
         handleClose: function (done) {
           this.$confirm('确认关闭？')
             .then(_ => {
@@ -151,9 +106,107 @@
             .catch(_ => {
             });
         },
-        getMsg: function (flag) {//关闭增加保险信息dialog
+        doPageQuery(listQuery){
+          listQuery.guarantyId = this.grtCollateralInfo.guarantyId;
+          getAllCollateralNotarization(listQuery).then(response => {
+            if(response.data.flag == enums.stateCode.flag.success){//返回数据成功
+              var myEntity = {};
+              myEntity.total=response.data.data.total;
+              myEntity.data = response.data.data.list;
+              this.entity = myEntity;
+              this.$store.dispatch('setListLoading', false);
+            } else{
+              this.$message({
+                message: '获取数据失败啦！',
+                type: 'error'
+              });
+            }
+          })
+        },
+        doAdd(){
+          this.dialogVisible = true;
+        },
+        doEdit(row){
+          this.dialogVisible2 = true;
+          this.grtCollateralNotarization = row;
+        },
+        refresh(row,listquery,index){
+          this.$store.dispatch('setListLoading', true);
+          this.doPageQuery(listquery);
+        },
+        deleteBatch(row,listquery,index){
+          if(row.length<=0){
+            this.$message({
+              message: '请选择要删除的数据!',
+              type: 'error'
+            });
+            return;
+          }
+          this.$confirm('此操作将永久删除该单据, 是否继续?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+            center: true
+          }).then(() => {
+            deleteCollateralNotarizationBatch(row).then(response => {
+              if(response.data.flag == enums.stateCode.flag.success){//
+                this.$message({
+                  message: '删除机构信息成功',
+                  type: 'success'
+                });
+                this.$store.dispatch('setListLoading', true);
+                this.doPageQuery(listquery);
+              } else{
+                this.$message({
+                  message: '删除失败!'+JSON.stringify(response.data),
+                  type: 'error'
+                });
+              }
+            });
+          }).catch(() => {
+            this.$message({
+              type: 'info',
+              message: '已取消删除'
+            })
+          });
+        },
+        doDelete(row,listquery,index){
+          deleteCollateralNotarizationById(row).then(response => {
+            if(response.data.flag == enums.stateCode.flag.success){//
+              this.$message({
+                message: '删除机构信息成功',
+                type: 'success'
+              });
+              this.$store.dispatch('setListLoading', true);
+              this.doPageQuery(listquery);
+            } else{
+              this.$message({
+                message: '删除失败!'+JSON.stringify(response.data),
+                type: 'error'
+              });
+            }
+          });
+        },
+        getMsg: function (flag) {
           if (flag === 'ok') {
             this.dialogVisible = false;
+            var listquery = {};
+            listquery.pageNum=1;
+            listquery.pageSize=20;
+            listquery.guarantyId = this.grtCollateralInfo.guarantyId;
+            this.$store.dispatch('setListLoading', true);
+            this.doPageQuery(listquery);
+          }
+        },
+        getMsg2: function (flag) {
+          if (flag === 'ok') {
+            this.dialogVisible2 = false;
+            var listquery = {};
+            listquery.pageNum=1;
+            listquery.pageSize=20;
+            listquery.guarantyId = this.grtCollateralInfo.guarantyId;
+            this.$store.dispatch('setListLoading', true);
+            this.doPageQuery(listquery);
           }
         },
       },
