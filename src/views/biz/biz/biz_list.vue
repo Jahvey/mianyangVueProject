@@ -47,7 +47,8 @@
             
               { label: '客户编号', prop: 'partyNum', isSort: true},
               { label: '客户名称', prop: 'partyName', isSort: true},
-              { label: '业务编号', prop: 'bizNum', isSort: true},
+              { label: '业务编号', prop: 'bizNum', isSort: true,isLink: true,
+              url:'/biz/biz/biz_info',param:["approveId"]},
               { label: '业务产品', prop: 'productType', isSort: true,isFormat:true,enumType:'productType'},
               { label: '业务类型', prop: 'bizHappenType', isSort: true,isFormat:true,enumType:'bizHappenType'},//XD_SXYW0001
               { label: '业务性质', prop: 'creditMode', isSort: true,isFormat:true,enumType:'creditMode' },//XD_BIZ0003
@@ -99,7 +100,10 @@
       },
       view() {
         console.log('view 合同...')
-        // this.$router.push({path: '/contract/contractAdd'})
+        //console.log("param..."+param)
+        //this.$router.push({path: '/biz/biz/biz_info',query:{approveId: "ff808081655f5cb801655f60dfd80029" }})
+        this.$router.push({name: '业务结构基本信息',params:{approveId: "ff808081655f5cb801655f60dfd80029" }})
+    
       },
       newly() { 
        console.log('newly...')

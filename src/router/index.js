@@ -236,7 +236,7 @@ export const constantRouterMap = [
       }
     ]
   },
-  
+
   {//by wanghao
     path: '/csm', // 主路径需要更改
     component: Layout,
@@ -446,6 +446,29 @@ export const constantRouterMap = [
         name: '综合授信额度信息', 
         component: _import('crd/crdApply/crd_apply'), 
         meta: { title: '综合授信额度信息', icon: 'manage' }
+      }
+
+    ]
+  },
+  {//by wanghao
+    path: '/biz', 
+    component: Layout,
+    // redirect: '/contract/info',    
+    name: '业务信息',
+    meta: { title: '业务信息', icon: 'organization' },
+    roles: ['admin'], // 这里需要更改
+    children: [
+      {
+        path: 'biz/biz_info',
+        name: '业务结构基本信息', 
+        component: _import('biz/biz/biz_info'), 
+        meta: { title: '业务结构基本信息', icon: 'manage' }
+      },
+      {
+        path: 'crdApply/crd_apply',
+        name: '业务明细', 
+        component: _import('crd/crdApply/crd_apply'), 
+        meta: { title: '业务明细', icon: 'manage' }
       }
 
     ]

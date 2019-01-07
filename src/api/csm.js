@@ -50,6 +50,13 @@ export function queryCorpHis(queryParams){
 }
 
 //业务信息
+
+export function getBizInfo(queryParams){
+
+  console.log(queryParams)
+  return myGet('/mybatis-service/BizInfo/getBizInfo',queryParams)
+}
+
 //
 export function getBizList(queryParams){
 
