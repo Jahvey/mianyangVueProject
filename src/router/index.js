@@ -115,6 +115,26 @@ export const constantRouterMap = [
       component: _import('user/tabTest'),
       meta: { title: 'tabtest', icon: 'manage' }
     },{
+        path: 'dialogTest',
+        name: 'dialogTest',
+        component: _import('user/dialogTest'),
+        meta: { title: 'dialogTest', icon: 'manage' }
+      },{
+        path: 'dialogAndTabTest',
+        name: 'dialogAndTabTest',
+        component: _import('user/dialogAndTabTest'),
+        meta: { title: 'dialogAndTabTest', icon: 'manage' }
+      },{
+        path: 'dialogAndTabTreeTest',
+        name: 'dialogAndTabTreeTest',
+        component: _import('user/dialogAndTabTreeTest'),
+        meta: { title: 'dialogAndTabTreeTest', icon: 'manage' }
+      },{
+        path: 'dialogWithTreeTest',
+        name: 'dialogWithTreeTest',
+        component: _import('user/dialogWithTreeTest'),
+        meta: { title: 'dialogWithTreeTest', icon: 'manage' }
+      },{
       path: 'user',
       name: 'user',
       component: _import('user/user'),
@@ -129,6 +149,16 @@ export const constantRouterMap = [
       name: 'manyTable',
       component: _import('user/ManyTable'),
       meta: { title: 'manyTable', icon: 'manage' }
+    },{
+        path: 'userEditDialog',
+        name: 'userEditDialog',
+        component: _import('user/userEditDialog'),
+        meta: { title: 'userEditDialog', icon: 'manage' }
+    },{
+      path: 'userTransfer',
+      name: 'userTransfer',
+      component: _import('user/userTransfer'),
+      meta: { title: 'userTransfer', icon: 'manage' }
     },{
       path: 'userEdit',
       name: 'userEdit',
@@ -240,7 +270,7 @@ export const constantRouterMap = [
   {//by wanghao
     path: '/csm', // 主路径需要更改
     component: Layout,
-    // redirect: '/contract/info',    
+    // redirect: '/contract/info',
     // redirect: '/contract/list',  //路由，并没有配置这个，404
     name: '我的客户',
     meta: { title: '我的客户', icon: 'organization' },
@@ -248,230 +278,463 @@ export const constantRouterMap = [
     children: [
       {
         path: 'workdesk/mycust_natural',
-        name: '自然人客户', 
-        component: _import('csm/workdesk/mycust_natural'), 
+        name: '自然人客户',
+        component: _import('csm/workdesk/mycust_natural'),
         meta: { title: '自然人客户', icon: 'manage' }
       },
       {
+        path: 'natural/naturalPerson',
+        name: '自然人客户详情',
+        component: _import('csm/natural/naturalPerson'),
+        meta: { title: '自然人客户详情', icon: 'manage' }
+      },
+      {
         path: 'natural/natural_info',
-        name: '自然人客户概况信息', 
-        component: _import('csm/natural/natural_info'), 
+        name: '自然人客户概况信息',
+        component: _import('csm/natural/natural_info'),
         meta: { title: '自然人客户概况信息', icon: 'manage' }
       },
       {
         path: 'account/csm_entrust_account_list',
-        name: '委托方账户信息', 
-        component: _import('csm/account/csm_entrust_account_list'), 
+        name: '委托方账户信息',
+        component: _import('csm/account/csm_entrust_account_list'),
         meta: { title: '委托方账户信息', icon: 'manage' }
       },
       {
         path: 'natural/natural_relative_list',
-        name: '对私客户关系个人信息', 
-        component: _import('csm/natural/natural_relative_list'), 
+        name: '对私客户关系个人信息',
+        component: _import('csm/natural/natural_relative_list'),
         meta: { title: '对私客户关系个人信息', icon: 'manage' }
       },
       {
         path: 'natural/natural_business',
-        name: '经营信息', 
-        component: _import('csm/natural/natural_business'), 
+        name: '经营信息',
+        component: _import('csm/natural/natural_business'),
         meta: { title: '经营信息', icon: 'manage' }
       },
       {
         path: 'natural/natural_school',
-        name: '高校信息', 
-        component: _import('csm/natural/natural_school'), 
+        name: '高校信息',
+        component: _import('csm/natural/natural_school'),
         meta: { title: '高校信息', icon: 'manage' }
       },
       {
         path: 'natural/natural_credit_list',
-        name: '信用信息', 
+        name: '信用信息',
         component: _import('csm/natural/natural_credit_list'),
         meta: { title: '信用信息', icon: 'manage' }
       },
       {
         path: 'corporation/csm_external_eval_result_list_in',
-        name: '内部评级信息', 
-        component: _import('csm/corporation/csm_external_eval_result_list_in'), 
+        name: '内部评级信息',
+        component: _import('csm/corporation/csm_external_eval_result_list_in'),
         meta: { title: '内部评级信息', icon: 'manage' }
       },
       {
         path: 'corporation/csm_impornant_event_list',
         name: '重大事件',
-        component: _import('csm/corporation/csm_impornant_event_list'), 
+        component: _import('csm/corporation/csm_impornant_event_list'),
         meta: { title: '重大事件', icon: 'manage' }
       },
       {
         path: 'corporation/ews_warn_main',
         name: '预警信息',
-        component: _import('csm/corporation/ews_warn_main'), 
+        component: _import('csm/corporation/ews_warn_main'),
         meta: { title: '预警信息', icon: 'manage' }
       },
       {
         path: 'natural/natural_additive_list',
         name: '附加信息',
-        component: _import('csm/natural/natural_additive_list'), 
+        component: _import('csm/natural/natural_additive_list'),
         meta: { title: '附加信息', icon: 'manage' }
       },
       {
         path: 'myBank/financing_list',
         name: '本行融资情况批复信息',
-        component: _import('csm/myBank/financing_list'), 
+        component: _import('csm/myBank/financing_list'),
         meta: { title: '本行融资情况批复信息', icon: 'manage' }
       },
       {
         path: 'myBank/financing_list_yewu',
         name: '本行融资情况业务信息',
-        component: _import('csm/myBank/financing_list_yewu'), 
+        component: _import('csm/myBank/financing_list_yewu'),
         meta: { title: '本行融资情况业务信息', icon: 'manage' }
       },
       {
-        path: 'myBank/guarantee_tab',
+        path: 'myBank/guarantee_list',
         name: '为我行客户担保情况',
-        component: _import('csm/myBank/guarantee_tab'), 
+        component: _import('csm/myBank/guarantee_list'),
         meta: { title: '为我行客户担保情况', icon: 'manage' }
       },
       {
         path: 'myBank/guarantee_list_diya',
         name: '为我行客户质押情况',
-        component: _import('csm/myBank/guarantee_list_diya'), 
+        component: _import('csm/myBank/guarantee_list_diya'),
         meta: { title: '为我行客户质押情况', icon: 'manage' }
       },
       {
         path: 'corporation/csm_illegal_list',
         name: '违法记录',
-        component: _import('csm/corporation/csm_illegal_list'), 
+        component: _import('csm/corporation/csm_illegal_list'),
         meta: { title: '违法记录', icon: 'manage' }
       },
       {
         path: 'myBank/refuse_list',
         name: '拒贷信息',
-        component: _import('csm/myBank/refuse_list'), 
+        component: _import('csm/myBank/refuse_list'),
         meta: { title: '拒贷信息', icon: 'manage' }
       },
       {
         path: 'corporation/csm_manage_team_list',
         name: '我行管理团队',
-        component: _import('csm/corporation/csm_manage_team_list'), 
+        component: _import('csm/corporation/csm_manage_team_list'),
         meta: { title: '我行管理团队', icon: 'manage' }
       },
       {
         path: 'biz_info/pro_biz_upload',
         name: '相关文档',
-        component: _import('csm/biz_info/pro_biz_upload'), 
+        component: _import('csm/biz_info/pro_biz_upload'),
         meta: { title: '相关文档', icon: 'manage' }
       }
     ]
   },
     {//by wanghao
-    path: '/crt', 
+    path: '/crt',
     component: Layout,
-    // redirect: '/contract/info',    
-    // redirect: '/contract/list',  
+    // redirect: '/contract/info',
+    // redirect: '/contract/list',
     name: '合同签约',
     meta: { title: '合同签约', icon: 'organization' },
     roles: ['admin'], // 这里需要更改
     children: [
       {
         path: 'con_apply/con_apply_tz',
-        name: '主合同管理', 
-        component: _import('crt/con_apply/con_apply_tz'), 
+        name: '主合同管理',
+        component: _import('crt/con_apply/con_apply_tz'),
         meta: { title: '主合同管理', icon: 'manage' }
       },
       {
         path: 'subContractManage/subContarct_list',
-        name: '担保合同管理', 
-        component: _import('grt/subContractManage/subContarct_list'), 
+        name: '担保合同管理',
+        component: _import('grt/subContractManage/subContarct_list'),
         meta: { title: '担保合同管理', icon: 'manage' }
       },
       {
         path: 'con_apply/con_apply_print',
-        name: '合同打印', 
-        component: _import('crt/con_apply/con_apply_print'), 
+        name: '合同打印',
+        component: _import('crt/con_apply/con_apply_print'),
         meta: { title: '合同打印', icon: 'manage' }
       },
       {
         path: 'subContractManage/subContarct_dyzy_view',
-        name: '抵质押合同基本信息', 
-        component: _import('grt/subContractManage/subContarct_dyzy_view'), 
+        name: '抵质押合同基本信息',
+        component: _import('grt/subContractManage/subContarct_dyzy_view'),
         meta: { title: '抵质押合同基本信息', icon: 'manage' }
       },
       {
         path: 'subContractManage/subContarct_OldDbList_view',
-        name: '抵质押品关联信息', 
-        component: _import('grt/subContractManage/subContarct_OldDbList_view'), 
+        name: '抵质押品关联信息',
+        component: _import('grt/subContractManage/subContarct_OldDbList_view'),
         meta: { title: '抵质押品关联信息', icon: 'manage' }
       },
       {
         path: 'subContractManage/subContarct_OldContractList_view',
-        name: '主合同关联信息', 
-        component: _import('grt/subContractManage/subContarct_OldContractList_view'), 
+        name: '主合同关联信息',
+        component: _import('grt/subContractManage/subContarct_OldContractList_view'),
         meta: { title: '主合同关联信息', icon: 'manage' }
+      },
+      {
+        path: 'con_apply/con_apply_ywht',
+        name: '业务合同列表',
+        component: _import('crt/con_apply/con_apply_ywht'),
+        meta: { title: '业务合同列表', icon: 'manage' }
+
+      },
+      {
+        path: 'subContractManage/sub_con_tree',
+        name: '担保合同信息',
+        component: _import('grt/subContractManage/sub_con_tree'),
+        meta: { title: '担保合同信息', icon: 'manage' }
+
       }
     ]
   },
   {//by wanghao
-    path: '/biz', 
+    path: '/biz',
     component: Layout,
-    // redirect: '/contract/info',    
-    // redirect: '/contract/list',  
+    // redirect: '/contract/info',
+    // redirect: '/contract/list',
     name: '业务申请',
     meta: { title: '业务申请', icon: 'organization' },
     roles: ['admin'], // 这里需要更改
     children: [
       {
         path: 'biz/biz_list',
-        name: '业务信息', 
-        component: _import('biz/biz/biz_list'), 
+        name: '业务信息',
+        component: _import('biz/biz/biz_list'),
         meta: { title: '业务信息', icon: 'manage' }
       },
       {
         path: 'biz_apply/biz_apply_jxhj',
-        name: '循环贷/续接贷', 
-        component: _import('biz/biz_apply/biz_apply_jxhj'), 
+        name: '循环贷/续接贷',
+        component: _import('biz/biz_apply/biz_apply_jxhj'),
         meta: { title: '循环贷/续接贷', icon: 'manage' }
       }
 
     ]
   },
   {//by wanghao
-    path: '/crd', 
+    path: '/crd',
     component: Layout,
-    // redirect: '/contract/info',    
+    // redirect: '/contract/info',
     name: '额度信息',
     meta: { title: '额度信息', icon: 'organization' },
     roles: ['admin'], // 这里需要更改
     children: [
       {
         path: 'crdApply/crd_apply',
-        name: '综合授信额度信息', 
-        component: _import('crd/crdApply/crd_apply'), 
+        name: '综合授信额度信息',
+        component: _import('crd/crdApply/crd_apply'),
         meta: { title: '综合授信额度信息', icon: 'manage' }
       }
 
     ]
   },
   {//by wanghao
-    path: '/biz', 
+    path: '/biz',
     component: Layout,
-    // redirect: '/contract/info',    
+    // redirect: '/contract/info',
     name: '业务信息',
     meta: { title: '业务信息', icon: 'organization' },
     roles: ['admin'], // 这里需要更改
     children: [
       {
         path: 'biz/biz_info',
-        name: '业务结构基本信息', 
-        component: _import('biz/biz/biz_info'), 
+        name: '业务结构基本信息',
+        component: _import('biz/biz/biz_info'),
         meta: { title: '业务结构基本信息', icon: 'manage' }
       },
       {
         path: 'crdApply/crd_apply',
-        name: '业务明细', 
-        component: _import('crd/crdApply/crd_apply'), 
+        name: '业务明细',
+        component: _import('crd/crdApply/crd_apply'),
         meta: { title: '业务明细', icon: 'manage' }
+      },
+      {
+        path: 'bizApply/biz_apply_zc',
+        name: '业务申请新增',
+        component: _import('biz/biz_apply/biz_apply_zc'),
+        meta: { title: '业务申请新增', icon: 'manage' }
       }
 
     ]
+  },
+
+  {
+    path: '/ledger',
+    component: Layout,
+//    redirect: '/org/info',
+    name: '台账查询',
+    meta: { title: '台账查询', icon: 'organization' },
+    roles: ['admin'],
+    children: [{
+      path: 'pubCust',
+      name: '对公客户查询',
+      component: _import('ledger/pubCust'),
+      meta: { title: '对公客户查询', icon: 'manage' }
+    },
+      {
+        path: 'naturalCust',
+        name: '自然人客户查询',
+        component: _import('ledger/naturalCust'),
+        meta: { title: '自然人客户查询', icon: 'manage' }
+      },
+      {
+        path: 'jointGuarCust',
+        name: '联保客户查询',
+        component: _import('ledger/jointGuarCust'),
+        meta: { title: '联保客户查询', icon: 'manage' }
+      },
+      {
+        path: 'interbankCust',
+        name: '同业客户查询',
+        component: _import('ledger/InterbankCust'),
+        meta: { title: '同业客户查询', icon: 'manage' }
+      },
+      {
+        path: 'groupCust',
+        name: '集团客户查询',
+        component: _import('ledger/groupCust'),
+        meta: { title: '集团客户查询', icon: 'manage' }
+      },
+      {
+        path: 'cooperInterCust',
+        name: '合作中介客户查询',
+        component: _import('ledger/cooperInterCust'),
+        meta: { title: '合作中介客户查询', icon: 'manage' }
+      },
+      {
+        path: 'cancelAfterVerificat',
+        name: '核销查询',
+        component: _import('ledger/cancelAfterVerificat'),
+        meta: { title: '核销查询', icon: 'manage' }
+      },
+      {
+        path: 'disposalAssets',
+        name: '不良资产处置',
+        component: _import('ledger/disposalAssets'),
+        meta: { title: '不良资产处置', icon: 'manage' }
+      },
+      {
+        path: 'guarCompanyManageAccount',
+        name: '担保公司业务管理台账',
+        component: _import('ledger/guarCompanyManageAccount'),
+        meta: { title: '担保公司业务管理台账', icon: 'manage' }
+      },
+      {
+        path: 'custQuotaAccount',
+        name: '客户额度台账',
+        component: _import('ledger/custQuotaAccount'),
+        meta: { title: '客户额度台账', icon: 'manage' }
+      },
+      {
+        path: 'groupCustomerReply',
+        name: '集团客户批复',
+        component: _import('ledger/groupCustomerReply'),
+        meta: { title: '集团客户批复', icon: 'manage' }
+      },
+      {
+        path: 'singleCustomerReply',
+        name: '单一客户批复',
+        component: _import('ledger/singleCustomerReply'),
+        meta: { title: '单一客户批复', icon: 'manage' }
+      },
+      {
+        path: 'companyContractInfo',
+        name: '公司合同信息查询',
+        component: _import('ledger/companyContractInfo'),
+        meta: { title: '公司合同信息查询', icon: 'manage' }
+      },
+      {
+        path: 'personalContractInfo',
+        name: '个人合同信息查询',
+        component: _import('ledger/personalContractInfo'),
+        meta: { title: '个人合同信息查询', icon: 'manage' }
+      },
+      {
+        path: 'corporateLendInfo',
+        name: '公司借据信息查询',
+        component: _import('ledger/corporateLendInfo'),
+        meta: { title: '公司借据信息查询', icon: 'manage' }
+      },
+      {
+        path: 'personalLendInfo',
+        name: '个人借据信息查询',
+        component: _import('ledger/personalLendInfo'),
+        meta: { title: '个人借据信息查询', icon: 'manage' }
+      },
+      {
+        path: 'cooperaProjectQuota',
+        name: '合作项目额度使用明细查询',
+        component: _import('ledger/cooperaProjectQuota'),
+        meta: { title: '合作项目额度使用明细查询', icon: 'manage' }
+      },
+      {
+        path: 'custRateQuery',
+        name: '客户评级查询',
+        component: _import('ledger/custRateQuery'),
+        meta: { title: '客户评级查询', icon: 'manage' }
+      },
+      {
+        path: 'riskClassQuery',
+        name: '分类查询',
+        component: _import('ledger/riskClassQuery'),
+        meta: { title: '风险分类查询', icon: 'manage' }
+      },
+      {
+        path: 'changeAfterLoan',
+        name: '贷后变更查询',
+        component: _import('ledger/changeAfterLoan'),
+        meta: { title: '贷后变更查询', icon: 'manage' }
+      },
+      {
+        path: 'postLoanInspectQuery',
+        name: '贷后检查查询',
+        component: _import('ledger/postLoanInspectQuery'),
+        meta: { title: '贷后检查查询', icon: 'manage' }
+      },
+      {
+        path: 'declineLoanQuery',
+        name: '拒贷查询',
+        component: _import('ledger/declineLoanQuery'),
+        meta: { title: '拒贷查询', icon: 'manage' }
+      },
+      {
+        path: 'monitorLedger',
+        name: '监控台账',
+        component: _import('ledger/monitorLedger'),
+        meta: { title: '监控台账', icon: 'manage' }
+      },
+      {
+        path: 'fundUseLedgerQuery',
+        name: '资金使用台账查询',
+        component: _import('ledger/fundUseLedgerQuery'),
+        meta: { title: '资金使用台账查询', icon: 'manage' }
+      },
+      {
+        path: 'repaymentPlan',
+        name: '还款计划查询',
+        component: _import('ledger/repaymentPlan'),
+        meta: { title: '还款计划查询', icon: 'manage' }
+      },
+      {
+        path: 'detailedHistoryQuery',
+        name: '历史流水查询',
+        component: _import('ledger/detailedHistoryQuery'),
+        meta: { title: '历史流水查询', icon: 'manage' }
+      },
+      {
+        path: 'techProcessQuery',
+        name: '流程查询',
+        component: _import('ledger/techProcessQuery'),
+        meta: { title: '流程查询', icon: 'manage' }
+      },
+      {
+        path: 'quarStateQuery',
+        name: '对账信息查询',
+        component: _import('ledger/quarStateQuery'),
+        meta: { title: '季度对账单', icon: 'manage' }
+      },
+      {
+        path: 'recognEnterpriseScale',
+        name: '企业规模认定查询',
+        component: _import('ledger/recognEnterpriseScale'),
+        meta: { title: '企业规模认定查询', icon: 'manage' }
+      },
+      {
+        path: 'borrowQuery',
+        name: '借据查询',
+        component: _import('ledger/borrowQuery'),
+        meta: { title: '借据查询', icon: 'manage' }
+      },
+      {
+        path: 'loadDetailQuery',
+        name: '借据信息查询',
+        component: _import('ledger/loadDetailQuery'),
+        meta: { title: '贷款交易明细查询', icon: 'manage' }
+      },
+      {
+        path: 'fixedQuery',
+        name: '固定查询',
+        component: _import('ledger/fixedQuery'),
+        meta: { title: '按分类（表内）', icon: 'manage' }
+      },
+      {
+        path: 'fixedQueryBw',
+        name: '固定查询',
+        component: _import('ledger/fixedQueryBw'),
+        meta: { title: '按分类（表外）', icon: 'manage' }
+      }]
   },
   { path: '*', redirect: '/404', hidden: true },
 ]

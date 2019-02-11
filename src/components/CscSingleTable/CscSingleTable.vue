@@ -18,6 +18,7 @@
             <template v-else-if="queryCol.inputType==='select1'">
               <el-form-item :label="queryCol.label">
                 <el-select clearable v-model="form[queryCol.modelName]" @clear="clearSelect(queryCol.modelName)"
+                           @focus="getAllValue(queryCol.enumType)"
                            filterable  remote :loading="loading" :placeholder="queryCol.placeholder"
                            :remote-method="queryallRef"
                            @change="matchIdChange">
@@ -37,6 +38,71 @@
               </el-form-item>
             </template>
 
+            <template v-else-if="queryCol.inputType==='dateRange'">
+              <el-form-item :label="queryCol.label">
+                <csc-date :value.sync="form[queryCol.modelName]" type="dateRange"></csc-date>
+              </el-form-item>
+            </template>
+
+            <template v-else-if="queryCol.inputType==='dateRange2'">
+
+              <el-form-item :label="queryCol.label">
+                <el-col :span="5">
+                  <csc-date :value.sync="form[queryCol.modelName]" type="date"></csc-date>
+                </el-col>
+                <el-col class="line" :span="2">{{queryCol.param.label}}</el-col>
+                <el-col :span="5">
+                  <csc-date :value.sync="form[queryCol.param.modelName]" type="date"></csc-date>
+                </el-col>
+              </el-form-item>
+            </template>
+
+            <template v-else-if="queryCol.inputType==='dateRange11'">
+              <el-form-item :label="queryCol.label">
+
+              <el-row>
+
+              <el-col :span="12/pageDef.queryDef.columnNum">
+              <csc-date :value.sync="form[queryCol.modelName]" type="date"></csc-date>
+              </el-col>
+
+              <el-form-item :label="queryCol.param.label">
+              <el-col :span="12/pageDef.queryDef.columnNum">
+              <csc-date :value.sync="form[queryCol.param.modelName]" type="date"></csc-date>
+              </el-col>
+              </el-form-item>
+
+              </el-row>
+
+
+              </el-form-item>
+            </template>
+
+            <template v-else-if="queryCol.inputType==='dateRange3'">
+
+
+                <el-col :span="12/pageDef.queryDef.columnNum">
+                  <el-form-item :label="queryCol.label">
+                    <el-col>
+                      <csc-date :value.sync="form[queryCol.modelName]" type="date"></csc-date>
+                    </el-col>
+                  </el-form-item>
+                </el-col>
+
+                <el-col  :span="12/pageDef.queryDef.columnNum">
+
+                  <el-form-item :label="queryCol.param.label">
+                  <el-col>
+                  <csc-date :value.sync="form[queryCol.param.modelName]" type="date"></csc-date>
+                  </el-col>
+                  </el-form-item>
+                </el-col>
+
+
+
+
+
+            </template>
 
             <template v-else-if="queryCol.inputType==='datetime'">
               <el-form-item :label="queryCol.label">
@@ -74,18 +140,19 @@
 
     <!-- 列表按钮 -->
     <el-row class="toolBar">
-      <el-button v-for="button,index in pageDef.buttons" @click="doClick(button.funcName)"
-                 type="primary" size="mini" :disabled="buttonStates[index]">
+      <el-button v-for="button,index in pageDef.buttons" @click="doRadioClick(button.funcName)"
+                 type="primary" size="mini" :disabled="false">
         {{button.label}}
       </el-button>
       <!-- <el-button size="mini" class="filter-item" style="margin-left: 10px;" @click="doClick" type="primary" icon="el-icon-edit">新增</el-button> -->
     </el-row>
-    <!--列表，使用element-ui加入动态数据-->
+    <!--列表，使用element-ui加入动态数据   如果加入checkbox控制单选全选的话 如果点击全选或取消全选 会触发两个方法selection-change select-all -->
+    <!--如果是通过勾选复选框控制结合单选全选控制的话，选择 取消选择都会触发selection-change  select  current-change  怎么实现获取选择框的值？？-->
     <el-row class="singleTable">
     <!--<el-table  :data="entity.data" highlight-current-row v-loading="listLoading" @selection-change="selectionChange"-->
               <!--@row-click="rowChange" @select="rowChange" @row-dblclick="rowDbclick">-->
     <el-table  :data="entity.data" highlight-current-row v-loading="listLoading" @selection-change="selectionChange" @cell-click=""
-              @row-click="rowChange" @select="rowChange" @row-dblclick="rowDbclick">
+              @row-click="rowChange" @select="rowCheckChange" @current-change="rowCheckedChange" @select-all="selectAllChange"  @row-dblclick="rowDbclick">
         <!--设置表格是否点击扩展-->
       <template v-if="pageDef.tabDef.isExpand">
         <el-table-column type="expand">
@@ -104,6 +171,15 @@
         <!--设置表格是否可以全选-->
       <el-table-column v-if="pageDef.tabDef.isSelect" type="selection" width="55" header-align="center" align="center">
       </el-table-column>
+
+      <!--设置表格是否可以单选-->
+        <el-table-column v-if="pageDef.tabDef.isCheckRadio" label="选择" width="55" header-align="center" align="center">
+          <template slot-scope="scope">
+            <el-radio :label="scope.$index" v-model="templateRadio"
+                      @change.native="getTemplateRow(scope.$index,scope.row,pageDef.tabDef.checkParam)">&nbsp</el-radio>
+          </template>
+        </el-table-column>
+
         <!--设置显示序号-->
       <el-table-column v-if="pageDef.tabDef.isIndex" label="序号" type="index" width="60" header-align="center"
                        align="center">
@@ -156,6 +232,17 @@
             </template>
           </el-table-column>
       </template>
+
+        <template v-else-if="tabCol.isDialog" >
+          <el-table-column :label="tabCol.label" :prop="tabCol.prop" :sortable="tabCol.isSort" :width="135"
+                           show-overflow-tooltip header-align="center" align="center"  >
+            <template scope="scope">
+              <div style="color:blue;text-decoration:underline;cursor:pointer;"
+                   @click="getUrlParamDialog(scope.row,scope.$index,tabCol.param)">{{scope.row[tabCol.prop]}}</div>
+            </template>
+          </el-table-column>
+        </template>
+
         <template v-else-if="tabCol.isParam" >
           <el-table-column :label="tabCol.label" :prop="tabCol.prop" :sortable="tabCol.isSort" :width="135"
                            show-overflow-tooltip header-align="center" align="center"  >
@@ -175,6 +262,16 @@
                            </template>
           </el-table-column>
         </template>
+        <template v-else-if="tabCol.isHead">
+          <el-table-column :label="tabCol.label">
+            <template v-for="content in tabCol.contents">
+              <el-table-column :label="content.label"  :prop="content.prop" :sortable="content.isSort" header-align="center"
+                               align="center" :width="content.width" :show-overflow-tooltip="content.isOverflow">
+              </el-table-column>
+            </template>
+
+          </el-table-column>
+        </template>
         <!--一般默认的表头样式-->
         <template v-else>
           <el-table-column :label="tabCol.label"  :prop="tabCol.prop" :sortable="tabCol.isSort" header-align="center"
@@ -183,7 +280,7 @@
         </template>
       </template>
         <!--遍历表头 end-->
-      <el-table-column label="操作" width="180" header-align="center" align="center" fixed="right"
+      <el-table-column label="操作" width="210" header-align="center" align="center" fixed="right"
         v-if="(pageDef.rowButtons == undefined || pageDef.rowButtons.length > 0) && !disableRowButtons">
         <template scope="scope">
 
@@ -196,7 +293,7 @@
             <el-button v-for="rowButton in pageDef.rowButtons"
                        @click="doRowClick(rowButton.funcName, scope.$index, scope.row)"
                        :type="rowButton.type" size="mini" :disabled="evalRegulation(rowButton.regulation, scope.row)"
-                       v-if="evalVisible(rowButton.visible, scope.row)">
+                       v-if="rowButton">
               {{rowButton.label}}
             </el-button>
           </template>
@@ -224,6 +321,9 @@ import { formatter, getEnumObj } from '@/utils/formatter'
 import { extend } from '@/utils/validate'
 import commonUtil from '@/utils/commonUtil'
 import CscTableColumn from '@/components/CscTableColumn/CscTableColumn'
+
+import { getEnumsValue } from '@/api/user'
+import ElRow from "element-ui/packages/row/src/row";
 
 export default {
   name: 'CscSingleTable',
@@ -255,10 +355,13 @@ export default {
   },
   data() {
     return {
-      selection: [],
+      selection: [],//多选框的值
+      templateRadio:null,//单选框的值
+      templateSelection: [],//2019-1-7 当前选中行测试 选中行以后 点击按钮操作
       currentRow: undefined, // 当前行
       // 分页查询参数
       matchRefList: [],
+      enumsRefList: [],//根据标准数据key值查询列表
       // form: {curUserNum:"200555",orgcode:"0700"},
       form: {},
       loading: false,
@@ -277,7 +380,7 @@ export default {
   },
   created() {
     //console.log("create requestUrlParam"+requestUrlParam)
-    
+
     console.log("子组件created:"+new Date());
     // if(this.disableQueryForm)
     //   this.disableQueryForm=true;
@@ -290,7 +393,9 @@ export default {
 
   },
 
-  components: { CscTableColumn },
+  components: {
+    ElRow,
+    CscTableColumn },
 
   computed: {
     // 分页查询总笔数
@@ -335,10 +440,80 @@ export default {
     }
   },
   methods: {
-    matchIdChange(val) {},
+    matchIdChange(val) {//
+
+    },
     // 模糊查询方法
-    queryallRef(val) {
-      this.matchRefList = []
+    queryallRef(val) {//类似于百度搜索引擎的模糊查询下拉列表 关联查询
+      this.matchRefList = [];
+
+
+      //this.enumsRefList 的值何时动态查询出来
+      // this.enumsRefList=[
+      //   {
+      //   keyId: 1,
+      //   keyName: '张三'
+      // }, {
+      //     keyId: 2,
+      //     keyName: '李四'
+      // }, {
+      //     keyId: 3,
+      //     keyName: '王五'
+      // },{
+      //     keyId: 1,
+      //     keyName: '哈张'
+      //   }, {
+      //     keyId: 2,
+      //     keyName: '小李'
+      //   }, {
+      //     keyId: 3,
+      //     keyName: '大王'
+      //   }
+        // ];
+
+
+        if (val != '' && val !=null) {
+          console.log("queryallRef1:"+JSON.stringify(val));
+          this.loading = true;
+          setTimeout(() => {
+            this.loading = false;
+            this.matchRefList = this.enumsRefList.filter(item => {
+              return item.keyName.toLowerCase()
+                .indexOf(val.toLowerCase()) > -1;
+            });
+          }, 200);
+
+        } else {
+          this.matchRefList = [];
+        }
+      console.log("queryallRef2:"+JSON.stringify(this.matchRefList));
+    },
+
+    // getEnumsValue(enumType) {//2019-1-8 测试调用后台服务获取标准数据
+    //   this.$emit("getEnumsValue",enumType);
+    // },
+
+    getAllValue(listQuery) {
+      // console.log("getAllValue1:"+listQuery);
+      let query={"dicttypeid":listQuery};
+      if(this.enumsRefList && this.enumsRefList.length > 0){
+        //如果已经存在 则不处理了
+      }else {
+        getEnumsValue(query).then(response => {
+          // this.enumsRefList = response.data;//如果定义的是返回responsemsg 这里response.data  就是   方法一
+
+          // console.log("getAllValue4:"+JSON.stringify(response));
+          this.enumsRefList = response.data.map(item => { //组装，只需要keyId和keyName   方法二
+            // console.log("getAllValue2:"+JSON.stringify(item));
+            return {keyId: item.DICTID, keyName: item.DICTNAME};
+          });
+          // this.$store.dispatch('setListLoading', false);
+          console.log("getAllValue3:"+JSON.stringify(this.enumsRefList));
+        }).catch((error) => {
+          console.log(error)
+        })
+      }
+
     },
 
     // 格式化表格字段
@@ -352,10 +527,21 @@ export default {
     getEnums(enumType) {
       return getEnumObj(enumType)
     },
-    // 子组件按钮事件
+    // 子组件按钮事件  复选框
     doClick(funcName) {
       extend(this.form, this.listQuery)
       this.$emit(funcName, this.selection, this.form)
+    },
+
+    // 子组件按钮事件 单选框 2019-1-7 子组件table上方按钮事件 类似于 查看 失效 调整等
+    doRadioClick(funcName) {
+      extend(this.form, this.listQuery);
+      if(this.templateSelection==null){
+        console.log("do ...el-radio.....")
+        return false
+      }
+      console.log("子组件doRadioClick:"+JSON.stringify(this.templateSelection));
+      this.$emit(funcName, this.templateSelection);//当前选中行
     },
 
     doRowClick(funcName, index, row) {
@@ -427,9 +613,69 @@ export default {
       this.$emit('rowChange', row)
     },
 
-    selectionChange(selection) {
-      this.selection = selection
+    // 测试时 单独写手动勾选checkbox行选中事件  如何区分是选中还是取消选中
+    selectAllChange(selection) {//该方法比selectionChange 后执行   select-all	当用户手动勾选全选 Checkbox 时触发的事件	selection
+      console.log("selectAllChange1:"+JSON.stringify(selection));
+      if (this.pageDef.tabDef.isSelect) {
+        if(selection && selection.length > 0){
+          this.selection=[];//切记要清空
+          for(var i = 0; i< selection.length;++i){
+            this.selection.push(selection[i][this.pageDef.tabDef.mutiCheckParam]);
+          }
+        }else{
+          //取消全选时将选择的数组清空  或者以@分隔
+          this.selection=[];
+        }
+      }
+      console.log("selectAllChange:"+JSON.stringify(this.selection));
+    },
+
+    // 测试时 单独写手动勾选checkbox行选中事件  如何区分是选中还是取消选中
+    rowCheckChange(selection,row) {//该方法比selectionChange 后执行   @select
+      console.log("rowCheckChange1:"+JSON.stringify(row));
+      console.log("rowCheckChange2:"+JSON.stringify(selection));
+      this.currentRow = row
+      if (this.pageDef.tabDef.isSelect) {
+
+        this.selection=[];
+        if(selection && selection.length > 0){
+          for(var i=0;i<selection.length;++i){
+            this.selection.push(selection[i][this.pageDef.tabDef.mutiCheckParam])
+          }
+        }
+      }
+
+      console.log("rowCheckChange3:"+JSON.stringify(this.selection));
+      this.$emit('rowChange', row)
+    },
+
+    // 测试时 单独写checkbox行选中事件  如何区分是选中还是取消选中
+    rowCheckedChange(currentRow, oldCurrentRow) {//2019-1-8 选中行或者选中checkbox 都会触发执行  要注意  @current-change
+      console.log("rowCheckedChange1:"+JSON.stringify(currentRow));
+      console.log("rowCheckedChange2:"+JSON.stringify(oldCurrentRow));
+      if(currentRow){
+        this.selection.push(currentRow[this.pageDef.tabDef.mutiCheckParam]);
+      }else{
+        if(this.selection && this.selection.length > 0){
+          let i=this.selection.indexOf(oldCurrentRow[this.pageDef.tabDef.mutiCheckParam])
+          this.selection.splice(i,1)//删除一个元素
+        }
+      }
+
+      console.log("rowCheckedChange3:"+JSON.stringify(this.selection));
+    },
+
+    selectionChange(selection) {//2019-1-7 修改获取选择框值得方法  根据key 值获取   @selection-change
+      console.log("selectionChange1:"+JSON.stringify(selection))
+      console.log("selectionChange2:"+JSON.stringify(this.selection))
+      this.selection = selection;
+      console.log("selectionChange3:"+JSON.stringify(this.selection))
       this.$emit('selectionChange', selection)
+
+      //
+      let checkParam=this.pageDef.tabDef.checkParam;
+
+
     },
 
     evalRegulation(regulation, row) {
@@ -472,14 +718,24 @@ export default {
       this.$emit('rowDbclick', row)
     },
 
-    queryRef(row, column, cellValue) {
-      var fval = ''
-      if (cellValue !== '' && cellValue != undefined) {
-        this.$emit('queryRef', column.property, cellValue, function(val) {
-          fval = val
-        })
-        return fval
-      }
+    queryRef(row, column, cellValue) {//cellValue
+      // console.log("queryRef33:"+cellValue);
+      // console.log("queryRef11:"+JSON.stringify(row));
+      let columnName=column.property;
+      // console.log("queryRef22:"+ row[columnName]);
+      //第一种 以前的方法待测试 column.property 是列属性 pfAmt等
+      // var fval = ''
+      // if (cellValue !== '' && cellValue != undefined) {
+      //   console.log("子组件queryRef:"+column.property);
+      //   this.$emit('queryRef', column.property, cellValue, function(val) {
+      //     fval = val
+      //   })
+      //   return fval
+      // }
+
+      //第二种 先写一个格式化金额的
+      return commonUtil.numberToPercent(row[columnName],"#,##0.00");
+
     },
 
     formatDateTime(row, column, cellValue) {
@@ -495,14 +751,23 @@ export default {
     },
 
     customFormat(row, column, cellValue) {
+      // console.log("子组件customFormat:"+cellValue+"---val:"+column+"row:"+row);
       if (cellValue !== '' && cellValue != undefined) {
         let fval = ''
-        this.$emit('customFormat', row, column, cellValue, function(val) {
+        this.$emit('customFormat', cellValue, function(val) {
+          // console.log("子组件customFormat的val:"+val);
+          fval = val
+        })
+        // console.log("子组件customFormat的fval:"+fval);
+        return fval
+      } else {
+        // return cellValue
+
+        let fval = ''
+        this.$emit('customFormat', cellValue, function(val) {
           fval = val
         })
         return fval
-      } else {
-        return cellValue
       }
     },
     appendRequestUrlParam(key,value,url){
@@ -577,6 +842,70 @@ export default {
       console.log("拼接字符串的值4:"+eval(str));
       this.$store.state.urlParam.queryParam=eval(str);
       console.log("shijizhi:"+JSON.stringify(this.$store.state.urlParam.queryParam));
+    },
+
+    //点击行时获取参数
+    getUrlParamDialog(row,index,param){
+      // let queryKey=this.$store.state.urlParam.queryKey;
+      let queryParam={};
+      this.$store.state.urlParam.queryParam=queryParam;
+      console.log("getUrlParamDialog urlParam的key值:"+JSON.stringify(param));
+      console.log("getUrlParamDialog urlParam的row值:"+JSON.stringify(row));
+      console.log("getUrlParamDialog urlParam的row值:"+index);
+      // var str=eval(  '('  +  '{"'+ key +'"  : "'+ value +'","'+ target +'" : "'+ url +'"  }'    +')'  );
+      // console.log("拼接字符串:"+    '('  +  '{"'+ key +'"  : "'+ value +'","'+ target +'" : "'+ url +'"  }'    +')'   );
+
+      // this.$route.query=
+
+      var str='(';
+      str+= '{' ;
+      console.log("getUrlParamDialog 拼接字符串的值1:"+str);
+      for(var i=0;i<param.length;++i){
+        console.log("getUrlParamDialog key值分别是:"+param[i]);
+        // console.log("urlParam的age值:"+row["age"]+"urlParam的name值:"+row["name"]);
+        console.log("getUrlParamDialog urlParam的动态值:"+row[param[i]]);
+        if(i+1<param.length){
+          str += '"'+param[i]+'": "'+row[param[i]]+'", ';
+        }else{
+          str += '"'+param[i]+'": "'+row[param[i]]+'"  ';
+        }
+
+        console.log("getUrlParamDialog 拼接字符串的值2:"+str);
+      }
+      str+=' }'    +')';
+      console.log("getUrlParamDialog 拼接字符串的值3:"+str);
+      console.log("getUrlParamDialog 拼接字符串的值4:"+eval(str));
+      this.$store.state.urlParam.queryParam=eval(str);
+      console.log("getUrlParamDialog shijizhi:"+JSON.stringify(this.$store.state.urlParam.queryParam));
+      this.$emit('showDialog');
+    },
+
+    getTemplateRow(index,row,checkParam){//2019-1-7 获取单选框选中数据
+      //直接传递整行数据
+      console.log("getTemplateRow:"+JSON.stringify(row));
+      this.templateRadio=index;
+      this.templateSelection = row;
+
+      //根据key值获取需要的参数值
+      var str='(';
+      str+= '{' ;
+      console.log("拼接字符串的值1:"+str);
+      for(var i=0;i<checkParam.length;++i){
+        console.log("key值分别是:"+checkParam[i]);
+        // console.log("urlParam的age值:"+row["age"]+"urlParam的name值:"+row["name"]);
+        console.log("urlParam的动态值:"+row[checkParam[i]]);
+        if(i+1<checkParam.length){
+          str += '"'+checkParam[i]+'": "'+row[checkParam[i]]+'", ';
+        }else{
+          str += '"'+checkParam[i]+'": "'+row[checkParam[i]]+'"  ';
+        }
+
+        console.log("拼接字符串的值2:"+str);
+      }
+      str+=' }'    +')';
+      console.log("拼接字符串的值3:"+str);
+      this.templateSelection=eval(str);
+
     }
   }
 }

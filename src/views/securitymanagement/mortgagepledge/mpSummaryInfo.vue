@@ -18,6 +18,11 @@
             </el-form-item>
           </el-col>
           <el-col :span="24">
+            <el-form-item label="抵质押人名称">
+              <el-input  v-model="grtCollateralInfo.partyName" disabled="true"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
             <el-form-item label="抵质押人编号">
               <el-input  v-model="grtCollateralInfo.customerNum" disabled="true"></el-input>
             </el-form-item>
@@ -50,6 +55,7 @@
           collateralTypeCd:'',//抵质押物类别
           collateralNum:'',//抵质押物编号
           collateralName:'',//抵质押物名称
+          partyName:'',//抵质押人名称
           customerNum:'',//抵质押人编号
           timeMark:'',//建档日期
         },

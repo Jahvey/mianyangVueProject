@@ -66,28 +66,48 @@
                   required: true,
                   message: "借款合同号不能为空",
                   trigger: 'change'
-                }
+                },
+                {
+                  max: 30,
+                  message: '长度不超过 30 个字符',
+                  trigger: 'blur'
+                },
               ],
               loanManName: [
                 {
                   required: true,
                   message: "借款人名称不能为空",
                   trigger: 'change'
-                }
+                },
+                {
+                  max: 8,
+                  message: '长度不超过 8 个字符',
+                  trigger: 'blur'
+                },
               ],
               notarialDeedNo: [
                 {
                   required: true,
                   message: "公证书编号不能为空",
                   trigger: 'change'
-                }
+                },
+                {
+                  max: 30,
+                  message: '长度不超过 30 个字符',
+                  trigger: 'blur'
+                },
               ],
               notarialOrg: [
                 {
                   required: true,
                   message: "公证处名称不能为空",
                   trigger: 'change'
-                }
+                },
+                {
+                  max: 30,
+                  message: '长度不超过 30 个字符',
+                  trigger: 'blur'
+                },
               ],
               recordDate:[
                 {

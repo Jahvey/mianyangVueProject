@@ -38,8 +38,92 @@ export function findSubContractList(queryParams) {
 //查询自然人委托方账户信息
 export function getEntrustAccountsByPartyId(queryParams) {
   console.log(queryParams)
-  return myGet('/mybatis-service/account/getEntrustAccountsByPartyId', queryParams)
+  return myGet('/mybatis-service/natural/getEntrustAccountsByPartyId', queryParams)
 }
+
+//查询自然人关联关系
+export function getRelativePsnList(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/natural/getRelativePsnList', queryParams)
+}
+
+
+//查询自然人信用信息
+export function queryNaturalBusiness(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/natural/queryNaturalBusiness', queryParams)
+}
+
+
+//查询自然人
+export function queryNaturalSchool(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/natural/queryNaturalSchool', queryParams)
+}
+
+//查询自然人客户信用信息
+export function getNaturalCreditList(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/natural/getNaturalCreditList', queryParams)
+}
+
+
+
+//查询自然人评级历史列表查询生效的评级信息
+export function getHisIrmByParty(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/corporation/getHisIrmByParty', queryParams)
+}
+
+
+
+export function getCsmImpornantEventInfo(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/corporation/getCsmImpornantEventInfo', queryParams)
+}
+
+//附加信息
+export function getAdditiveList(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/natural/getAdditiveList', queryParams)
+}
+
+
+//本行融资情况-批复
+export function getfinancingList(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/myBank/getfinancingList', queryParams)
+}
+
+
+//本行融资情况  业务
+export function getfinancingListYW(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/myBank/getfinancingListYW', queryParams)
+}
+
+
+//为我行客户担保情况
+export function getGuaranteeList(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/myBank/getGuaranteeList', queryParams)
+}
+
+
+
+export function getGuaranteeListDY(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/myBank/getGuaranteeListDY', queryParams)
+}
+
+
+//违约记录
+export function getIllegalList(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/natural/getIllegalList', queryParams)
+}
+
+
 
 
 //额度信息

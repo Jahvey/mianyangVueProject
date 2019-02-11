@@ -12,7 +12,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="发生日期" prop="occurDate" >
-            <el-date-picker  :disabled="inputComponentDisable" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="grtCollateralAccident.occurDate" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+            <el-date-picker   format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="grtCollateralAccident.occurDate" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
           </el-form-item>
         </el-col>
         <el-col :span="12">
@@ -42,8 +42,7 @@
 
 <script>
   import enums from "@/utils/enums"
-  import { updateGrtCollateralAccident} from '@/api/securitymanagement'
-  import commonUtil from '@/utils/commonUtil'
+  import { updateCollateralAccident} from '@/api/securitymanagement'
     export default {
         name: "edit-accident-info",
       props:{
@@ -110,10 +109,11 @@
               ],
             },
             accidentInfoTypeOpt:enums.CollateralState,
+            buttonText:"提交",
+            buttonDisable:false,
           }
       },
       beforeMount(){
-        this.grtCollateralAccident.occurDate = commonUtil.timeStampToDate(this.grtCollateralAccident.occurDate);
       },
       methods:{
         comfirm:function () {
@@ -121,7 +121,7 @@
             if(valid){
               this.buttonDisable = true;
               this.buttonText = "提交中";
-              updateGrtCollateralAccident(this.grtCollateralRegistration).then(response => {
+              updateCollateralAccident(this.grtCollateralAccident).then(response => {
                 if(response.data.flag == enums.stateCode.flag.success){//返回数据成功
                   //提示父组件关闭dialog,并且刷新，重置当前表单
                   this.$refs["validate"].resetFields();

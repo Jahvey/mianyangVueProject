@@ -3,16 +3,17 @@
   :pageDef="pageDef" 
   :entity="entity" 
   @findOne="findOne"
+  @pageQuery="doPageQuery"
+  :disableQueryButtons="disableQueryButtons" 
   :disableQueryForm="disableQueryForm" 
-  :disableRowButtons="disableRowButtons"            
-   @contractList="contractList"   >
+   >
   </csc-single-table>
 </template>
 
 <script>
   // 账户信息
-  import CscSingleTable from '@/components/CscSingleTable/CscSingleTable' // 引入的这个是子组件，需要把父组件的值传递给子组件修改子组件
-  import { getContractList } from '@/api/contract'// 正常往后台发送异步请求的类
+  import CscSingleTable from '@/components/CscSingleTable/CscSingleTable' 
+  import { getCsmImpornantEventInfo } from '@/api/csm'
  
 
   export default {
@@ -22,15 +23,15 @@
         disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮
         disableRowButtons: true, // 隐藏tab表单按钮
         listLoading: false,
-        entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
-          data: [
-            {
-              eventTypeCd: '紧急事件',
-              happenDate: '2017-09-23',
-              eventState: '身份证',
+        entity: {
+          // data: [
+          //   {
+          //     eventTypeCd: '紧急事件',
+          //     happenDate: '2017-09-23',
+          //     eventState: '身份证',
 
-            }
-          ]
+          //   }
+          // ]
         },
 
         pageDef: {
@@ -59,35 +60,28 @@
     components: { CscSingleTable }, // 引入的子组件
 
     methods: {
-      doPageQuery() {
-        // this.contractList(listQuery)
-         console.log('doPageQuery...')
-      },
+      doPageQuery(listQuery) {
+        getCsmImpornantEventInfo(listQuery).then(response => {
+          this.entity = response.data
+          this.$store.dispatch('setListLoading', false)
 
-      contractList(listQuery) {
-        const params = {
-          listQuery: this.listQuery
-        }
-
-        this.listLoading = true
-        console.log('listQuery ....' + listQuery)
-        getContractList(params).then(response => {
-          this.entity = response
-          console.log(" response.data.entity"+ response.data.entity)
-          this.listLoading = false
+     
         }).catch((error) => {
-         
+    
           console.log(error)
         })
       },
+
+
       findOne() { // 重置表单就是直接清空表单里面的数据
-        alert('查询')
+        console.log('查询')
       }
     },
 
     mounted() {
 
-      this.contractList() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
+     this.doPageQuery() 
+  
     }
 
   }

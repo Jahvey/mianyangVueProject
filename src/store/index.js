@@ -8,6 +8,7 @@ import getters from './getters'
 import nav from './modules/nav'
 import menu from './modules/menu'
 import urlParam from './modules/urlParam'
+import indexStore from './modules/indexStore'
 
 Vue.use(Vuex)
 
@@ -20,7 +21,8 @@ const store = new Vuex.Store({
     nav,
 
     menu,
-    urlParam
+    urlParam,
+    indexStore
   },
   getters
 

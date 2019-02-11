@@ -65,7 +65,7 @@
 
     created() {
       
-      //let param=this.$store.state.urlParam.queryParam
+      //let param=this.$store.state.urlParam.queryParam //good work
       //let param=this.$route.query
       let param=this.$route.params
       this.getBizInfo(param)

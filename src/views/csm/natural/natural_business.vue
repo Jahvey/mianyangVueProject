@@ -3,16 +3,17 @@
   :pageDef="pageDef" 
   :entity="entity" 
   @findOne="findOne"
+  @pageQuery="doPageQuery"
   :disableQueryForm="disableQueryForm" 
-  :disableRowButtons="disableRowButtons"            
-   @contractList="contractList"   >
+  :disableRowButtons="disableRowButtons"
+   >
   </csc-single-table>
 </template>
 
 <script>
   // 账户信息
-  import CscSingleTable from '@/components/CscSingleTable/CscSingleTable' // 引入的这个是子组件，需要把父组件的值传递给子组件修改子组件
-  import { getContractList } from '@/api/contract'// 正常往后台发送异步请求的类
+  import CscSingleTable from '@/components/CscSingleTable/CscSingleTable' 
+  import { queryNaturalBusiness } from '@/api/csm'
  
 
   export default {
@@ -23,26 +24,26 @@
         disableRowButtons: true, // 隐藏tab表单按钮
         listLoading: false,
         entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
-          data: [
-            {
-              dealproj: '科学养猪',
-              dealbrand: '科学养猪',
-              licetype: '身份证',
-              comedate: '2017-8-9',
-              liceid:'jj237297328',
-              liceaddr: '四川大学',
-              dealscope: '科学养猪，科学种植，科学喂养',
-              dealaddr:'成都市高新区孵化园',
-              dealaddrkind:'个体工商户',
-              yearamt:'200,000.00',
-              empnum:'50',
-              lastchanperson:'王豪',
-              lastchandate:'2018-07-09',
-              monthavesell:'35,000.00',
-              monthavecost:'12,000.00'
+          // data: [
+          //   {
+          //     dealproj: '科学养猪',
+          //     dealbrand: '科学养猪',
+          //     licetype: '身份证',
+          //     comedate: '2017-8-9',
+          //     liceid:'jj237297328',
+          //     liceaddr: '四川大学',
+          //     dealscope: '科学养猪，科学种植，科学喂养',
+          //     dealaddr:'成都市高新区孵化园',
+          //     dealaddrkind:'个体工商户',
+          //     yearamt:'200,000.00',
+          //     empnum:'50',
+          //     lastchanperson:'王豪',
+          //     lastchandate:'2018-07-09',
+          //     monthavesell:'35,000.00',
+          //     monthavecost:'12,000.00'
 
-            }
-          ]
+          //   }
+          // ]
         },
         // disableQueryForm: true,
         pageDef: {
@@ -54,7 +55,7 @@
             isIndex: true, // 是否有序号
             // 表格字段定义
             tabCols: [
-             // { label: '选择', prop: 'checkcolumn', isSort: true },
+            
               { label: '经营项目', prop: 'dealproj', isSort: true },
               { label: '经营字号', prop: 'dealbrand', isSort: true },
               { label: '注册类型', prop: 'licetype', isSort: true }, // currency：货币
@@ -82,27 +83,18 @@
     components: { CscSingleTable }, // 引入的子组件
 
     methods: {
-      doPageQuery() {
-        // this.contractList(listQuery)
-         console.log('doPageQuery...')
-      },
+      doPageQuery(listQuery) {
+        queryNaturalBusiness(listQuery).then(response => {
+          this.entity = response.data
+          this.$store.dispatch('setListLoading', false)
 
-      contractList(listQuery) {
-        const params = {
-          listQuery: this.listQuery
-        }
-
-        this.listLoading = true
-        console.log('listQuery ....' + listQuery)
-        getContractList(params).then(response => {
-          this.entity = response
-          console.log(" response.data.entity"+ response.data.entity)
-          this.listLoading = false
+     
         }).catch((error) => {
-         
+    
           console.log(error)
         })
       },
+
       findOne() { // 重置表单就是直接清空表单里面的数据
         alert('查询')
       }
@@ -110,7 +102,7 @@
 
     mounted() {
 
-      this.contractList() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
+      this.doPageQuery() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
     }
 
   }

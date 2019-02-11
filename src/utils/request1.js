@@ -242,6 +242,19 @@ export function myGet(url, params) {
 export function myPost(url, params) {
   let _url = url
   return new Promise((resolve, reject) => {
+    axios.post(_url, params).then(function (response) {
+      resolve(response)
+    })
+      .catch(function (err) {
+        reject(err)
+      })
+  })
+}
+/*******************by wuyong start****************************/
+//参数为params，而不是{params}
+export function myPost2(url, params) {
+  let _url = url
+  return new Promise((resolve, reject) => {
     axios.post(_url, {params}).then(function (response) {
       resolve(response)
     })
@@ -250,5 +263,5 @@ export function myPost(url, params) {
       })
   })
 }
-
+/*******************by wuyong end****************************/
 // export default service

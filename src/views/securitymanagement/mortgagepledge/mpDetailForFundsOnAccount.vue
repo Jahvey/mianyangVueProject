@@ -1,394 +1,433 @@
 <!--详细信息  应收账款-->
 <template>
-    <div class="mp-detail-for-funds-on-account">
-      <el-row>
-        <el-form el-form label-width="200px" :model="foundsOnAccountsInfo" label-position="right" :rules="rules" ref="mpFundsOnAccountDetailValidate" >
-          <el-col :span="24">
-            <p>价值信息</p>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="币种" prop="customerType" >
-              <el-select :disabled="inputComponentDisable"  v-model="foundsOnAccountsInfo.currency" placeholder="请选择" style="width:100%">
-                <el-option
-                  v-for="item in currencyOption"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="抵质押物认定价值(元)" prop="evaluateWorth" >
-              <el-input :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.evaluateWorth" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="价值认定方式" prop="customerType" >
-              <el-select :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.worthEvaluateWay" placeholder="请选择" style="width:100%">
-                <el-option
-                  v-for="item in worthEvaluateWayOption"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="账面原值/取得价值(元)" prop="originalWorth" >
-              <el-input :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.originalWorth" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="价值认定时间"  >
-              <el-date-picker v-model="foundsOnAccountsInfo.worthEvaluateTime" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="价值认定到期日"  >
-              <el-date-picker v-model="foundsOnAccountsInfo.worthEvaluateTimeExpire" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <p>应收账款信息</p>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="付款人全称" prop="payName">
-              <el-input :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.payName" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="应收账款类型" prop="accountType" >
-              <el-select :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.accountType" placeholder="请选择" style="width:100%">
-                <el-option
-                  v-for="item in accountTypeOpt"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="币种" prop="foaCurrency" >
-              <el-select :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.foaCurrency" placeholder="请选择" style="width:100%">
-                <el-option
-                  v-for="item in currencyOption"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="应收账款发票实有金额(元)" prop="factMoney">
-              <el-input :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.factMoney" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="账龄" prop="accountAge">
-              <el-input :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.accountAge" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="账龄单位" prop="accountAgeUnit" >
-              <el-select :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.accountAgeUnit" placeholder="请选择" style="width:100%">
-                <el-option
-                  v-for="item in accountAgeUnitOpt"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="还款期限(月)" prop="payLimitTime">
-              <el-input :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.payLimitTime" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="约定收款日"  >
-              <el-date-picker v-model="foundsOnAccountsInfo.originalGetTime" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="该笔应收款供销合同编号" prop="contractNumber">
-              <el-input :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.contractNumber" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="该账款入账日期"  >
-              <el-date-picker v-model="foundsOnAccountsInfo.inAccountTime" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24" >
-            <el-form-item label="该应收款核实情况" prop="checkSituation" >
-              <el-input :disabled="inputComponentDisable" type="textarea" v-model="foundsOnAccountsInfo.checkSituation" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24" >
-            <el-form-item label="其他情况说明" prop="otherSituationExplain" >
-              <el-input :disabled="inputComponentDisable" type="textarea" v-model="foundsOnAccountsInfo.otherSituationExplain" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-form>
-      </el-row>
-      <el-row>
-        <el-col :span="6" :offset="10">
-          <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="doConfirmFundsOnAccountDetail" >{{buttonText}}</el-button>
-          <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="doReset">重置</el-button>
+  <div class="mp-detail-for-funds-on-account">
+    <el-row>
+      <el-form el-form label-width="200px" :model="foundsOnAccountsInfo" label-position="right" :rules="rules" ref="validate" >
+        <el-col :span="24">
+          <p>价值信息</p>
         </el-col>
-      </el-row>
-    </div>
+        <el-col :span="12">
+          <el-form-item label="币种" prop="currencyCd" >
+            <el-select :disabled="inputComponentDisable"  v-model="foundsOnAccountsInfo.currencyCd" placeholder="请选择" style="width:100%">
+              <el-option v-for="(value,key) in currencyOption" :key="key" :label="value" :value="key"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="抵质押物认定价值(元)" prop="marketValue" >
+            <el-input :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.marketValue" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="价值认定方式" prop="assetStatus" >
+            <el-select :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.assetStatus" placeholder="请选择" style="width:100%">
+              <el-option v-for="(value,key) in worthEvaluateWayOption" :key="key" :label="value" :value="key"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="账面原值/取得价值(元)" prop="bookValue" >
+            <el-input :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.bookValue" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="价值认定时间" prop="evaluateDate" >
+            <el-date-picker :editable="false" :disabled="inputComponentDisable" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="foundsOnAccountsInfo.evaluateDate" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="价值认定到期日"  prop="submittingDate">
+            <el-date-picker :editable="false" :disabled="inputComponentDisable" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="foundsOnAccountsInfo.submittingDate" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <p>应收账款信息</p>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="付款人全称" prop="paymentPersName">
+            <el-input :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.paymentPersName" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="应收账款类型" prop="receiveAmtType" >
+            <el-select :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.receiveAmtType" placeholder="请选择" style="width:100%">
+              <el-option v-for="(value,key) in receiveAmtTypeOpt" :key="key" :label="value" :value="key"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="币种" prop="currencyCs" >
+            <el-select :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.currencyCs" placeholder="请选择" style="width:100%">
+              <el-option v-for="(value,key) in currencyOption" :key="key" :label="value" :value="key"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="应收账款发票实有金额(元)" prop="amt">
+            <el-input :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.amt" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="账龄单位" prop="accounYearsUnitCd" >
+            <el-select :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.accounYearsUnitCd" placeholder="请选择" style="width:100%">
+              <el-option v-for="(value,key) in accounYearsUnitCdOpt" :key="key" :label="value" :value="key"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="账龄" prop="accountYears">
+            <el-input :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.accountYears" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="还款期限(月)" prop="receivableCartNum">
+            <el-input :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.receivableCartNum" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="约定收款日" prop="agreementAmtDate">
+            <el-date-picker :editable="false" :disabled="inputComponentDisable" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="foundsOnAccountsInfo.agreementAmtDate" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="该笔应收款供销合同编号" prop="receivableContractNum">
+            <el-input :disabled="inputComponentDisable" v-model="foundsOnAccountsInfo.receivableContractNum" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="该账款入账日期" prop="receivableAccountDate" >
+            <el-date-picker :editable="false" :disabled="inputComponentDisable" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="foundsOnAccountsInfo.receivableAccountDate" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24" >
+          <el-form-item label="该应收款核实情况" prop="receivableCheckStutas" >
+            <el-input :disabled="inputComponentDisable" type="textarea" v-model="foundsOnAccountsInfo.receivableCheckStutas" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24" >
+          <el-form-item label="其他情况说明" prop="otherNote" >
+            <el-input :disabled="inputComponentDisable" type="textarea" v-model="foundsOnAccountsInfo.otherNote" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+      </el-form>
+    </el-row>
+    <el-row>
+      <el-col :span="6" :offset="10">
+        <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="comfirm" >{{buttonText}}</el-button>
+        <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="doReset">重置</el-button>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
-    export default {
-      name: "mp-detail-for-funds-on-account",
-      data(){
-        return{
-          foundsOnAccountsInfo:{
-            currency:"人民币",//币种
-            evaluateWorth:"",//抵质押物认定价值(元)
-            originalWorth:"",//账面原值/取得价值(元)
-            worthEvaluateWay:"评估确定",//价值认定方式
-            worthEvaluateTime:"",//价值认定时间
-            worthEvaluateTimeExpire:"",//价值认定到期日
-            /*应收账款*/
-            payName:"",//付款人全称
-            accountType:"出口退税",//应收账款类型
-            foaCurrency:"",//币种(应收账款)
-            factMoney:"",//应收账款发票实有金额(元)
-            accountAge:"",//账龄
-            accountAgeUnit:"月",//账龄单位
-            payLimitTime:"",//还款期限(月)
-            originalGetTime:"",//约定收款日
-            contractNumber:"",//该笔应收款供销合同编号
-            inAccountTime:"",//该账款入账日期
-            checkSituation:"",//该应收款核实情况
-            otherSituationExplain:"",//其他情况说明
-          },
-          rules:{
-            /*价值*/
-            currency: [
-              {
-                required: true,
-                message: "请选择币种",
-                trigger: 'change'
-              }
-            ],
-            worthEvaluateWay: [
-              {
-                required: true,
-                message: "请选择评估方式",
-                trigger: 'change'
-              }
-            ],
-            evaluateWorth: [
-              {
-                required: true,
-                message: "请输入抵质押物认定价值",
-                trigger: 'blur'},
-              {
-                max: 20,
-                message: '长度不超过 20 个字符',
-                trigger: 'blur'
-              },
-              {
-                pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
-                message: '请输入正确的金额',
-                trigger: 'blur'
-              }
-            ],
-            originalWorth: [
-              {
-                required: true,
-                message: "请输入账面原值/取得价值",
-                trigger: 'blur'},
-              {
-                max: 20,
-                message: '长度不超过 20 个字符',
-                trigger: 'blur'
-              },
-              {
-                pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
-                message: '请输入正确的金额',
-                trigger: 'blur'
-              }
-            ],
-            /*应收账款 rules*/
-            payLimitTime: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            originalGetTime: [
-              {
-                required: false,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            contractNumber: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            inAccountTime: [
-              {
-                required: false,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            payName: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            accountType: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            foaCurrency: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            factMoney: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            accountAge: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            accountAgeUnit: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            checkSituation: [
-              {
-                required: false,
-                message: "请输入核实情况说明",
-                trigger: 'blur'},
-              {
-                max: 100,
-                message: '长度不超过 100 个字符',
-                trigger: 'blur'
-              },
-            ],
-            otherSituationExplain: [
-              {
-                required: false,
-                message: "请输入其他情况说明",
-                trigger: 'blur'},
-              {
-                max: 100,
-                message: '长度不超过 100 个字符',
-                trigger: 'blur'
-              },
-            ],
-          },
-          buttonDisable:false,
-          buttonText:"提交",
-          inputComponentDisable:false,
-          currencyOption:[
-            {
-              value: '人民币',
-              label: '人民币'
-            }, {
-              value: '美元',
-              label: '美元'
-            },
-          ],//币种类型选项
-          worthEvaluateWayOption:[
-            {
-              value: '评估确定',
-              label: '评估确定'
-            }, {
-              value: '协商确定',
-              label: '协商确定'
-            },
-          ],//价值认定方式
-          yesNotOption:[
-            {
-              value: '是',
-              label: '是'
-            }, {
-              value: '否',
-              label: '否'
-            },
-          ],//是否选择
-          /*应收账款opt*/
-          accountTypeOpt:[
-            {
-              value: '出口退税',
-              label: '出口退税'
-            }, {
-              value: '否',
-              label: '否'
-            },
-          ],
-          accountAgeUnitOpt:[
-            {
-              value: '月',
-              label: '月'
-            }, {
-              value: '否',
-              label: '否'
-            },
-          ],
-        }
+  import enums from "@/utils/enums"
+  import { updateReceivableAndGrtCollateral,selectReceivableByGuarantyId} from '@/api/securitymanagement'
+  export default {
+    name: "mp-detail-for-funds-on-account",
+    props:{
+      grtCollateralInfo:Object,
+      isUpdate:{
+        default:false,
+        type:Boolean,
       },
-      methods:{
-        doConfirmFundsOnAccountDetail:function () {
-          this.$refs["mpFundsOnAccountDetailValidate"].validate((valid) => {
-            if(valid){
-              //访问服务器，返回结果，做判断，提交成功，输入框不可获取焦点，确定和重置按钮不可点击
-              this.buttonDisable = true;
-              this.buttonText = "已提交";
-              this.inputComponentDisable = true;
-              this.$message({
-                message: '数据提交成功！',
-                type: 'success'
-              });
-            } else{
-              this.$message({
-                message: '请将信息填写完整',
-                type: 'error'
-              });
+    },
+    beforeMount(){
+      //数据回显
+      if(this.isUpdate){
+        selectReceivableByGuarantyId(this.grtCollateralInfo).then(response =>{
+          if(response.data.flag=='true') {
+            this.foundsOnAccountsInfo = response.data.data;
+          } else{
+            this.$message({
+              message: '数据回显'+JSON.stringify(response.data),
+              type: 'error'
+            });
+          }
+        });
+      }
+    },
+    data(){
+      return{
+        foundsOnAccountsInfo:{
+          lastUpdateUserNum:this.grtCollateralInfo.lastUpdateUserNum,//最后维护人用户编号
+          lastUpdateOrgCd:this.grtCollateralInfo.lastUpdateOrgCd,//最后维护人所属机构
+          guarantyId:this.grtCollateralInfo.guarantyId,//担保ID
+          currencyCd:"",//币种
+          marketValue:"",//抵质押物认定价值(元)
+          bookValue:"",//账面原值/取得价值(元)
+          assetStatus:"",//价值认定方式
+          evaluateDate:"",//价值认定时间
+          submittingDate:"",//价值认定到期日
+          /*应收账款*/
+          paymentPersName:"",//付款人全称
+          receiveAmtType:"",//应收账款类型
+          currencyCs:"",//币种(应收账款)
+          amt:"",//应收账款发票实有金额(元)
+          accountYears:"",//账龄
+          accounYearsUnitCd:"",//账龄单位
+          receivableCartNum:"",//还款期限(月)
+          agreementAmtDate:"",//约定收款日
+          receivableContractNum:"",//该笔应收款供销合同编号
+          receivableAccountDate:"",//该账款入账日期
+          receivableCheckStutas:"",//该应收款核实情况
+          otherNote:"",//其他情况说明
+        },
+        rules:{
+          /*价值信息 rules*/
+          assetStatus: [
+            {
+              required: true,
+              message: "请选择价值认定方式",
+              trigger: 'change'
             }
-          });
+          ],
+          bookValue: [
+            {
+              required: true,
+              message: "请输入帐面原值/取得价值",
+              trigger: 'change'
+            },
+            {
+              max: 20,
+              message: '长度不超过 20 个字符',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
+              message: '请输入正确的金额',
+              trigger: 'blur'
+            }
+          ],
+          marketValue: [
+            {
+              required: true,
+              message: "请输入抵质押物认定价值",
+              trigger: 'change'
+            },
+            {
+              max: 20,
+              message: '长度不超过 20 个字符',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
+              message: '请输入正确的金额',
+              trigger: 'blur'
+            }
+          ],
+          currencyCd: [
+            {
+              required: true,
+              message: "请选择币种",
+              trigger: 'change'
+            }
+          ],
+          evaluateDate:[
+            {
+              required: true,
+              message: "请选择日期",
+              trigger: 'change',
+              //type: 'date'
+            },
+          ],
+          submittingDate:[
+            {
+              required: true,
+              message: "请选择日期",
+              trigger: 'change',
+              //type: 'date'
+            },
+          ],
+          /*应收账款 rules*/
+          receivableCartNum: [
+            {
+              required: true,
+              message: "请输入",
+              trigger: 'change'
+            },
+            {
+              max: 6,
+              message: '长度不超过 6 个字符',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^[1-9]\d*$/,
+              message: '请输入1~999999之间的整数',
+              trigger: 'blur'
+            }
+          ],
+          agreementAmtDate: [
+            {
+              required: true,
+              message: "请选择",
+              trigger: 'change'
+            }
+          ],
+          receivableContractNum: [
+            {
+              required: true,
+              message: "请输入",
+              trigger: 'change'
+            },
+            {
+              max: 40,
+              message: '长度不超过 40 个字符',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^[A-Za-z0-9]{4,40}$/,
+              message: '编号只能是数字和字母的组合',
+              trigger: 'blur'
+            }
+          ],
+          receivableAccountDate: [
+            {
+              required: true,
+              message: "请选择",
+              trigger: 'change'
+            }
+          ],
+          paymentPersName: [
+            {
+              required: true,
+              message: "请输入",
+              trigger: 'change'
+            },
+            {
+              max: 30,
+              message: '长度不超过 30 个字符',
+              trigger: 'blur'
+            },
+          ],
+          receiveAmtType: [
+            {
+              required: true,
+              message: "请选择",
+              trigger: 'change'
+            }
+          ],
+          currencyCs: [
+            {
+              required: true,
+              message: "请选择",
+              trigger: 'change'
+            }
+          ],
+          amt: [
+            {
+              required: true,
+              message: "请输入",
+              trigger: 'change'
+            },
+            {
+              max: 20,
+              message: '长度不超过 20 个字符',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
+              message: '请输入正确的金额',
+              trigger: 'blur'
+            }
+          ],
+          accountYears: [
+            {
+              required: true,
+              message: "请输入",
+              trigger: 'change'
+            },
+            {
+              max: 20,
+              message: '长度不超过 20 个字符',
+              trigger: 'change'
+            },
+            {
+              pattern: /^[1-9]\d*$/,
+              message: '请输入正整数',
+              trigger: 'change'
+            }
+          ],
+          accounYearsUnitCd: [
+            {
+              required: true,
+              message: "请选择",
+              trigger: 'change'
+            }
+          ],
+          receivableCheckStutas: [
+            {
+              required: true,
+              message: "请输入核实情况说明",
+              trigger: 'blur'},
+            {
+              max: 150,
+              message: '长度不超过 150 个字符',
+              trigger: 'change'
+            },
+          ],
+          otherNote: [
+            {
+              required: false,
+              message: "请输入其他情况说明",
+              trigger: 'blur'},
+            {
+              max: 100,
+              message: '长度不超过 100 个字符',
+              trigger: 'blur'
+            },
+          ],
         },
-        doReset:function () {
-          this.$refs["mpFundsOnAccountDetailValidate"].resetFields();
-        },
+        merchandiseTypeCdOpt:enums.merchandise_type_cd,//
+        buttonDisable:false,
+        buttonText:"提交",
+        inputComponentDisable:false,
+        currencyOption:enums.currencyCd,//币种类型选项
+        worthEvaluateWayOption:enums.GuarantyValueEvaluationMethod,//价值认定方式
+        yesNotOption:enums.commonYesAndNotCd,//是否选择
+        /*应收账款opt*/
+        receiveAmtTypeOpt:enums.DueFromFundsTypeCd,
+        accounYearsUnitCdOpt:enums.AccountYearUnitCode,
+      }
+    },
+    methods:{
+      comfirm:function () {
+        this.$refs["validate"].validate((valid) => {
+          if(valid){
+            this.buttonDisable = true;
+            this.buttonText = "提交中";
+            updateReceivableAndGrtCollateral(this.foundsOnAccountsInfo).then(response =>{
+              if(response.data.flag=='true') {
+                //访问服务器，返回结果，做判断，提交成功，输入框不可获取焦点，确定和重置按钮不可点击
+                this.buttonDisable = true;
+                this.buttonText = "已提交";
+                this.inputComponentDisable = true;
+                this.$message({
+                  message: '提交成功',
+                  type: 'success'
+                });
+              } else{
+                this.buttonDisable = false;
+                this.buttonText = "提交";
+                this.$message({
+                  message: '提交失败'+JSON.stringify(response.data),
+                  type: 'error'
+                });
+              }
+            });
+          } else{
+            this.$message({
+              message: '请将信息填写完整',
+              type: 'error'
+            });
+          }
+        });
       },
-    }
+      doReset:function () {
+        this.$refs["validate"].resetFields();
+      },
+    },
+  }
 </script>
 
 <style scoped>

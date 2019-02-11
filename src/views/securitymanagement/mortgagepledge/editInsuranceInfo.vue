@@ -73,11 +73,6 @@
       props:{
         grtCollateralInsurance:Object,
       },
-      beforeMount(){
-          this.grtCollateralInsurance.startDate = commonUtil.timeStampToDate(this.grtCollateralInsurance.startDate);
-          this.grtCollateralInsurance.endDate = commonUtil.timeStampToDate(this.grtCollateralInsurance.endDate);
-          this.grtCollateralInsurance.effectiveDate = commonUtil.timeStampToDate(this.grtCollateralInsurance.effectiveDate);
-      },
       data(){
           return{
             currencyOption:enums.currencyCd,//币种类型选项

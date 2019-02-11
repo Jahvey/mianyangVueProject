@@ -37,7 +37,7 @@
         width="80%"
         :before-close="handleClose"
         append-to-body>
-        <addAccidentInfo v-on:backFlag="getMsg2" v-bind:grtCollateralAccident="grtCollateralAccident"/>
+        <editAccidentInfo v-on:backFlag="getMsg2" v-bind:grtCollateralAccident="grtCollateralAccident"/>
       </el-dialog>
     </template>
   </div>
@@ -46,7 +46,7 @@
 <script>
   import addAccidentInfo from './addAccidentInfo'
   import editAccidentInfo from './editAccidentInfo'
-  import { getAllGrtCollateralAccident,deleteGrtCollateralAccidentById,deleteGrtCollateralAccidentBatch} from '@/api/securitymanagement'
+  import { getAllCollateralAccident,deleteCollateralAccidentById,deleteCollateralAccidentBatch} from '@/api/securitymanagement'
   import enums from "@/utils/enums"
   export default {
     name: "mp-accident-info",
@@ -77,7 +77,7 @@
             //表格字段定义
             tabCols: [
               {label: "意外情况类型", prop: "accidentTypeCd",isFormat:true,enumType:"CollateralState"},
-              {label: "发生日期", prop: "occurDate" },
+              {label: "发生日期", prop: "occurDate"},
               {label: "原因", prop: "reason"},
               {label: "损失价值(元)", prop: "priceLosses",},
               {label: "补偿价值(元)", prop: "pricesCompensation"},
@@ -97,7 +97,6 @@
       }
     },
     methods: {
-
       handleClose: function (done) {
         this.$confirm('确认关闭？')
           .then(_ => {
@@ -108,7 +107,7 @@
       },
       doPageQuery(listQuery){
         listQuery.guarantyId = this.grtCollateralInfo.guarantyId;
-        getAllGrtCollateralAccident(listQuery).then(response => {
+        getAllCollateralAccident(listQuery).then(response => {
           if(response.data.flag == enums.stateCode.flag.success){//返回数据成功
             var myEntity = {};
             myEntity.total=response.data.data.total;
@@ -127,10 +126,13 @@
         this.dialogVisible = true;
       },
       doEdit(row){
+        console.log(row);
         this.dialogVisible2 = true;
         this.grtCollateralAccident = row;
       },
-      refresh(row,listquery,index){
+      refresh(){
+        var listquery = {};
+        listquery.guarantyId = this.grtCollateralInfo.guarantyId;
         this.$store.dispatch('setListLoading', true);
         this.doPageQuery(listquery);
       },
@@ -148,10 +150,10 @@
           type: 'warning',
           center: true
         }).then(() => {
-          deleteGrtCollateralAccidentBatch(row).then(response => {
+          deleteCollateralAccidentBatch(row).then(response => {
             if(response.data.flag == enums.stateCode.flag.success){//
               this.$message({
-                message: '删除机构信息成功',
+                message: '删除成功',
                 type: 'success'
               });
               this.$store.dispatch('setListLoading', true);
@@ -171,7 +173,7 @@
         });
       },
       doDelete(row,listquery,index){
-        deleteGrtCollateralAccidentById(row).then(response => {
+        deleteCollateralAccidentById(row).then(response => {
           if(response.data.flag == enums.stateCode.flag.success){//
             this.$message({
               message: '删除机构信息成功',

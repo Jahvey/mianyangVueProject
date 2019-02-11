@@ -39,6 +39,7 @@
             ]
           },
           tabDef: {
+            isCheckRadio:true,
             isSelect: false, // 是否可以多选
             isIndex: true, // 是否有序号
             // 表格字段定义
@@ -89,15 +90,42 @@
         console.log('row ....')
       //  this.$router.push({path: '/contract/add/edit/' + row.contractId})
       },
-      view() {
-        console.log('view 合同...')
-        // this.$router.push({path: '/contract/contractAdd'})
+      view(row) {
+       
+        console.log('view 合同...'+JSON.stringify(row))
+        if(row.length!=0){
+ 
+          this.$router.push({name: '担保合同信息',params:{partyId:row.partyId }})
+          
+          
+
+        }else{
+
+          alert("请选中一条记录")
+        }
+        
       },
-      update() { 
-       console.log('update合同...')
+      update(row) { 
+       console.log('update合同...'+JSON.stringify(row))
+       if(row.length!=0){
+ 
+         // this.$router.push({name: '担保合同信息',params:{partyId:row.partyId }})
+
+        }else{
+
+          alert("请选中一条记录")
+        }
       },
-      disab() { 
-       console.log('disable 合同...')
+      disab(row) { 
+       console.log('disable 合同...'+JSON.stringify(row))
+       if(row.length!=0){
+ 
+         // this.$router.push({name: '担保合同信息',params:{partyId:row.partyId }})
+
+        }else{
+
+          alert("请选中一条记录")
+        }
       },
       doDelete() {
         // deleteContract(row).then(response => {

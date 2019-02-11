@@ -4,8 +4,8 @@
       <el-form-item slot="userRoleIdForShow" label="用户角色" prop="userRoleIdForShow">
             <el-checkbox-group v-model="form.userRoleIdForShow">
               <template v-for="(value,key) in srvObj">
-                <el-col :span="8">
-                  <el-checkbox :key="value.roleId" :label="key" :name="key">
+                <el-col :span="6">
+                  <el-checkbox :key="value.roleId" :label="value.roleName" :name="key">
                   </el-checkbox>
                 </el-col>
               </template>
@@ -23,8 +23,8 @@ import { saveUser ,queryUser,queryUserRole } from '@/api/user'
 export  default {
   data() {
     return {
-      srvObj: {},
-      form:{userRoleIdForShow:[]},
+      srvObj: {},//查询多选框的值
+      form:{userRoleIdForShow:[]},//设定多选框选中的值
       refVisible:{pkOrg:false},
       pageDef: {
         name:'用户信息',
@@ -58,7 +58,7 @@ export  default {
         },
         //查询条件定义
         pageCols:[
-          {label:"用户名",inputType:"input",modelName:"username"},
+          {label:"用户名",inputType:"input",modelName:"username",disabled:''},
           {label:"姓名",inputType:"input",modelName:"personName"},
           {label:"证件类型",inputType:"select",modelName:"idTypeCd",enumType:"idTypeCd"},
           {label:"证件号码",inputType:"input",modelName:"idNo"},
@@ -84,37 +84,57 @@ export  default {
 
   methods:{
     async getCompleteData(userId) {
+
+
       this.queryUserRoleForShow();
-      if (userId) { // 修改的单据
-        queryUser({userId:userId}).then(response => {
-          let rowdata = {};
-          Object.assign(rowdata, response);
-          rowdata.userRoleIdForShow=[];
-          rowdata.userRoleList.forEach((userRoleT, index) => {  
-            rowdata.userRoleIdForShow.push(userRoleT.roleName);
-          });
-          this.form = rowdata;
-          debugger
-        }).catch((error)=>{
-          console.log(error)
-        })
-      }
+
+
+      // if (userId) { // 修改的单据
+      //   queryUser({userId:userId}).then(response => {
+      //     let rowdata = {};
+      //     Object.assign(rowdata, response);
+      //     rowdata.userRoleIdForShow=[];
+      //     rowdata.userRoleList.forEach((userRoleT, index) => {
+      //       rowdata.userRoleIdForShow.push(userRoleT.roleName);
+      //     });
+      //     this.form = rowdata;
+      //     debugger
+      //   }).catch((error)=>{
+      //     console.log(error)
+      //   })
+      // }
+
+
     },
     doCancel() {
       this.$router.back()
     },
+    // transUserRoleToCode(userRoleNames){
+    //     var userRoleCode = [];
+    //     userRoleNames.forEach((val, index) => {
+    //       var userRoleObj = {};
+    //       userRoleObj = this.srvObj[val];
+    //       userRoleCode.push(userRoleObj)
+    //     });
+    //     return userRoleCode;
+    //   },
+
     transUserRoleToCode(userRoleNames){
-        var userRoleCode = [];
-        userRoleNames.forEach((val, index) => {
-          var userRoleObj = {};
-          userRoleObj = this.srvObj[val];
-          userRoleCode.push(userRoleObj)
-        });
-        return userRoleCode;
-      },
+      var userRoleCode = [];
+      userRoleNames.forEach((val, index) => {
+        var userRoleObj = {};
+        userRoleObj = this.srvObj[index];//整个选中对象
+        // userRoleObj = {"roleId":this.srvObj[index].roleId};//只保存id
+        userRoleObj = this.srvObj[index].roleId;//只保存id
+        userRoleCode.push(userRoleObj);
+      });
+      return userRoleCode;
+    },
 
     doSave(form){
+      console.log("doSave userRoleList1:"+JSON.stringify(this.form.userRoleIdForShow));
       form.userRoleList=this.transUserRoleToCode(this.form.userRoleIdForShow);
+      console.log("doSave userRoleList2:"+JSON.stringify(form.userRoleList));
       saveUser(form).then(response => {
         this.$message({
           type: 'success',
@@ -124,13 +144,26 @@ export  default {
       })
     },
     queryUserRoleForShow() {
-      queryUserRole().then(response => {
-          var srvObjT = {};
-          response.forEach(function (service, index) {
-            srvObjT[service.roleName] = {"roleId": service.roleId, "checked": false}
-          });
-          this.srvObj = srvObjT;
-        })
+
+
+      // queryUserRole().then(response => {
+      //     var srvObjT = {};
+      //     response.forEach(function (service, index) {
+      //       srvObjT[service.roleName] = {"roleId": service.roleId, "checked": false}
+      //     });
+      //     this.srvObj = srvObjT;
+      //   })
+      let queryParam={"legorg":'5099'};
+      queryUserRole(queryParam).then(response => {
+        var srvObjT = {};
+        response.data.forEach(function (service, index) {
+          console.log("service1:"+JSON.stringify(service));
+          srvObjT[index] = {"roleId": service.POSICODE, "roleName": service.POSINAME, "checked": false}
+        });
+        this.srvObj = srvObjT;
+      })
+
+
     }
   }
 }

@@ -59,10 +59,6 @@
       props:{
         grtCollateralRegistration:Object,
       },
-      beforeMount(){
-        this.grtCollateralRegistration.registerDate = commonUtil.timeStampToDate(this.grtCollateralRegistration.registerDate);
-        this.grtCollateralRegistration.registerExpirationDate = commonUtil.timeStampToDate(this.grtCollateralRegistration.registerExpirationDate);
-      },
       data(){
         return{
           checkInInstitutionTypeOpt:enums.RegisterOrgTypeCode,//登记机构类型选项

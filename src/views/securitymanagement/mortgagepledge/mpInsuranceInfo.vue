@@ -85,9 +85,9 @@
                 {label: "第一受益人", prop: "insuranceBenefitiary"},
                 {label: "币种", prop: "currencyCd",isFormat: true,enumType:"currencyCd"},
                 {label: "投保金额(元)", prop: "insuranceAmt"},
-                {label: "起始日期", prop: "startDate",isDate:true},
-                {label: "到期日期", prop: "endDate",isDate:true},
-                {label: "生效日期", prop: "effectiveDate",isDate:true},
+                {label: "起始日期", prop: "startDate"},
+                {label: "到期日期", prop: "endDate"},
+                {label: "生效日期", prop: "effectiveDate"},
               ]
             },
             buttons: [
@@ -130,7 +130,9 @@
           this.dialogVisible2 = true;
           this.grtCollateralInsurance = row;
         },
-        refresh(row,listquery,index){
+        refresh(){
+          var listquery = {};
+          listquery.guarantyId = this.grtCollateralInfo.guarantyId;
           this.$store.dispatch('setListLoading', true);
           this.doPageQuery(listquery);
         },
@@ -151,7 +153,7 @@
             deleteCollateralInsuranceBatch(row).then(response => {
               if(response.data.flag == enums.stateCode.flag.success){//
                 this.$message({
-                  message: '删除机构信息成功',
+                  message: '删除成功',
                   type: 'success'
                 });
                 this.$store.dispatch('setListLoading', true);

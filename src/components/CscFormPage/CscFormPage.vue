@@ -9,7 +9,12 @@
             </el-col>
           </template>
           <template v-else>
-            <csc-form-column :col="col" :form="formData" :disabled="disabled" :span="24/pageDef.columnNum" @change="fieldChange" :idx="idx"></csc-form-column>
+            <!--<csc-form-column :col="col" :form="formData" :disabled="disabled" :span="24/pageDef.columnNum" -->
+                             <!--@change="fieldChange" :idx="idx"></csc-form-column>-->
+
+            <csc-form-column :col="col" :form="formData" :disabled=inputDisabled(col.disabledFunc,col.modelName) :span="24/pageDef.columnNum"
+                             @change="fieldChange" :idx="idx"></csc-form-column>
+
           </template>
         </template>
         <!--end cols-->
@@ -73,16 +78,25 @@ export default {
       }
     });
   },
-  
+
   computed:{
     disabled() {
       return this.pageDef.disabled
-    }
+    },
+    // inputDisabled(funName,modelName){
+    //
+    //   console.log("inputDisabled:"+funName+"--"+modelName);
+    //
+    //   return this.$emit('funName',modelName);
+    // }
   },
 
   components:{CscFormColumn},
 
   watch: {
+    // disabled:function(){
+    //
+    // }
   },
 
   methods: {
@@ -135,9 +149,22 @@ export default {
     },
 
     fieldChange(modelName, val){
+      console.log("CscFormPage:"+modelName+"--"+JSON.stringify(val));
       this.$emit('fieldChange', modelName, val)
-    }
+    },
+    inputDisabled(funName,modelName){//动态设定input是否可编辑
+      if(funName && modelName){
 
+        let result;
+       this.$emit(funName,modelName,function(val){
+         result=val;
+       });
+        console.log("CscFormPage:"+funName+"--"+modelName+"--"+result);
+       return result;
+      }else{
+        return false;
+      }
+    }
 
   }
 }

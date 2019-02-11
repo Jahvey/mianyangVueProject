@@ -40,7 +40,7 @@
             // 表格字段定义
             tabCols: [
          
-              { label: '客户名称', prop: 'partyName', isSort: true,isLink: true,url:'/csm/natural/natural_info',param:["partyId","partyName"] },
+              { label: '客户名称', prop: 'partyName', isSort: true,isLink: true,url:'/csm/natural/naturalPerson',param:["partyId","partyName"] },
               { label: '证件类型', prop: 'certType', isSort: true,isFormat:true,enumType:'idTypeCd'  },
               { label: '证件号码', prop: 'certNum', isSort: true },
               { label: '中征码', prop: 'middelCode', isSort: true },

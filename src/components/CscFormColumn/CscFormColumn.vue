@@ -89,8 +89,9 @@ export default {
       }
       return getEnumObj(col.modelName)
     },
-    change(val) {
-      this.$emit('change', this.col.modelName, val)
+    change($event) {
+      console.log("CscFormColunmn:"+this.col.modelName+"--"+JSON.stringify($event.currentTarget)+"--"+this.form[this.col.modelName]);
+      this.$emit('change', this.col.modelName, this.form[this.col.modelName])
     }
   }
 }

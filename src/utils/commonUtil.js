@@ -87,5 +87,64 @@ export default  {
           copyObj[p] = fromObj[p];
       }
     }
+  },
+
+  /**
+   * 格式化金额为千分位分隔符
+   *    金额类两位小数 千分分隔符     #,##0.00
+   *    利率类                        ###0.000000
+   *    利率浮动幅度                  ###0.0000
+   */
+  numberToPercent(val, pattern){
+    // console.log("numberToPercent:"+val);
+    if(val){
+      let re = /\d{1,3}(?=(\d{3})+$)/g;
+      let n1 = val.toString().replace(/^(\d+)((\.\d+)?)$/, function (s, s1, s2) {
+        return s1.replace(re, "$&,") + s2;
+      });
+      return n1;
+    }else{
+      val="437944.876544";
+      let re = /\d{1,3}(?=(\d{3})+$)/g;
+      let n1 = val.toString().replace(/^(\d+)((\.\d+)?)$/, function (s, s1, s2) {
+        return s1.replace(re, "$&,") + s2;
+      });
+      return n1;
+    }
+  },
+  /**
+   * 测试匹配千分位分隔符的问题
+   * @param val
+   * @param pattern
+   * @returns {*}
+   */
+  numberToPercent1(val,pattern){
+    if(val){
+      return val.replace(/(\d)(?=(\d{3})+$)/g,'$1,');
+    }else{
+      val="437944.929434";
+      return val.replace(/(\d)(?=(\d{3})+$)/g,'$1,');
+    }
+  },
+  /**
+   * 该方法和numberToPercent1 大同小异
+   * @param val
+   * @param pattern
+   * @returns {*}
+   */
+  numberToPercent2(val,pattern){
+    if(val){
+      return val.replace(/(?=(?!\b)(\d{3})+$)/g,',');
+    }else{
+      val="437944";
+      return val.replace(/(?=(?!\b)(\d{3})+$)/g,',');
+    }
+  },
+
+  delcommafy(num){//去除千分位中的‘，’
+    num = num.toString();
+    num = num.replace(/,/gi, '');
+    return num;
   }
+
 }

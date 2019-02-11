@@ -5,8 +5,8 @@
         <el-col :span="12">
           <el-form-item label="意外情况类型" prop="accidentTypeCd">
             <el-select v-model="grtCollateralAccident.accidentTypeCd" placeholder="请选择">
-                <el-option v-for="(value,key) in accidentInfoTypeOpt" :key="key" :label="value" :value="key">
-                </el-option>
+              <el-option v-for="(value,key) in accidentInfoTypeOpt" :key="key" :label="value" :value="key">
+              </el-option>
             </el-select>
           </el-form-item>
         </el-col>
@@ -43,118 +43,122 @@
 
 <script>
   import enums from "@/utils/enums"
-  import { saveGrtCollateralAccident} from '@/api/securitymanagement'
-    export default {
-      name: "add-accident-info",
-      data(){
-          return{
-            grtCollateralAccident:{
-              accidentTypeCd:"",//意外情况类型
-              occurDate:"",//发生日期
-              reason:'',//原因
-              priceLosses:'',//损失价值(元)
-              pricesCompensation:'',//补偿价值(元)
-            },
-            rules:{
-              accidentTypeCd: [
-                {
-                  required: true,
-                  message: "请选择意外情况类型",
-                  trigger: 'change'
-                }
-              ],
-              reason: [
-                {
-                  required: true,
-                  message: "请填写原因",
-                  trigger: 'change'
-                }
-              ],
-              pricesCompensation: [
-                {
-                  required: true,
-                  message: "请输入损失价值",
-                  trigger: 'change'
-                },
-                {
-                  max: 20,
-                  message: '长度不超过 20 个字符',
-                  trigger: 'blur'
-                },
-                {
-                  pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
-                  message: '请输入正确的金额',
-                  trigger: 'blur'
-                }
-              ],
-              priceLosses: [
-                {
-                  required: true,
-                  message: "请输入补偿价值",
-                  trigger: 'change'
-                },
-                {
-                  max: 20,
-                  message: '长度不超过 20 个字符',
-                  trigger: 'blur'
-                },
-                {
-                  pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
-                  message: '请输入正确的金额',
-                  trigger: 'blur'
-                }
-              ],
-              occurDate:[
-                {
-                  required: true,
-                  message: "请选择日期",
-                  trigger: 'change',
-                  //type: 'date'
-                },
-              ],
-            },
-            accidentInfoTypeOpt:enums.CollateralState,
-            buttonText:"提交",
-            buttonDisable:false,
-          }
-      },
-      methods:{
-        comfirm:function () {
-          this.$refs["validate"].validate((valid) => {
-            if(valid){
-              this.buttonDisable = true;
-              this.buttonText = "提交中";
-              saveGrtCollateralAccident(this.grtCollateralRegistration).then(response => {
-                if(response.data.flag == enums.stateCode.flag.success){//返回数据成功
-                  //提示父组件关闭dialog,并且刷新，重置当前表单
-                  this.$refs["validate"].resetFields();
-                  this.$emit('backFlag',"ok");
-                  this.$message({
-                    message: '数据提交成功！',
-                    type: 'success'
-                  });
-                } else{
-                  this.$message({
-                    message: '操作失败！'+JSON.stringify(response.data),
-                    type: 'error'
-                  });
-                }
-                this.buttonDisable = false;
-                this.buttonText = "提交";
-              });
-            } else{
-              this.$message({
-                message: '请将信息填写完整',
-                type: 'error'
-              });
+  import { saveCollateralAccident} from '@/api/securitymanagement'
+  export default {
+    name: "add-accident-info",
+    props:{
+      grtCollateralInfo:Object,
+    },
+    data(){
+      return{
+        grtCollateralAccident:{
+          guarantyId:this.grtCollateralInfo.guarantyId,
+          accidentTypeCd:"",//意外情况类型
+          occurDate:"",//发生日期
+          reason:'',//原因
+          priceLosses:'',//损失价值(元)
+          pricesCompensation:'',//补偿价值(元)
+        },
+        rules:{
+          accidentTypeCd: [
+            {
+              required: true,
+              message: "请选择意外情况类型",
+              trigger: 'change'
             }
-          });
+          ],
+          reason: [
+            {
+              required: true,
+              message: "请填写原因",
+              trigger: 'change'
+            }
+          ],
+          pricesCompensation: [
+            {
+              required: true,
+              message: "请输入损失价值",
+              trigger: 'change'
+            },
+            {
+              max: 20,
+              message: '长度不超过 20 个字符',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
+              message: '请输入正确的金额',
+              trigger: 'blur'
+            }
+          ],
+          priceLosses: [
+            {
+              required: true,
+              message: "请输入补偿价值",
+              trigger: 'change'
+            },
+            {
+              max: 20,
+              message: '长度不超过 20 个字符',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
+              message: '请输入正确的金额',
+              trigger: 'blur'
+            }
+          ],
+          occurDate:[
+            {
+              required: true,
+              message: "请选择日期",
+              trigger: 'change',
+              //type: 'date'
+            },
+          ],
         },
-        doReset:function () {
-          this.$refs["validate"].resetFields();
-        },
+        accidentInfoTypeOpt:enums.CollateralState,
+        buttonText:"提交",
+        buttonDisable:false,
+      }
+    },
+    methods:{
+      comfirm:function () {
+        this.$refs["validate"].validate((valid) => {
+          if(valid){
+            this.buttonDisable = true;
+            this.buttonText = "提交中";
+            saveCollateralAccident(this.grtCollateralAccident).then(response => {
+              if(response.data.flag == enums.stateCode.flag.success){//返回数据成功
+                //提示父组件关闭dialog,并且刷新，重置当前表单
+                this.$refs["validate"].resetFields();
+                this.$emit('backFlag',"ok");
+                this.$message({
+                  message: '数据提交成功！',
+                  type: 'success'
+                });
+              } else{
+                this.$message({
+                  message: '操作失败！'+JSON.stringify(response.data),
+                  type: 'error'
+                });
+              }
+              this.buttonDisable = false;
+              this.buttonText = "提交";
+            });
+          } else{
+            this.$message({
+              message: '请将信息填写完整',
+              type: 'error'
+            });
+          }
+        });
       },
-    }
+      doReset:function () {
+        this.$refs["validate"].resetFields();
+      },
+    },
+  }
 </script>
 
 <style scoped>

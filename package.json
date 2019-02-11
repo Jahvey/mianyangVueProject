@@ -1,9 +1,9 @@
 {
-  "name": "csc-bizplat-web",
+  "name": "sicm-web",
   "version": "1.0.0",
   "license": "MIT",
-  "description": "客服云平台",
-  "author": "wangbo2.zh",
+  "description": "信贷云平台",
+  "author": "cdgaoweida",
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
@@ -15,7 +15,7 @@
     "axios": "^0.17.1",
     "babel-polyfill": "^6.26.0",
     "echarts": "^4.1.0",
-    "element-ui": "2.0.5",
+    "element-ui": "2.4.11",
     "js-cookie": "2.2.0",
     "normalize.css": "7.0.0",
     "nprogress": "0.2.0",

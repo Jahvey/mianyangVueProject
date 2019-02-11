@@ -130,7 +130,9 @@
           this.grtTogetherCorrelative = row;
           //this.$router.push({ name: 'orgEdit', query: { orgInfoId: row.orgInfoId,method:'doEdit' }})
         },
-        refresh(row,listquery,index){
+        refresh(){
+          var listquery = {};
+          listquery.guarantyId = this.info.guarantyId;
           this.$store.dispatch('setListLoading', true);
           this.doPageQuery(listquery);
         },
@@ -151,7 +153,7 @@
              deleteTogetherCorrelativedBatch(row).then(response => {
                 if(response.data.flag == enums.stateCode.flag.success){//
                   this.$message({
-                    message: '删除机构信息成功',
+                    message: '删除成功',
                     type: 'success'
                   });
                   this.$store.dispatch('setListLoading', true);

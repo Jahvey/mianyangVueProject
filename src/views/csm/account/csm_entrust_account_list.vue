@@ -16,7 +16,7 @@
 
 <script>
   // 账户信息
-  import CscSingleTable from '@/components/CscSingleTable/CscSingleTable' // 引入的这个是子组件，需要把父组件的值传递给子组件修改子组件
+  import CscSingleTable from '@/components/CscSingleTable/CscSingleTable' 
   import { getEntrustAccountsByPartyId } from '@/api/csm'
  
 
@@ -27,7 +27,7 @@
         disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮
         disableRowButtons: true, // 隐藏tab表单按钮
         listLoading: false,
-        entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
+        entity: {
 
         },
         // disableQueryForm: true,

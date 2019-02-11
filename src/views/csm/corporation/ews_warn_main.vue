@@ -23,18 +23,18 @@
         disableRowButtons: true, // 隐藏tab表单按钮
         listLoading: false,
         entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
-          data: [
-            {
-              WARN_DATE: '2017-09-23',
-              RULE_ABSTRACT: '紧急事件',
-              WARN_INFO: '中度紧急',
-              WARN_LEVEL: '0',
-              CLOSE_FLAG: '无',
-              CLOSE_DATE: '2017-12-12',
-              CLOSE_REASON: '因为某些你懂的原因'
+          // data: [
+          //   {
+          //     WARN_DATE: '2017-09-23',
+          //     RULE_ABSTRACT: '紧急事件',
+          //     WARN_INFO: '中度紧急',
+          //     WARN_LEVEL: '0',
+          //     CLOSE_FLAG: '无',
+          //     CLOSE_DATE: '2017-12-12',
+          //     CLOSE_REASON: '因为某些你懂的原因'
 
-            }
-          ]
+          //   }
+          // ]
         },
 
         pageDef: {

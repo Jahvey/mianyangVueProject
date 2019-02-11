@@ -17,8 +17,8 @@
   </div>
 </template>
 <script>
- // import TableBasicInfo from './TableBasicInfo.vue'
- // import TableSubjectInfo from './TableSubjectInfo.vue'
+ import TableBasicInfo from './TableBasicInfo.vue'
+ import TableSubjectInfo from './TableSubjectInfo.vue'
 
 
   export default {
@@ -29,8 +29,8 @@
       }
     },
     components: {
-      // 'basic-info': TableBasicInfo,
-      // 'subject-info': TableSubjectInfo
+      'basic-info': TableBasicInfo,
+      'subject-info': TableSubjectInfo
     },
     created(){
       console.log("ManyTable创建进来没有"+JSON.stringify(this.$route.query));

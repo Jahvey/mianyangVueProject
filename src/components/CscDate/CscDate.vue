@@ -1,9 +1,22 @@
 <template>
   <div>
     <template v-if="type=='date'">
-      <el-date-picker v-model="value1" type="date" placeholder="选择日期">
+      <el-date-picker v-model="value1" type="date" size="mini" placeholder="选择日期">
       </el-date-picker>
     </template>
+
+    <template v-else-if="type=='dateRange'">
+      <el-date-picker
+        v-model="value1"
+        type="daterange"
+        align="right"
+        unlink-panels
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期">
+      </el-date-picker>
+    </template>
+
     <template v-else>
       <el-date-picker v-model="value1" type="datetime" placeholder="选择日期时间">
       </el-date-picker>

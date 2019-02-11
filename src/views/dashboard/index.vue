@@ -5,12 +5,12 @@
         <el-form ref="dashboard" :model="cusInfo" label-width="80px">
           <el-col :span="12">
             <el-form-item label="客户编号" prop="partyNum">
-              <el-input v-model="cusInfo.partyNum"></el-input>
+              <el-input v-model="cusInfo.partyNum" id="partyNum" readonly @change="doChange"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="客户名称" prop="partyName">
-              <el-input v-model="cusInfo.partyName"></el-input>
+              <el-input id="partyName" name="partyName" v-model="cusInfo.partyName" disabled></el-input>
             </el-form-item>
           </el-col>
 
@@ -72,7 +72,7 @@
   import {getTbCsmPartyInfoById,getTbCsmNaturalPersonInfoById} from '@/api/dashboard'
   import enums from "@/utils/enums"
 
-  import axios from 'axios'
+  // import axios from 'axios'
 
   export default {
     name: 'dashboard',
@@ -88,7 +88,9 @@
           // ccode:'22233434',
           // phone:'13344444',
           // email:'74234243@163.com'
-        }
+        },
+        readonly: true,
+        disabled: true
       }
     },
     methods:{
@@ -160,6 +162,9 @@
           return this.$store.state.indexStore.dept;
         }
       }
+    },
+    created: function(){
+
     }
   }
 </script>

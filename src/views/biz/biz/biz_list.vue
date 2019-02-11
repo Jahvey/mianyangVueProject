@@ -41,6 +41,7 @@
           tabDef: {
       
             isSelect: false, // 是否可以多选
+            isCheckRadio:true,
             isIndex: true, // 是否有序号
             // 表格字段定义
             tabCols: [
@@ -98,11 +99,13 @@
         console.log('row ....')
       //  this.$router.push({path: '/contract/add/edit/' + row.contractId})
       },
-      view() {
-        console.log('view 合同...')
-        //console.log("param..."+param)
-        //this.$router.push({path: '/biz/biz/biz_info',query:{approveId: "ff808081655f5cb801655f60dfd80029" }})
-        this.$router.push({name: '业务结构基本信息',params:{approveId: "ff808081655f5cb801655f60dfd80029" }})
+      view(row) {
+        console.log('view 合同...'+JSON.stringify(row))
+
+        console.log(row)
+        //this.$router.push({path: '/biz/biz/biz_info',query:{approveId: "ff808081655f5cb801655f60dfd80029" }})//good work
+        this.$router.push({name: '业务结构基本信息',params:{approveId:row.approveId }}) //nice work
+
     
       },
       newly() { 
@@ -114,8 +117,13 @@
       disab() { 
        console.log('disable 合同...')
       },
-      bizApply() { 
-       console.log('bizApply 合同...')
+      bizApply(row) { 
+       console.log('bizApply 合同...'+JSON.stringify(row))
+       console.log(row)
+        //this.$router.push({path: '/biz/biz/biz_info',query:{approveId: "ff808081655f5cb801655f60dfd80029" }})//good work
+        this.$router.push({name: '业务申请新增',params:{approveId:row.approveId }}) //nice work
+
+
       },
       doDelete() {
         // deleteContract(row).then(response => {

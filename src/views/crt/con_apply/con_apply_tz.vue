@@ -9,14 +9,15 @@
 @pageQuery="doPageQuery" 
 @doEdit="doEdit"
 @doDelete="doDelete"
-
+  :disableQueryForm="disableQueryForm" 
+  :disableRowButtons="disableRowButtons" 
   >
   </csc-single-table>
 </template>
 
 <script>
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import { getApproveCons } from '@/api/csm'// 正常往后台发送异步请求的类
+  import { getApproveCons } from '@/api/csm'
 
 
   // 合同模块也是需要引入用户的，以后需要根据用户查询对应的合同（高级查询）
@@ -24,7 +25,8 @@
   export default {
     data() {
       return {
-        //conStatus:'03',
+        disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮
+        disableRowButtons: true, // 隐藏tab表单按钮
         listLoading: false,
         entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
 
@@ -40,12 +42,12 @@
             ]
           },
           tabDef: {
-      
+            isCheckRadio:true,
             isSelect: false, // 是否可以多选
             isIndex: true, // 是否有序号
             // 表格字段定义
             tabCols: [
-               //合同性质 dictTypeId="XD_BIZ0003"
+          
               
               { label: '合同性质', prop: 'creditMode', isSort: true,isFormat:true,enumType:'creditMode' },
               { label: '合同编号', prop: 'contractNum', isSort: true,isLink: true,url:'/crt/con_info/con_info_ht_xw',param:["contractNum","conStatus"]  },
@@ -97,8 +99,9 @@
         console.log('view 合同...')
         // this.$router.push({path: '/contract/contractAdd'})
       },
-      create() { 
-       console.log('create合同...')
+      create(row) { 
+       console.log('create合同...'+JSON.stringify(row))
+       this.$router.push({name: '业务合同列表',params:{partyId:row.partyId,type:'02' }}) 
       },
       update() { 
        console.log('update合同...')

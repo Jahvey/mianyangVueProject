@@ -1,526 +1,597 @@
 <!--详细信息  股权-->
 <template>
-    <div class="mp-detail-for-stock-right">
-      <el-row>
-        <el-form el-form label-width="200px" :model="stockRightInfo" label-position="right" :rules="rules" ref="mpStockRightDetailValidate" >
-          <el-col :span="24">
-            <p>价值信息</p>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="币种" prop="currency" >
-              <el-select :disabled="inputComponentDisable"  v-model="stockRightInfo.currency" placeholder="请选择" style="width:100%">
-                <el-option
-                  v-for="item in currencyOption"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="抵质押物认定价值(元)" prop="evaluateWorth" >
-              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.evaluateWorth" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="价值认定方式" prop="customerType" >
-              <el-select :disabled="inputComponentDisable" v-model="stockRightInfo.worthEvaluateWay" placeholder="请选择" style="width:100%">
-                <el-option
-                  v-for="item in worthEvaluateWayOption"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="账面原值/取得价值(元)" prop="originalWorth" >
-              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.originalWorth" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="价值认定时间"  >
-              <el-date-picker v-model="stockRightInfo.worthEvaluateTime" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="价值认定到期日"  >
-              <el-date-picker v-model="stockRightInfo.worthEvaluateTimeExpire" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24">
-            <p>股权信息</p>
-          </el-col>
-          <el-col :span="12" >
-            <el-form-item label="股权登记机构" prop="registerConstitution" >
-              <el-input :disabled="inputComponentDisable"  v-model="stockRightInfo.registerConstitution" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" >
-            <el-form-item label="股权登记通知书编号" prop="certifyNumber" >
-              <el-input :disabled="inputComponentDisable"  v-model="stockRightInfo.certifyNumber" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" >
-            <el-form-item label="持股份额%" prop="havePercent" >
-              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.havePercent" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" >
-            <el-form-item label="数量(股)" prop="haveNumber" >
-              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.haveNumber" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" >
-            <el-form-item label="每股净资产(元)" prop="everyWorth" >
-              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.everyWorth" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="币种" prop="srCurrency" >
-              <el-select :disabled="inputComponentDisable"  v-model="stockRightInfo.srCurrency" placeholder="请选择" style="width:100%">
-                <el-option
-                  v-for="item in currencyOption"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="股权性质" prop="stockRightNature" >
-              <el-select :disabled="inputComponentDisable"  v-model="stockRightInfo.stockRightNature" placeholder="请选择" style="width:100%">
-                <el-option
-                  v-for="item in stockRightNatureOpt"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" >
-            <el-form-item label="被控股公司" prop="srCompany" >
-              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.srCompany" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="被控股公司类别" prop="srPassivityCompanyType" >
-              <el-select :disabled="inputComponentDisable"  v-model="stockRightInfo.srPassivityCompanyType" placeholder="请选择" style="width:100%">
-                <el-option
-                  v-for="item in srCompanyTypeOpt"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" >
-            <el-form-item label="被控股公司主营业务" prop="scCompanyBusiness" >
-              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.scCompanyBusiness" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="24" >
-            <el-form-item label="其他情况说明" prop="otherSituationExplain" >
-              <el-input :disabled="inputComponentDisable" type="textarea" v-model="stockRightInfo.otherSituationExplain" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="股权是否上市" prop="ifSrListed" >
-              <el-select :disabled="inputComponentDisable"  v-model="stockRightInfo.ifSrListed" placeholder="请选择" style="width:100%">
-                <el-option
-                  v-for="item in yesNotOption"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" >
-            <el-form-item label="股权名称" prop="srName" >
-              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.srName" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" >
-            <el-form-item label="上市公司名称" prop="srCompanyName" >
-              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.srCompanyName" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="发行方式" prop="srCompanyIssueWay" >
-              <el-select :disabled="inputComponentDisable"  v-model="stockRightInfo.srCompanyIssueWay" placeholder="请选择" style="width:100%">
-                <el-option
-                  v-for="item in srCompanyIssueWayOpt"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" >
-            <el-form-item label="上市地点" prop="srListedPlace" >
-              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.srListedPlace" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12">
-            <el-form-item label="上市公司类型" prop="srCompanyType" >
-              <el-select :disabled="inputComponentDisable"  v-model="stockRightInfo.srCompanyType" placeholder="请选择" style="width:100%">
-                <el-option
-                  v-for="item in srCompanyTypeOpt"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value">
-                </el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" >
-            <el-form-item label="最近一个交易日市价(元)" prop="latestDealMarketWorth" >
-              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.latestDealMarketWorth" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" >
-            <el-form-item label="每股最近一年均价(元)" prop="everySrLatestAverageWorth" >
-              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.everySrLatestAverageWorth" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-          <el-col :span="12" >
-            <el-form-item label="上市公司经营情况" prop="companySituation" >
-              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.companySituation" style="width:100%"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-form>
-      </el-row>
-      <el-row>
-        <el-col :span="6" :offset="10">
-          <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="doConfirmStockRightDetail" >{{buttonText}}</el-button>
-          <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="doReset">重置</el-button>
+  <div class="mp-detail-for-stock-right">
+    <el-row>
+      <el-form el-form label-width="200px" :model="stockRightInfo" label-position="right" :rules="rules" ref="validate" >
+        <el-col :span="24">
+          <p>价值信息</p>
         </el-col>
-      </el-row>
-    </div>
+        <el-col :span="12">
+          <el-form-item label="币种" prop="currencyCd" >
+            <el-select :disabled="inputComponentDisable"  v-model="stockRightInfo.currencyCd" placeholder="请选择" style="width:100%">
+              <el-option v-for="(value,key) in currencyOption" :key="key" :label="value" :value="key"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="抵质押物认定价值(元)" prop="marketValue" >
+            <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.marketValue" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="价值认定方式" prop="assetStatus" >
+            <el-select :disabled="inputComponentDisable" v-model="stockRightInfo.assetStatus" placeholder="请选择" style="width:100%">
+              <el-option v-for="(value,key) in worthEvaluateWayOption" :key="key" :label="value" :value="key"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="账面原值/取得价值(元)" prop="bookValue" >
+            <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.bookValue" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="价值认定时间" prop="evaluateDate" >
+            <el-date-picker :editable="false" :disabled="inputComponentDisable" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="stockRightInfo.evaluateDate" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="价值认定到期日"  prop="submittingDate">
+            <el-date-picker :editable="false" :disabled="inputComponentDisable" format="yyyy-MM-dd" value-format="yyyy-MM-dd" v-model="stockRightInfo.submittingDate" type="date" placeholder="选择日期" style="width:100%"></el-date-picker>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24">
+          <p>股权信息</p>
+        </el-col>
+        <el-col :span="12" >
+          <el-form-item label="股权登记机构" prop="stockRegistrationOrg" >
+            <el-input :disabled="inputComponentDisable"  v-model="stockRightInfo.stockRegistrationOrg" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12" >
+          <el-form-item label="股权登记通知书编号" prop="stockEquityNoticeNum" >
+            <el-input :disabled="inputComponentDisable"  v-model="stockRightInfo.stockEquityNoticeNum" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12" >
+          <el-form-item label="持股份额%" prop="controlCount" >
+            <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.controlCount" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12" >
+          <el-form-item label="数量(股)" prop="stockCount" >
+            <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.stockCount" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12" >
+          <el-form-item label="每股净资产(元)" prop="netValuePerStock" >
+            <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.netValuePerStock" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="币种" prop="netValueCurrencyCd" >
+            <el-select :disabled="inputComponentDisable"  v-model="stockRightInfo.netValueCurrencyCd" placeholder="请选择" style="width:100%">
+              <el-option v-for="(value,key) in currencyOption" :key="key" :label="value" :value="key"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="股权性质" prop="stockCharacter" >
+            <el-select :disabled="inputComponentDisable"  v-model="stockRightInfo.stockCharacter" placeholder="请选择" style="width:100%">
+              <el-option v-for="(value,key) in stockCharacterOpt" :key="key" :label="value" :value="key"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12" >
+          <el-form-item label="被控股公司" prop="controledCompanyName" >
+            <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.controledCompanyName" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="被控股公司类别" prop="controledCompanyType" >
+            <el-select :disabled="inputComponentDisable"  v-model="stockRightInfo.controledCompanyType" placeholder="请选择" style="width:100%">
+              <el-option v-for="(value,key) in srCompanyTypeOpt" :key="key" :label="value" :value="key"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12" >
+          <el-form-item label="被控股公司主营业务" prop="companyHoldBiz" >
+            <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.companyHoldBiz" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="24" >
+          <el-form-item label="其他情况说明" prop="otherNote" >
+            <el-input :disabled="inputComponentDisable" type="textarea" v-model="stockRightInfo.otherNote" style="width:100%"></el-input>
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="股权是否上市" prop="stockListedInd" >
+            <el-select :disabled="inputComponentDisable"  v-model="stockRightInfo.stockListedInd" @change="stockListedIndChange" placeholder="请选择" style="width:100%">
+              <el-option v-for="(value,key) in yesNotOption" :key="key" :label="value" :value="key"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <template v-if="stockListedIndDisable">
+          <el-col :span="12" >
+            <el-form-item label="股权名称" prop="stockName" >
+              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.stockName" style="width:100%"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" >
+            <el-form-item label="上市公司名称" prop="marketCompanyName" >
+              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.marketCompanyName" style="width:100%"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="发行方式" prop="stockIssueTypeCd" >
+              <el-select :disabled="inputComponentDisable"  v-model="stockRightInfo.stockIssueTypeCd" placeholder="请选择" style="width:100%">
+                <el-option v-for="(value,key) in stockIssueTypeCdOpt" :key="key" :label="value" :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" >
+            <el-form-item label="上市地点" prop="marketPlace" >
+              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.marketPlace" style="width:100%"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="上市公司类型" prop="marketCompanyTypeCd" >
+              <el-select :disabled="inputComponentDisable"  v-model="stockRightInfo.marketCompanyTypeCd" placeholder="请选择" style="width:100%">
+                <el-option v-for="(value,key) in srCompanyTypeOpt" :key="key" :label="value" :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" >
+            <el-form-item label="最近一个交易日市价(元)" prop="averagePriceLatestDay" >
+              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.averagePriceLatestDay" style="width:100%"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" >
+            <el-form-item label="每股最近一年均价(元)" prop="averagePriceLatestYear" >
+              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.averagePriceLatestYear" style="width:100%"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12" >
+            <el-form-item label="上市公司经营情况" prop="marketCompanyOperStatus" >
+              <el-input :disabled="inputComponentDisable" v-model="stockRightInfo.marketCompanyOperStatus" style="width:100%"></el-input>
+            </el-form-item>
+          </el-col>
+        </template>
+      </el-form>
+    </el-row>
+    <el-row>
+      <el-col :span="6" :offset="10">
+        <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="comfirm" >{{buttonText}}</el-button>
+        <el-button size="medium" v-bind:disabled="buttonDisable" type="primary" @click="doReset">重置</el-button>
+      </el-col>
+    </el-row>
+  </div>
 </template>
 
 <script>
-    export default {
-        name: "mp-detail-for-stock-right",
-      data(){
-        return{
-          stockRightInfo:{
-            currency:"人民币",//币种
-            evaluateWorth:"",//抵质押物认定价值(元)
-            originalWorth:"",//账面原值/取得价值(元)
-            worthEvaluateWay:"评估确定",//价值认定方式
-            worthEvaluateTime:"",//价值认定时间
-            worthEvaluateTimeExpire:"",//价值认定到期日
-            /*股权*/
-            registerConstitution:"",//股权登记机构
-            certifyNumber:"",//股权登记通知书编号
-            havePercent:"",//持股份额%
-            haveNumber:"",//数量(股)
-            everyWorth:"",//每股净资产(元)
-            srCurrency:"",//币种
-            stockRightNature:"法人股",//股权性质
-            srCompany:"",//被控股公司
-            srPassivityCompanyType:"企业类",//被控股公司类别
-            scCompanyBusiness:"",//被控股公司主营业务
-            otherSituationExplain:"",//其他情况说明
+  import enums from "@/utils/enums"
+  import { updateStockWarrantAssetsAndGrtCollateral,selectStockWarrantAssetsByGuarantyId} from '@/api/securitymanagement'
+  export default {
+    name: "mp-detail-for-stock-right",
+    props:{
+      grtCollateralInfo:Object,
+      isUpdate:{
+        default:false,
+        type:Boolean,
+      },
+    },
+    beforeMount(){
+      //数据回显
+      if(this.isUpdate){
+        selectStockWarrantAssetsByGuarantyId(this.grtCollateralInfo).then(response =>{
+          if(response.data.flag=='true') {
+            this.stockRightInfo = response.data.data;
+          } else{
+            this.$message({
+              message: '数据回显'+JSON.stringify(response.data),
+              type: 'error'
+            });
+          }
+        });
+      }
+    },
+    data(){
+      return{
+        stockRightInfo:{
+          lastUpdateUserNum:this.grtCollateralInfo.lastUpdateUserNum,//最后维护人用户编号
+          lastUpdateOrgCd:this.grtCollateralInfo.lastUpdateOrgCd,//最后维护人所属机构
+          guarantyId:this.grtCollateralInfo.guarantyId,//担保ID
+          currencyCd:"",//币种
+          marketValue:"",//抵质押物认定价值(元)
+          bookValue:"",//账面原值/取得价值(元)
+          assetStatus:"",//价值认定方式
+          evaluateDate:"",//价值认定时间
+          submittingDate:"",//价值认定到期日
+          /*股权*/
+          stockRegistrationOrg:"",//股权登记机构
+          stockEquityNoticeNum:"",//股权登记通知书编号
+          controlCount:"",//持股份额%
+          stockCount:"",//数量(股)
+          netValuePerStock:"",//每股净资产(元)
+          netValueCurrencyCd:"",//币种
+          stockCharacter:"",//股权性质
+          controledCompanyName:"",//被控股公司
+          controledCompanyType:"",//被控股公司类别
+          companyHoldBiz:"",//被控股公司主营业务
+          otherNote:"",//其他情况说明
+          stockListedInd:"",//股权是否上市
+          stockName:"",//股权名称
+          marketCompanyName:"",//上市公司名称
+          stockIssueTypeCd:"",//发行方式
+          marketPlace:"",//上市地点
+          marketCompanyTypeCd:"",//上市公司类型
+          averagePriceLatestDay:"",//最近一个交易日市价(元)
+          averagePriceLatestYear:"",//每股最近一年均价(元)
+          marketCompanyOperStatus:"",//上市公司经营情况
+        },
+        /*动态标志 股权是否上市*/
+        stockListedIndDisable:false,
+        rules:{
+          /*价值信息 rules*/
+          assetStatus: [
+            {
+              required: true,
+              message: "请选择价值认定方式",
+              trigger: 'change'
+            }
+          ],
+          bookValue: [
+            {
+              required: true,
+              message: "请输入帐面原值/取得价值",
+              trigger: 'change'
+            },
+            {
+              max: 20,
+              message: '长度不超过 20 个字符',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
+              message: '请输入正确的金额',
+              trigger: 'blur'
+            }
+          ],
+          marketValue: [
+            {
+              required: true,
+              message: "请输入抵质押物认定价值",
+              trigger: 'change'
+            },
+            {
+              max: 20,
+              message: '长度不超过 20 个字符',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
+              message: '请输入正确的金额',
+              trigger: 'blur'
+            }
+          ],
+          currencyCd: [
+            {
+              required: true,
+              message: "请选择币种",
+              trigger: 'change'
+            }
+          ],
+          evaluateDate:[
+            {
+              required: true,
+              message: "请选择日期",
+              trigger: 'change',
+              //type: 'date'
+            },
+          ],
+          submittingDate:[
+            {
+              required: true,
+              message: "请选择日期",
+              trigger: 'change',
+              //type: 'date'
+            },
+          ],
+          /*股权 rules*/
+          stockName: [
+            {
+              required: true,
+              message: "请输入",
+              trigger: 'change'
+            },
+            {
+              max:30,
+              message: '长度不超过 30 个字符',
+              trigger: 'blur'
+            },
+          ],
+          stockListedInd: [
+            {
+              required: false,
+              message: "",
+              trigger: 'change'
+            }
+          ],
+          marketCompanyName: [
+            {
+              required: true,
+              message: "请输入",
+              trigger: 'change'
+            },
+            {
+              max:30,
+              message: '长度不超过 30 个字符',
+              trigger: 'blur'
+            },
+          ],
+          stockIssueTypeCd: [
+            {
+              required: true,
+              message: "请选择",
+              trigger: 'change'
+            }
+          ],
+          marketPlace: [
+            {
+              required: true,
+              message: "请输入",
+              trigger: 'change'
+            },
+            {
+              max:30,
+              message: '长度不超过 30 个字符',
+              trigger: 'blur'
+            },
+          ],
+          averagePriceLatestDay: [
+            {
+              required: false,
+              message: "",
+              trigger: 'change'
+            },
+            {
+              max: 20,
+              message: '长度不超过 20 个字符',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
+              message: '请输入正确的金额',
+              trigger: 'blur'
+            }
+          ],
+          averagePriceLatestYear: [
+            {
+              required: false,
+              message: "",
+              trigger: 'change'
+            },
+            {
+              max: 20,
+              message: '长度不超过 20 个字符',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
+              message: '请输入正确的金额',
+              trigger: 'blur'
+            }
+          ],
+          marketCompanyOperStatus: [
+            {
+              required: false,
+              message: "",
+              trigger: 'change'
+            },
+            {
+              max: 30,
+              message: '长度不超过 30 个字符',
+              trigger: 'blur'
+            },
+          ],
+          marketCompanyTypeCd: [
+            {
+              required: true,
+              message: "请选择",
+              trigger: 'change'
+            }
+          ],
 
-            ifSrListed:"是",//股权是否上市
-            srName:"",//股权名称
-            srCompanyName:"",//上市公司名称
-            srCompanyIssueWay:"",//发行方式
-            srListedPlace:"",//上市地点
-            srCompanyType:"企业类",//上市公司类型
-            latestDealMarketWorth:"",//最近一个交易日市价(元)
-            everySrLatestAverageWorth:"",//每股最近一年均价(元)
-            companySituation:"",//上市公司经营情况
-
-          },
-          rules:{
-            /*价值*/
-            currency: [
-              {
-                required: true,
-                message: "请选择币种",
-                trigger: 'change'
-              }
-            ],
-            worthEvaluateWay: [
-              {
-                required: true,
-                message: "请选择评估方式",
-                trigger: 'change'
-              }
-            ],
-            evaluateWorth: [
-              {
-                required: true,
-                message: "请输入抵质押物认定价值",
-                trigger: 'blur'},
-              {
-                max: 20,
-                message: '长度不超过 20 个字符',
-                trigger: 'blur'
-              },
-              {
-                pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
-                message: '请输入正确的金额',
-                trigger: 'blur'
-              }
-            ],
-            originalWorth: [
-              {
-                required: true,
-                message: "请输入账面原值/取得价值",
-                trigger: 'blur'},
-              {
-                max: 20,
-                message: '长度不超过 20 个字符',
-                trigger: 'blur'
-              },
-              {
-                pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
-                message: '请输入正确的金额',
-                trigger: 'blur'
-              }
-            ],
-            /*股权 rules*/
-            ifSrListed: [
-              {
-                required: false,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            srName: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            srCompanyName: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            srCompanyIssueWay: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            srListedPlace: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            srCompanyType: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            latestDealMarketWorth: [
-              {
-                required: false,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            everySrLatestAverageWorth: [
-              {
-                required: false,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            companySituation: [
-              {
-                required: false,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            registerConstitution: [
-              {
-                required: false,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            certifyNumber: [
-              {
-                required: false,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            havePercent: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            haveNumber: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            everyWorth: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            srCurrency: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            stockRightNature: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            srCompany: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            srCompanyType: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            scCompanyBusiness: [
-              {
-                required: true,
-                message: "",
-                trigger: 'change'
-              }
-            ],
-            otherSituationExplain: [
-              {
-                required: false,
-                message: "请输入其他情况说明",
-                trigger: 'blur'},
-              {
-                max: 100,
-                message: '长度不超过 100 个字符',
-                trigger: 'blur'
-              },
-            ],
-          },
-          buttonDisable:false,
-          buttonText:"提交",
-          inputComponentDisable:false,
-          currencyOption:[
+          stockRegistrationOrg: [
             {
-              value: '人民币',
-              label: '人民币'
-            }, {
-              value: '美元',
-              label: '美元'
+              required: false,
+              message: "",
+              trigger: 'change'
             },
-          ],//币种类型选项
-          worthEvaluateWayOption:[
             {
-              value: '评估确定',
-              label: '评估确定'
-            }, {
-              value: '协商确定',
-              label: '协商确定'
-            },
-          ],//价值认定方式
-          yesNotOption:[
-            {
-              value: '是',
-              label: '是'
-            }, {
-              value: '否',
-              label: '否'
-            },
-          ],//是否选择
-          /*股权opt*/
-          stockRightNatureOpt:[
-            {
-              value: '法人股',
-              label: '法人股'
-            }, {
-              value: '其他',
-              label: '其他'
+              max: 30,
+              message: '长度不超过 30 个字符',
+              trigger: 'change'
             },
           ],
-          srCompanyTypeOpt:[
+          stockEquityNoticeNum: [
             {
-              value: '企业类',
-              label: '企业类'
-            }, {
-              value: '其他',
-              label: '其他'
+              required: false,
+              message: "",
+              trigger: 'change'
+            },
+            {
+              max: 40,
+              message: '长度不超过 40 个字符',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^[A-Za-z0-9]{4,40}$/,
+              message: '编号只能是数字、字母或其组合',
+              trigger: 'blur'
+            }
+          ],
+          controlCount: [
+            {
+              required: true,
+              message: "请输入",
+              trigger: 'change'
+            },
+            {
+              pattern: /^(((\d|[1-9]\d)(\.\d{1,2})?)|100|100.0|100.00)$/,
+              message: '持股份额应该在0.01-100之间',
+              trigger: 'blur'
+            }
+          ],
+          stockCount: [
+            {
+              required: true,
+              message: "请输入",
+              trigger: 'change'
+            },
+            {
+              max: 8,
+              message: '长度不超过 8 个字符',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^[1-9]\d*$/,
+              message: '只能是正整数',
+              trigger: 'blur'
+            }
+          ],
+          netValuePerStock: [
+            {
+              required: true,
+              message: "请输入",
+              trigger: 'change'
+            },
+            {
+              max: 20,
+              message: '长度不超过 20 个字符',
+              trigger: 'blur'
+            },
+            {
+              pattern: /^([1-9][\d]{0,7}|0)(\.[\d]{1,2})?$/,
+              message: '请输入正确的金额',
+              trigger: 'blur'
+            }
+          ],
+          netValueCurrencyCd: [
+            {
+              required: true,
+              message: "请选择",
+              trigger: 'change'
+            }
+          ],
+          stockCharacter: [
+            {
+              required: true,
+              message: "请选择",
+              trigger: 'change'
+            }
+          ],
+          controledCompanyName: [
+            {
+              required: true,
+              message: "请输入",
+              trigger: 'change'
+            },
+            {
+              max: 30,
+              message: '长度不超过 30 个字符',
+              trigger: 'blur'
             },
           ],
-          srCompanyIssueWayOpt:[
+          controledCompanyType: [
             {
-              value: 'A股',
-              label: 'A股'
-            }, {
-              value: '其他',
-              label: '其他'
+              required: true,
+              message: "请选择",
+              trigger: 'change'
+            }
+          ],
+          companyHoldBiz: [
+            {
+              required: true,
+              message: "请输入",
+              trigger: 'change'
+            },
+            {
+              max: 30,
+              message: '长度不超过 30 个字符',
+              trigger: 'blur'
             },
           ],
+          otherNote: [
+            {
+              required: false,
+              message: "请输入其他情况说明",
+              trigger: 'blur'},
+            {
+              max: 100,
+              message: '长度不超过 100 个字符',
+              trigger: 'blur'
+            },
+          ],
+        },
+        merchandiseTypeCdOpt:enums.merchandise_type_cd,//
+        buttonDisable:false,
+        buttonText:"提交",
+        inputComponentDisable:false,
+        currencyOption:enums.currencyCd,//币种类型选项
+        worthEvaluateWayOption:enums.GuarantyValueEvaluationMethod,//价值认定方式
+        yesNotOption:enums.commonYesAndNotCd,//是否选择
+        /*股权opt*/
+        stockCharacterOpt:enums.StockCharacterTypeCd,
+        srCompanyTypeOpt:enums.CustomerType,
+        stockIssueTypeCdOpt:enums.StockIssueTypeCode,
+      }
+    },
+    methods:{
+      comfirm:function () {
+        this.$refs["validate"].validate((valid) => {
+          if(valid){
+            this.buttonDisable = true;
+            this.buttonText = "提交中";
+            updateStockWarrantAssetsAndGrtCollateral(this.stockRightInfo).then(response =>{
+              if(response.data.flag=='true') {
+                //访问服务器，返回结果，做判断，提交成功，输入框不可获取焦点，确定和重置按钮不可点击
+                this.buttonDisable = true;
+                this.buttonText = "已提交";
+                this.inputComponentDisable = true;
+                this.$message({
+                  message: '提交成功',
+                  type: 'success'
+                });
+              } else{
+                this.buttonDisable = false;
+                this.buttonText = "提交";
+                this.$message({
+                  message: '提交失败'+JSON.stringify(response.data),
+                  type: 'error'
+                });
+              }
+            });
+          } else{
+            this.$message({
+              message: '请将信息填写完整',
+              type: 'error'
+            });
+          }
+        });
+      },
+      doReset:function () {
+        this.$refs["validate"].resetFields();
+      },
+      stockListedIndChange:function (val) {
+        if(val == enums.stateCode.result.yes){
+          this.stockListedIndDisable = true;
+        } else{
+          this.stockListedIndDisable = false;
         }
       },
-      methods:{
-        doConfirmStockRightDetail:function () {
-          this.$refs["mpStockRightDetailValidate"].validate((valid) => {
-            if(valid){
-              //访问服务器，返回结果，做判断，提交成功，输入框不可获取焦点，确定和重置按钮不可点击
-              this.buttonDisable = true;
-              this.buttonText = "已提交";
-              this.inputComponentDisable = true;
-              this.$message({
-                message: '数据提交成功！',
-                type: 'success'
-              });
-            } else{
-              this.$message({
-                message: '请将信息填写完整',
-                type: 'error'
-              });
-            }
-          });
-        },
-        doReset:function () {
-          this.$refs["mpStockRightDetailValidate"].resetFields();
-        },
-      },
-    }
+    },
+  }
 </script>
 
 <style scoped>

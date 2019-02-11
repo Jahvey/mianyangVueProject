@@ -48,7 +48,7 @@
         grtCollateralNotarization:Object,
       },
       beforeMount(){
-        this.grtCollateralNotarization.recordDate = commonUtil.timeStampToDate(this.grtCollateralNotarization.recordDate);
+        //this.grtCollateralNotarization.recordDate = commonUtil.timeStampToDate(this.grtCollateralNotarization.recordDate);
       },
       data(){
         return{

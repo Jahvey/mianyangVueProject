@@ -131,7 +131,9 @@
           this.dialogVisible2 = true;
           this.grtCollateralRegistration = row;
         },
-        refresh(row,listquery,index){
+        refresh(){
+          var listquery = {};
+          listquery.guarantyId = this.grtCollateralInfo.guarantyId;
           this.$store.dispatch('setListLoading', true);
           this.doPageQuery(listquery);
         },
@@ -152,7 +154,7 @@
             deleteCollateralRegistrationBatch(row).then(response => {
               if(response.data.flag == enums.stateCode.flag.success){//
                 this.$message({
-                  message: '删除机构信息成功',
+                  message: '删除成功',
                   type: 'success'
                 });
                 this.$store.dispatch('setListLoading', true);
