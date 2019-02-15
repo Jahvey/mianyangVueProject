@@ -17,7 +17,8 @@
 
 <script>
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import { getApproveCons } from '@/api/csm'
+  import { getApproveCons,MainConConractUpdateValidate,updateValidateForCon,disabValidateForCon,tzContractInfo,
+  getConInfoBizType } from '@/api/csm'
 
 
   // 合同模块也是需要引入用户的，以后需要根据用户查询对应的合同（高级查询）
@@ -78,37 +79,379 @@
 
       doPageQuery(listQuery) {
 
-        //console.log('listQuery ....' + listQuery)
         getApproveCons(listQuery).then(response => {
           this.entity = response.data
           this.$store.dispatch('setListLoading', false)
-          // console.log('response.data.entity...')
-          //  console.log( response.data.entity)
-     
+
         }).catch((error) => {
-    
           console.log(error)
         })
       },
+
       // 行事件
       doEdit(row) {
         console.log('row ....')
       //  this.$router.push({path: '/contract/add/edit/' + row.contractId})
       },
-      view() {
+      view(row) {
         console.log('view 合同...')
+
+        if(0==row.length){
+          alert("请选择一笔生效合同。")
+          return false
+        }
+
+        MainConConractUpdateValidate(row).then(response=>{
+          this.entity=response.data
+          console.log("response data...."+this.entity)
+
+        }
+          ).catch((e)=>{
+            console.log(e)
+          })
         // this.$router.push({path: '/contract/contractAdd'})
       },
+
+
       create(row) { 
        console.log('create合同...'+JSON.stringify(row))
+       if(0==row.length){
+        alert("请选择一笔生效合同。")
+        return false
+       }
+
+
+
+
        this.$router.push({name: '业务合同列表',params:{partyId:row.partyId,type:'02' }}) 
       },
-      update() { 
+
+
+      update(row) { 
        console.log('update合同...')
+       if(0==row.length){
+        alert("请选择一笔生效合同。")
+        return false
+       }
+
+       let params={param:row.contractId,name:"XFE_0004"}
+         updateValidateForCon(params).then(response=>{
+          let res=response.data
+          console.log("XFE_0004:res "+JSON.stringify(res))
+          if(res!=0){
+            alert("该合同已被纳入[移交申请],在业务结束前无法处理")
+            return false
+          }
+
+         }).catch((error)=>{
+          console.log(error)
+         })
+
+       //综合授信协议存在在途的调整不允许重复调整
+       if(row.bizType=="综合授信协议"){  //TODO 这里的方法根本没有调用 2019-2-14
+        //
+        params={param:row.applyId,name:"RCON_0024"}
+               updateValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RCON_0024:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("有在途综合授信协议")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+
+        //存在在途综合授信调整或单笔批复调整时不得调整综合授信协议
+        params={param:row.applyId,name:"RCON_0058"}
+               updateValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RCON_0058:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("[RCON_0058]有在途批复调整时不能调整综合授信协议")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+        //存在在途合同调整
+        params={param:row.applyId,name:"RCON_0059"}
+               updateValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RCON_0059:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("[RCON_0059]有在途合同申请或调整时不能调整综合授信协议")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+
+
+       }else{//单笔
+        //合同在途调整校验
+        params={param:row.amountDetailId,name:"RCON_0026"}
+               updateValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RCON_0026:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("有在途合同申请")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+
+               //存在在途综合授信协议协议调整
+        params={param:row.contractId,name:"RCON_0060"}
+                updateValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RCON_0060:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("有在途综合授信协议申请或调整时不能调整合同")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+               //存在在途综合授信调整或单笔批复调整时不得调整业务合同
+        params={param:row.contractId,name:"RCON_0039"}
+                updateValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RCON_0039:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("存在在途综合授信调整或单笔批复调整")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+              //存在在途出账不得调整业务合同
+        params={param:row.contractId,name:"RCON_0040"}
+                updateValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RCON_0040:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("存在在途出账")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+
+       }
+
+
+       //规则校验：冻结批复不能调整
+        params={param:row.applyId,name:"RBIZ_0024"}
+                updateValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RBIZ_0024:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("批复已冻结")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+
+        //合同下有担保合同调整在途
+        params={param:row.contractId,name:"RGRT_0005"}
+                updateValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RGRT_0005:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("合同下有在途的担保合同$[c]调整流程")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+        //added by shendl合同下有在途的保证金追加
+        params={param:row.contractId,name:"RGRT_0012"}
+                updateValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RGRT_0012:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("该合同有在途的保证金追加")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+
+        params={contractId:row.contractId,bizType:row.bizType}
+
+                tzContractInfo(params).then(response=>{
+                  let res=response.data
+                  console.log("[tzContractInfo]result is:"+JSON.stringify(res))
+                  if(res.msg !=null){
+                    alert(res.msg)
+                    return false
+                  }
+
+
+                  this.$router.push({name: 'con_tree',
+                    params:{contractId:res.conInfo.contractId,
+                     contractType:"02",
+                     amountDetailId:row.amountDetailId,
+                     proFlag:"1",
+                     processInstId:res.processInstId
+
+                   }})
+
+                }).catch((error)=>{
+                  console.log(error)
+                })
+
+
+
+
       },
-      disab() { 
+
+
+
+      disab(row) { 
        console.log('disable 合同...')
+       if(0==row.length){
+        alert("请选择一笔生效合同。")
+        return false
+       }
+
+       let params={}
+
+       //综合授信协议不允许手工失效
+       if(row.bizType=="综合授信协议"){
+        alert("综合授信协议不允许手工失效！")
+        return false
+
+       }else{//单笔
+        //合同有在途调整不允许手工失效
+        params={param:row.amountDetailId,name:"RCON_0026"}
+        disabValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RCON_0026:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("[RCON_0026]有在途合同申请")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+
+        //存在在途出账不得调整业务合同
+        params={param:row.contractId,name:"RCON_0040"}
+        disabValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RCON_0040:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("[RCON_0040]存在在途出账")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+
+        //存在未结清借据
+        params={param:row.contractId,name:"RCON_0043"}
+        disabValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RCON_0043:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("[RCON_0043]该笔合同下有未结清借据")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+
+       }
+
+       //合同下有担保合同调整在途
+       params={param:row.contractId,name:"RGRT_0005"}
+        disabValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RGRT_0005:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("[RGRT_0005]合同下有在途的担保合同$[c]调整流程")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+
+       //合同下有在途的保证金追加
+       params={param:row.contractId,name:"RGRT_0012"}
+        disabValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RGRT_0012:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("[RGRT_0012]该合同有在途的保证金追加")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+
+        //新需求：合同下有临时出库的押品  不让做合同失效 
+        params={param:row.contractId,name:"RGRT_0017"}
+        disabValidateForCon(params).then(response=>{
+                let res=response.data
+                console.log("RGRT_0017:res "+JSON.stringify(res))
+                if(res!=0){
+                  alert("[RGRT_0017]该合同有临时出库的押品，不允许做合同失效")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+
+        getContractBizType(row.contractId,"2")
+
+
       },
+      //获取业务性质
+      getContractBizType(contractId, flag) {
+        console.log("[getContractBizType]contractId="+contractId+",flag="+flag)
+        let params={contractId:contractId}
+        getConInfoBizType(params).then(response=>{
+                let res=response.data
+                console.log("获取业务性质: "+JSON.stringify(res))
+                if(res.bizType!=null){
+                  recounted(contractId, flag, res.bizType)
+                }else{
+                  alert("业务信息为空，合同失效操作失败！")
+                  return false
+                }
+
+               }).catch((error)=>{
+                console.log(error)
+               })
+
+      },
+      recounted(contractId, flag, bizType) {
+        
+
+
+      },
+
+
       doDelete() {
         // deleteContract(row).then(response => {
         //   this.contractList(listQuery)

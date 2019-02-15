@@ -456,6 +456,13 @@ export const constantRouterMap = [
         component: _import('grt/subContractManage/sub_con_tree'),
         meta: { title: '担保合同信息', icon: 'manage' }
 
+      },
+      {
+        path: 'con_info/con_tree',
+        name: 'con_tree',
+        component: _import('csm/con_info/con_tree'),
+        meta: { title: '测试合同树加载', icon: 'manage' }
+
       }
     ]
   },

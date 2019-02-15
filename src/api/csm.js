@@ -16,6 +16,86 @@ export function getUserListbyId(queryParams) {
     entity: queryParams
   })
 } */
+function objToStrMap(obj) {
+    let strMap = new Map();
+    for (let k of Object.keys(obj)) {
+      //
+      console.log("k:"+k)
+      k=k.replace(/[%22]/g, "")
+      if(obj[k]!=null){
+        obj[k]=obj[k].replace(/[%22]/g, "")
+      }
+
+      strMap.set(k, obj[k]);
+    }
+    return strMap;
+  }
+
+  function jsonToStrMap(jsonStr){
+    return objToStrMap(JSON.parse(jsonStr));
+  }
+
+//con_apply_tz.jsp
+
+export function updateValidateForCon(queryParams) {
+  // body...
+  console.log(queryParams)
+  return myGet('/mybatis-service/ruleEngine/updateValidateForCon',queryParams)
+}
+
+export function disabValidateForCon(queryParams) {
+  // body...
+  console.log(queryParams)
+  return myGet('/mybatis-service/ruleEngine/disabValidateForCon',queryParams)
+}
+
+//合同调整接口
+export function tzContractInfo(queryParams) {
+  // body...
+  console.log(queryParams)
+  return myGet('/mybatis-service/process/conApply/tzContractInfo',queryParams)
+}
+
+
+
+//合同失效
+//获取业务性质
+export function getConInfoBizType(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/process/conApply/getConInfoBizType',queryParams)
+}
+
+
+
+//con_tree.jsp
+//先将品种对应的合同明细页面取出来
+
+export function getDetailJspByContractId(queryParams) {
+  // body...
+  console.log(queryParams)
+  return myGet('/mybatis-service/process/conContractInfo/getDetailJspByContractId',queryParams)
+}
+
+export function getConInfoByContarctId(queryParams) {
+  // body...
+  console.log(queryParams)
+  return myGet('/mybatis-service/process/conInfoSxxy/getConInfoByContarctId',queryParams)
+}
+
+export function getBankTeamStruct(queryParams) {
+  // body...
+  console.log(queryParams)
+  return myGet('/mybatis-service/process/bizInfo/getBankTeamStruct',queryParams)
+
+}
+
+//测试合同调整传入map数据能否接受，测试成功
+export function MainConConractUpdateValidate(queryParams) {
+  console.log(queryParams)
+  console.log("jsonToStrMap(queryParams)"+objToStrMap(queryParams))
+  return myGet('/mybatis-service/ruleEngine/MainConConractUpdateValidate', queryParams)
+}
+
 
 //
 export function getApproveCons(queryParams) {
