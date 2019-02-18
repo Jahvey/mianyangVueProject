@@ -71,23 +71,44 @@ export function getConInfoBizType(queryParams) {
 //先将品种对应的合同明细页面取出来
 
 export function getDetailJspByContractId(queryParams) {
-  // body...
   console.log(queryParams)
   return myGet('/mybatis-service/process/conContractInfo/getDetailJspByContractId',queryParams)
 }
 
 export function getConInfoByContarctId(queryParams) {
-  // body...
   console.log(queryParams)
   return myGet('/mybatis-service/process/conInfoSxxy/getConInfoByContarctId',queryParams)
 }
 
 export function getBankTeamStruct(queryParams) {
-  // body...
   console.log(queryParams)
   return myGet('/mybatis-service/process/bizInfo/getBankTeamStruct',queryParams)
 
 }
+
+export function saveConInfoToPro(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/process/conApply/saveConInfoToPro',queryParams)
+}
+
+export function RuleEngineMapper(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/process/rule/RuleEngineMapper',queryParams)
+}
+
+
+//合同签约 合同创建
+export function createConInfo(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/process/ApplyDaoEos/create',queryParams)
+}
+
+
+export function getApproveAndSxxy(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/process/getApproveAndSxxy',queryParams)
+}
+
 
 //测试合同调整传入map数据能否接受，测试成功
 export function MainConConractUpdateValidate(queryParams) {

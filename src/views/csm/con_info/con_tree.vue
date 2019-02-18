@@ -71,14 +71,48 @@
   //import payInfo from './pay_info'
   //import {getInitPayInfo, getInitProductType} from '@/api/loanInfo'
   import conApplyYwht from '@/views/crt/con_apply/con_apply_ywht'
-  import {getDetailJspByContractId,getConInfoByContarctId,getBankTeamStruct}  from '@/api/csm'
+  import {getDetailJspByContractId,getConInfoByContarctId,getBankTeamStruct,saveConInfoToPro,RuleEngineMapper}  from '@/api/csm'
 
+  import con_dy_list from '@/views/crt/con_grt/con_dy_list'
+  import con_zy_list from '@/views/crt/con_grt/con_zy_list'
+  import con_bzr_list from '@/views/crt/con_grt/con_bzr_list'
+  import con_bzj_list from '@/views/crt/con_grt/con_bzj_list'
+
+  import con_info_xy from '@/views/crt/con_info/con_info_xy'
+  import con_detail_xy from '@/views/crt/con_info/con_detail_xy'
+  import con_fs_xy from '@/views/crt/con_info/con_fs_xy'
+  import con_info_ht from '@/views/crt/con_info/con_info_ht'
+  import con_detail_ht from '@/views/crt/con_info/con_detail_ht'
+  import biz_tx_all from '@/views/crt/con_info/biz_tx_all'
+  import biz_pj_all from '@/views/crt/con_info/biz_pj_all'
+  import con_info_ht_xw from '@/views/crt/con_info/con_info_ht_xw'
+  import con_detail_ht_xw_house from '@/views/crt/con_info/con_detail_ht_xw_house'
+  import con_detail_ht_xw_cycle from '@/views/crt/con_info/con_detail_ht_xw_cycle'
+  import con_detail_ht_xw_uncycle from '@/views/crt/con_info/con_detail_ht_xw_uncycle'
 
   export default {
     name: 'conTree',
     components: {
      // payInfo
-     conApplyYwht
+     conApplyYwht,
+     con_dy_list,
+     con_zy_list,
+     con_bzr_list,
+     con_bzj_list,
+
+     con_info_xy,
+     con_detail_xy,
+     con_fs_xy,
+     con_info_ht,
+     con_detail_ht,
+     biz_tx_all,
+     biz_pj_all,
+     con_info_ht_xw,
+     con_detail_ht_xw_house,
+     con_detail_ht_xw_cycle,
+     con_detail_ht_xw_uncycle
+
+
     },
     data() {
       return {
@@ -91,70 +125,8 @@
         currentView: 'conApplyYwht',//默认选中放款信息
         //怎么在前台写一个json数据，然后丢到这里来？？？
         menuTree: [],//自定义一个全局的tree，这里动态渲染，问题还不小
-        data: [
-          {
-            label: '放款申请信息',
-            id: '1',
-            icon: 'el-icon-circle-plus',
-            children: [
-              {
-                id: '1-1',
-                label: '放款信息',
-                icon: 'el-icon-tickets',
-              },
-              {
-                id: '1-2',
-                label: '账户信息',
-                icon: 'el-icon-tickets',
-              },
-              {
-                id: '1-3',
-                label: '还本计划表',
-                icon: 'el-icon-tickets',
-              },
-              {
-                id: '1-4',
-                label: '贴息信息',
-                icon: 'el-icon-tickets',
-              },
-              {
-                id: '1-5',
-                label: '受托支付信息',
-                icon: 'el-icon-tickets',
-              },
-              {
-                id: '1-6',
-                label: '汇票明细信息',
-                icon: 'el-icon-tickets',
-              }
-            ]
-          },
-          {
-            id: "2",
-            label: '业务同意发放通知书',
-            icon: 'el-icon-tickets',
-          },
-          {
-            id: '3',
-            label: '批复意见书',
-            icon: 'el-icon-tickets',
-          },
-          {
-            id: '4',
-            label: '历史批复信息',
-            icon: 'el-icon-tickets',
-          },
-          {
-            id: '5',
-            label: '影像资料',
-            icon: 'el-icon-tickets',
-          },
-          {
-            id: '6',
-            label: '意见',
-            icon: 'el-icon-tickets',
-          }
-        ],
+        data: [],
+
         defaultProps: {
           children: 'children',
           label: 'label'
@@ -163,8 +135,10 @@
     },
     created() {
       //这个数据，接上合同的模态框之后可以在合同里面传过来 
-      //let param = this.$route.params
-      let param = {contractId: '5AF812FCFC2300CAE05010AC57DD7D12',applyId:'xxx'}
+      //let param = this.$route.params ff808081648419e9016488e526e92146
+      //let param = {contractId: '5AF812FCFC2300CAE05010AC57DD7D12',applyId:'xxx'}
+      //let param = {contractId: '5AF812FCD14100CAE05010AC57DD7D12',applyId:'5AF818F3F346C50EE05010AC57DD0143'}
+      let param = {contractId: '5AF812FCD14100CAE05010AC57DD7D12',applyId:'ff808081628f641d0162b7d370400096'}
       this.initData(param)
     },
     methods: {
@@ -184,6 +158,117 @@
         let bizType='01'
         let applyId
         let amountDetailId
+        let proFlag_s
+
+        
+        this.menuTree = [//军育苗做例子，这样怎么把上面定义的参数传递到该指定页面，例如 addr
+            {
+              label: '综合授信协议',
+              id: '1',
+              url:'',
+              icon: 'el-icon-circle-plus',
+              children: [
+                {
+                  id: '1-1',
+                  label: '基本信息',
+                  url:'con_info_xy',
+                  params:{
+                    contractId:contractId,
+                    proFlag:proFlag
+                  },
+                  icon: 'el-icon-tickets',
+                },
+                {
+                  id: '1-2',
+                  label: '明细信息',                        
+                  url:'con_detail_xy',
+                  params:{
+                    contractId:contractId,
+                    proFlag:"0"
+                  },
+                  icon: 'el-icon-tickets',
+                },
+                {
+                  id: '1-3',
+                  label: '附属信息',                        
+                  url:'con_fs_xy',
+                  params:{
+                    contractId:contractId,
+                    proFlag:proFlag
+                  },
+                  icon: 'el-icon-tickets',
+                }
+              ]
+            }
+          ]
+
+
+                this.menuTree.push({
+                    label: '从合同信息',
+                    id: '2',
+                    url:'',
+                    icon: 'el-icon-circle-plus',
+                    children: [
+                      {
+                        id: '2-1',
+                        label: '抵押合同',
+                        url:'con_dy_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"01",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '2-2',
+                        label: '质押合同',                        
+                        url:'con_zy_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"02",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '2-3',
+                        label: '保证合同',                        
+                        url:'con_bzr_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"04",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '2-4',
+                        label: '关联保证金',                        
+                        url:'con_bzj_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"03",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag,
+                          proFlag_s:proFlag_s
+                        },
+                        icon: 'el-icon-tickets',
+                      }
+                    ]
+
+                })
 
 
         // let menuTree=this.menuTree
@@ -223,9 +308,9 @@
             if(mydata.bizInfo.isBankTeam=='1'){
               getBankTeamStruct(data).then(response1=>{
                 let o=response1.data
-                console.log("getBankTeamStruct:"+o)
+                console.log("[getBankTeamStruct]:"+JSON.stringify(o))
 
-                syndicatedObjectCd=o.bankTs.syndicatedObjectCd
+                syndicatedObjectCd=o.syndicatedObjectCd
                 if(syndicatedObjectCd=='02'){
                   mydata.contractType="03"
                 }
@@ -242,76 +327,690 @@
 
           //如果合同信息里协议id为空，则是单笔申请的业务
           if(mydata.conInfo.xyId==null || mydata.conInfo.xyId==''){
-            this.conSrc="1"
-            this.contypename = "单笔业务项下主合同"
+            conSrc="1"
+            contypename = "单笔业务项下主合同"
           }
 
-          this.bizType=mydata.bizInfo.bizType
-          this.applyId=mydata.bizInfo.applyId
-          this.partyId=mydata.bizInfo.partyId
-          this.productType=mydata.conInfo.productType
-          this.amountDetailId=mydata.conInfo.amountDetailId
+          bizType=mydata.bizInfo.bizType
+          applyId=mydata.bizInfo.applyId
+          partyId=mydata.bizInfo.partyId
+          productType=mydata.conInfo.productType
+          amountDetailId=mydata.conInfo.amountDetailId
         
           console.log("bizType"+bizType)
+
           if(bizType=='01'||bizType=='02'||bizType=='05'){
             if("01"==mydata.contractType){
-              this.menuTree = [//军育苗做例子，这样怎么把上面定义的参数传递到该指定页面，例如 addr
-                  {
-                    label: '放款申请信息',
-                    id: '1',
-                    icon: 'el-icon-circle-plus',
-                    children: [
-                      {
-                        id: '1-1',
-                        label: '放款信息',
-                        icon: 'el-icon-tickets',
-                      },
-                      {
-                        id: '1-2',
-                        label: '账户信息',
-                        icon: 'el-icon-tickets',
-                      },
-                      {
-                        id: '1-4',
-                        label: '贴息信息',
-                        icon: 'el-icon-tickets',
-                      }
-                    ]
-                  }
-                ]
+                    this.menuTree = [//军育苗做例子，这样怎么把上面定义的参数传递到该指定页面，例如 addr
+                        {
+                          label: '综合授信协议',
+                          id: '1',
+                          url:'',
+                          icon: 'el-icon-circle-plus',
+                          children: [
+                            {
+                              id: '1-1',
+                              label: '基本信息',
+                              url:'con_info_xy',
+                              params:{
+                                contractId:contractId,
+                                proFlag:proFlag
+                              },
+                              icon: 'el-icon-tickets',
+                            },
+                            {
+                              id: '1-2',
+                              label: '明细信息',                        
+                              url:'con_detail_xy',
+                              params:{
+                                contractId:contractId,
+                                proFlag:"0"
+                              },
+                              icon: 'el-icon-tickets',
+                            },
+                            {
+                              id: '1-3',
+                              label: '附属信息',                        
+                              url:'con_fs_xy',
+                              params:{
+                                contractId:contractId,
+                                proFlag:proFlag
+                              },
+                              icon: 'el-icon-tickets',
+                            }
+                          ]
+                        }
+                      ]
 
-                this.menuTree.push({
-                    label: '放款申请信息1',
+
+             this.menuTree.push({
+                    label: '从合同信息',
                     id: '2',
+                    url:'',
                     icon: 'el-icon-circle-plus',
                     children: [
                       {
                         id: '2-1',
-                        label: '放款信息1',
+                        label: '抵押合同',
+                        url:'con_dy_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"01",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
                         icon: 'el-icon-tickets',
                       },
                       {
                         id: '2-2',
-                        label: '账户信息1',
+                        label: '质押合同',                        
+                        url:'con_zy_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"02",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
                         icon: 'el-icon-tickets',
                       },
                       {
-                        id: '2-4',
-                        label: '贴息信息1',
+                        id: '2-3',
+                        label: '保证合同',                        
+                        url:'con_bzr_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"04",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
                         icon: 'el-icon-tickets',
                       }
                     ]
-                  })
 
+                })
 
 
            }
 
+           if("02"==mydata.contractType){
+            //贴现
+            
+            if("01006001"==productType||"01006002"==productType || "01006010"==productType ){//村镇银行贴现产品
+            this.menuTree=[
+                  {
+                    label: contypename,
+                    id: '1',
+                    url:'',
+                    icon: 'el-icon-circle-plus',
+                    children: [
+                      {
+                        id: '1-1',
+                        label: '主合同基本信息',
+                        url:'con_info_ht',
+                        params:{
+                          contractId:contractId,
+                          proFlag:proFlag,
+                          productType:productType,
+                          conSrc:conSrc
+
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '1-2',
+                        label: '主合同明细信息',                        
+                        url:'con_detail_ht',
+                        params:{
+                          contractId:contractId,
+                          proFlag:proFlag,
+                          jspName:jspName,
+                          productType:productType,
+                          amountDetailId:amountDetailId,
+                          cycleIndCon:mydata.conInfo.cycleIndCon,
+                          syndicatedObjectCd:syndicatedObjectCd
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '1-3',
+                        label: '票据明细信息',                        
+                        url:'biz_tx_all',
+                        params:{
+                          contractId:contractId,
+                          proFlag:proFlag,
+                          productType:productType,
+                          partyId:partyId,
+                          ecifPartyNum:mydata.party.ecifPartyNum,
+                          amountDetailId:amountDetailId,
+                          contractNum:mydata.conInfo.contractNum,
+                          contractId:mydata.conInfo.contractId
+                        },
+                        icon: 'el-icon-tickets',
+                      }
+                    ]
+                  }
+
+             ]
+
+
+
+
+            }// 银承
+            else if("01008001"==productType||"01008002"==productType || "01008010"==productType){
+
+             this.menuTree=[
+                  {
+                    label: contypename,
+                    id: '1',
+                    url:'',
+                    icon: 'el-icon-circle-plus',
+                    children: [
+                      {
+                        id: '1-1',
+                        label: '主合同基本信息',
+                        url:'con_info_ht',
+                        params:{
+                          contractId:contractId,
+                          proFlag:proFlag,
+                          productType:productType,
+                          conSrc:conSrc
+
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '1-2',
+                        label: '主合同明细信息',                        
+                        url:'con_detail_ht',
+                        params:{
+                          contractId:contractId,
+                          proFlag:proFlag,
+                          jspName:jspName,
+                          productType:productType,
+                          amountDetailId:amountDetailId,
+                          cycleIndCon:mydata.conInfo.cycleIndCon,
+                          syndicatedObjectCd:syndicatedObjectCd
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '1-3',
+                        label: '票据明细信息',                        
+                        url:'biz_pj_all',
+                        params:{
+                          contractId:contractId,
+                          proFlag:proFlag,
+                          productType:productType,
+                          partyId:partyId,
+                          ecifPartyNum:mydata.party.ecifPartyNum,
+                          amountDetailId:amountDetailId,
+                          contractNum:mydata.conInfo.contractNum,
+                          contractId:mydata.conInfo.contractId
+                        },
+                        icon: 'el-icon-tickets',
+                      }
+                    ]
+                  }
+
+             ]
+
+            }
+            else{
+
+             this.menuTree=[
+                  {
+                    label: contypename,
+                    id: '1',
+                    url:'',
+                    icon: 'el-icon-circle-plus',
+                    children: [
+                      {
+                        id: '1-1',
+                        label: '主合同基本信息',
+                        url:'con_info_ht',
+                        params:{
+                          contractId:contractId,
+                          proFlag:proFlag,
+                          productType:productType,
+                          conSrc:conSrc
+
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '1-2',
+                        label: '主合同明细信息',                        
+                        url:'con_detail_ht',
+                        params:{
+                          contractId:contractId,
+                          proFlag:proFlag,
+                          jspName:jspName,
+                          productType:productType,
+                          amountDetailId:amountDetailId,
+                          cycleIndCon:mydata.conInfo.cycleIndCon,
+                          syndicatedObjectCd:syndicatedObjectCd
+                        },
+                        icon: 'el-icon-tickets',
+                      }
+                    ]
+                  }
+
+             ]
+
+            }
+
+             this.menuTree.push({
+                    label: '从合同信息',
+                    id: '2',
+                    url:'',
+                    icon: 'el-icon-circle-plus',
+                    children: [
+                      {
+                        id: '2-1',
+                        label: '抵押合同',
+                        url:'con_dy_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"01",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '2-2',
+                        label: '质押合同',                        
+                        url:'con_zy_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"02",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '2-3',
+                        label: '保证合同',                        
+                        url:'con_bzr_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"04",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '2-4',
+                        label: '关联保证金',                        
+                        url:'con_bzj_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"03",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag,
+                          proFlag_s:proFlag_s
+                        },
+                        icon: 'el-icon-tickets',
+                      }
+                    ]
+
+                })
+
+
+           }
+
+           if("03"==mydata.contractType){
+
+            console.log("contypename:"+contypename)
+             this.menuTree=[
+                  {
+                    label: contypename,
+                    id: '1',
+                    url:'',
+                    icon: 'el-icon-circle-plus',
+                    children: [
+                      {
+                        id: '1-1',
+                        label: '主合同基本信息',
+                        url:'con_info_ht',
+                        params:{
+                          contractId:contractId,
+                          proFlag:proFlag,
+                          productType:productType,
+                          conSrc:conSrc
+
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '1-2',
+                        label: '主合同明细信息',                        
+                        url:'con_detail_ht',
+                        params:{
+                          contractId:contractId,
+                          proFlag:proFlag,
+                          jspName:jspName,
+                          productType:productType,
+                          amountDetailId:amountDetailId,
+                          cycleIndCon:mydata.conInfo.cycleIndCon,
+                          syndicatedObjectCd:syndicatedObjectCd
+                        },
+                        icon: 'el-icon-tickets',
+                      }
+                    ]
+                  }
+
+             ]
+
+            this.menuTree.push({
+                    label: '从合同信息',
+                    id: '2',
+                    url:'',
+                    icon: 'el-icon-circle-plus',
+                    children: [
+                      {
+                        id: '2-1',
+                        label: '抵押合同',
+                        url:'con_dy_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"01",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '2-2',
+                        label: '质押合同',                        
+                        url:'con_zy_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"02",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '2-3',
+                        label: '保证合同',                        
+                        url:'con_bzr_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"04",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '2-4',
+                        label: '关联保证金',                        
+                        url:'con_bzj_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"03",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag,
+                          proFlag_s:proFlag_s
+                        },
+                        icon: 'el-icon-tickets',
+                      }
+                    ]
+
+                })
+           }
+
+
+          }else if(bizType=='04'||bizType=='06'){//小微
+            if("02002"==productType.substr(0,5)||"02005003"==productType||"02005001"==productType){//房贷
+
+              this.menuTree=[
+                  {
+                    label: contypename,
+                    id: '1',
+                    url:'',
+                    icon: 'el-icon-circle-plus',
+                    children: [
+                      {
+                        id: '1-1',
+                        label: '主合同基本信息',
+                        url:'con_info_ht_xw',
+                        params:{
+                          contractId:contractId,
+                          proFlag:proFlag,
+                          productType:productType
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '1-2',
+                        label: '主合同明细信息',                        
+                        url:'con_detail_ht_xw_house',
+                        params:{
+                          contractId:contractId,
+                          proFlag:proFlag,
+                          productType:productType,
+                          amountDetailId:amountDetailId
+                        },
+                        icon: 'el-icon-tickets',
+                      }
+                    ]
+                  }
+
+             ]
+
+
+            }else{
+                if(cycleIndCon=="1"){
+                  //循环类合同
+                  this.menuTree=[
+                          {
+                            label: '单笔业务项下主合同',
+                            id: '1',
+                            url:'',
+                            icon: 'el-icon-circle-plus',
+                            children: [
+                              {
+                                id: '1-1',
+                                label: '主合同基本信息',
+                                url:'con_info_ht_xw',
+                                params:{
+                                  contractId:contractId,
+                                  proFlag:proFlag,
+                                  productType:productType
+                                },
+                                icon: 'el-icon-tickets',
+                              },
+                              {
+                                id: '1-2',
+                                label: '主合同明细信息',                        
+                                url:'con_detail_ht_xw_cycle',
+                                params:{
+                                  contractId:contractId,
+                                  proFlag:proFlag,
+                                  productType:productType,
+                                  amountDetailId:amountDetailId
+                                },
+                                icon: 'el-icon-tickets',
+                              }
+                            ]
+                          }
+
+                     ]
+
+                }else{
+                  this.menuTree=[
+                          {
+                            label:'单笔业务项下主合同',
+                            id: '1',
+                            url:'',
+                            icon: 'el-icon-circle-plus',
+                            children: [
+                              {
+                                id: '1-1',
+                                label: '主合同基本信息',
+                                url:'con_info_ht_xw',
+                                params:{
+                                  contractId:contractId,
+                                  proFlag:proFlag,
+                                  productType:productType
+                                },
+                                icon: 'el-icon-tickets',
+                              },
+                              {
+                                id: '1-2',
+                                label: '主合同明细信息',                        
+                                url:'con_detail_ht_xw_uncycle',
+                                params:{
+                                  contractId:contractId,
+                                  proFlag:proFlag,
+                                  productType:productType,
+                                  amountDetailId:amountDetailId
+                                },
+                                icon: 'el-icon-tickets',
+                              }
+                            ]
+                          }
+
+                     ]
+                }
+
+
+            }
+
+              //小薇合同通用的
+            this.menuTree.push({
+                    label: '从合同信息',
+                    id: '2',
+                    url:'',
+                    icon: 'el-icon-circle-plus',
+                    children: [
+                      {
+                        id: '2-1',
+                        label: '抵押合同',
+                        url:'con_dy_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"01",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '2-2',
+                        label: '质押合同',                        
+                        url:'con_zy_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"02",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '2-3',
+                        label: '保证合同',                        
+                        url:'con_bzr_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"04",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag
+                        },
+                        icon: 'el-icon-tickets',
+                      },
+                      {
+                        id: '2-4',
+                        label: '关联保证金',                        
+                        url:'con_bzj_list',
+                        params:{
+                          contractId:contractId,
+                          subcontractTypeCd:"03",
+                          applyId:applyId,
+                          contractType:"02",
+                          partyId:partyId,
+                          proFlag:proFlag,
+                          proFlag_s:proFlag_s
+                        },
+                        icon: 'el-icon-tickets',
+                      }
+                    ]
+
+                })
+
+
+          }else{
+            //这种数据基本为数据迁移问题
+            alert("错误的业务性质TB_BIZ_APPROVE.BIZ_TYPE[XD_SXYW0002->"+bizType+"]")
+            return false
+          }
+
+          //剩下的页面主要是一些公共的信息
+          if(mydata.contractType!='01'){
+               this.menuTree.push({
+                    label: '账户信息',
+                    id: '3',
+                    url:'account_list',
+                    params:{contractId:contractId,proFlag:proFlag},
+                    icon: 'el-icon-circle-plus',
+                    
+                })
+
+          }
+
+          //意见提交
+          if("-1"!=proFlag){
+              this.menuTree.push({
+                    label: '意见',
+                    id: '4',
+                    url:'/com.bos.bps.service.workFlowAdvice.flow',//工作流，还没有接入
+                    params:{bizId:contractId,processInstId:processInstId,
+                      isSrc:"2",amountDetailId:amountDetailId,
+                      productType:productType,contractId:contractId,
+                      contractNum:mydata.conInfo.contractNum
+                    },
+                    icon: 'el-icon-circle-plus',
+                    
+                })
 
           }
 
 
-
+         // nodeclick({"node":menudata[0].children[0]})
 
         }).catch((error)=>{
           console.log(error)
@@ -350,30 +1049,80 @@
           .catch(_ => {
           });
       },
+
+
+
       /*树方法开始*/
       handleNodeClick(item, node, self) {//2019年1月31日14:33:19  点击选中
-        if (item.id == '1-1') {
-          console.log("放款信息")
-          //this.currentView = 'conApplyYwht'
-        } else if (item.id == '1-2') {
-          console.log("账户信息");
-        } else if (item.id == '1-3') {
-          console.log("还本计划表");
-        } else if (item.id == '1-4') {
-          console.log("贴息信息");
-        } else if (item.id == '1-5') {
-          console.log("受托支付信息");
-        } else if (item.id == '1-6') {
-          console.log("汇票明细信息");
-        } else if (item.id == '2') {
-          console.log('业务同意发放通知书')
-        } else if (item.id == '3') {
-          console.log("批复意见书");
-        } else if (item.id == '4') {
-          console.log("历史批复信息");
-        } else if (item.id == '5') {
-          console.log("影像资料");
+        console.log("[handleNodeClick]item:"+JSON.stringify(item))
+        if(null==item.url){
+          return false;
         }
+
+
+        if(item.label=="意见"){
+          if("1"==proFlag){
+            let param1={contractId:item.params.contractId,processInstId:item.params.processInstId}
+            //点击意见时将授权参数传到流程区域
+            saveConInfoToPro(param1).then(response1=>{
+                let res=response1.data
+                console.log("[saveConInfoToPro]:"+res)
+
+              }).catch((error)=>{
+                console.log(error)
+              })
+          }
+        }
+
+
+        if(item.label=="主合同明细信息"){
+          param1={param:item.params.contractId,name:"RCON_0003"}
+          //合同基本信息保存校验
+          RuleEngineMapper(param1).then(response1=>{
+                let res=response1.data
+                console.log("RCON_0003 [RuleEngineMapper]:"+res)
+                if(res==0 ){
+                  alert("合同基本信息未保存")
+                }
+
+              }).catch((error)=>{
+                console.log(error)
+              })
+
+        }
+
+
+        //this.currentView=item.url
+        this.currentView=item.url
+        console.log("currentView is:"+item.url)
+        this.$router.push({path:item.url,params:item.params})
+        
+        //this.$router.push({name:'biz_pj_all',params:item.params})
+
+        // if (item.id == '1-1') {
+        //   console.log("放款信息")
+        //   //this.currentView = 'conApplyYwht'
+        //   this.$router.push({name: item.url,params:item.params})
+
+        // } else if (item.id == '1-2') {
+        //   console.log("账户信息");
+        // } else if (item.id == '1-3') {
+        //   console.log("还本计划表");
+        // } else if (item.id == '1-4') {
+        //   console.log("贴息信息");
+        // } else if (item.id == '1-5') {
+        //   console.log("受托支付信息");
+        // } else if (item.id == '1-6') {
+        //   console.log("汇票明细信息");
+        // } else if (item.id == '2') {
+        //   console.log('业务同意发放通知书')
+        // } else if (item.id == '3') {
+        //   console.log("批复意见书");
+        // } else if (item.id == '4') {
+        //   console.log("历史批复信息");
+        // } else if (item.id == '5') {
+        //   console.log("影像资料");
+        // }
       },
       startWith(src, str) {
         if (str == null || str == '' || src == null || src == '') {

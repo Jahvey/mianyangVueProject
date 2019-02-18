@@ -1,12 +1,9 @@
 <template>
   <csc-single-table 
   :pageDef="pageDef" 
-  :entity="entity"
-    
+  :entity="entity"  
   @create="create" 
-
 @pageQuery="doPageQuery" 
-
 @doDelete="doDelete"
   :disableQueryForm="disableQueryForm" 
   :disableRowButtons="disableRowButtons" 
@@ -16,10 +13,9 @@
 
 <script>
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import { getApproveCons } from '@/api/csm'
+  import { createConInfo,getApproveAndSxxy } from '@/api/csm'
 
 
-  // 合同模块也是需要引入用户的，以后需要根据用户查询对应的合同（高级查询）
 
   export default {
     data() {
@@ -27,7 +23,7 @@
         disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮
         disableRowButtons: true, // 隐藏tab表单按钮
         listLoading: false,
-        entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
+        entity: {
 
         },
         pageDef: {
@@ -36,8 +32,7 @@
             columnNum: 2, // 一行几列
             queryCols: [
               { label: '业务编号', inputType: 'input', modelName: 'bizNum' }
-            
-
+          
             ]
           },
           tabDef: {
@@ -48,15 +43,15 @@
             tabCols: [
 
               
-              { label: '合同性质', prop: 'creditMode', isSort: true,isFormat:true,enumType:'creditMode' },
-              { label: '合同编号', prop: 'contractNum', isSort: true,isLink: true,url:'/crt/con_info/con_info_ht_xw',param:["contractNum","conStatus"]  },
-              { label: '合同品种', prop: 'productType', isSort: true,isFormat:true,enumType:'productType' },
+              { label: '业务编号', prop: 'bizNum', isSort: true},
+              { label: '客户名称', prop: 'partyName', isSort: true },
+              { label: '业务性质', prop: 'creditMode', isSort: true,isFormat:true,enumType:'creditMode' },
+              { label: '业务类型', prop: 'bizHappenType', isSort: true },
               { label: '币种', prop: 'currencyCd', isSort: true ,isFormat:true,enumType:'currencyCd'},
-              { label: '合同金额', prop: 'contractAmt', isSort: true },
+              { label: '业务额度', prop: 'detailAmt', isSort: true },
 
-              { label: '可用金额(元)', prop: 'conBalance', isSort: true },
-              { label: '合同起期', prop: 'beginDate', isSort: true },
-              { label: '合同止期', prop: 'endDate', isSort: true }
+              { label: '可用金额(元)', prop: 'boUse', isSort: true },
+              { label: '起始日期', prop: 'validDate', isSort: true }
 
 
             ]
@@ -73,20 +68,19 @@
     components: { CscSingleTable }, // 这个没有问题
     created(){
       let param=this.$route.params
-      console.log(param.partyId+":"+param.type)
+      console.log("页面跳转成功："+JSON.stringify(param))
+
     },
 
     methods: {
 
       doPageQuery(listQuery) {
 
-        //console.log('listQuery ....' + listQuery)
-        getApproveCons(listQuery).then(response => {
+        getApproveAndSxxy(listQuery).then(response => {
           this.entity = response.data
+          //console.log("[getApproveAndSxxy]"+JSON.stringify(this.entity))
           this.$store.dispatch('setListLoading', false)
-          // console.log('response.data.entity...')
-          //  console.log( response.data.entity)
-     
+
         }).catch((error) => {
     
           console.log(error)
@@ -98,8 +92,20 @@
       //  this.$router.push({path: '/contract/add/edit/' + row.contractId})
       },
      
-      create() { 
-       console.log('create合同...')
+      create(row) { 
+       console.log('[con_apply_ywht] create合同...'+JSON.stringify(row))
+       createConInfo(row).then(response1 => {
+          this.entity = response1.data
+          console.log("合同创建成功！！[ConInfo] "+JSON.stringify(this.entity))
+        
+
+        }).catch((error) => {
+    
+          console.log(error)
+        })
+
+
+
       },
       
       doDelete() {

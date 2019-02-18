@@ -129,16 +129,15 @@
       doCancel() {
         this.$router.back()
       },
-      contractList(param) {
-        console.log("[con_detail_ht_xw_uncycle] param is"+JSON.stringify(param))
-
-
-      }
+      contractList(listQuery) {
+        const params = {
+          listQuery: this.listQuery
+        }
 
     },
     mounted() {				// 页面加载完毕之后进行的渲染
       this.contractList()
     }
-
+  },
   }
 </script>

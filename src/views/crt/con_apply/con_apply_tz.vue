@@ -121,8 +121,6 @@
        }
 
 
-
-
        this.$router.push({name: '业务合同列表',params:{partyId:row.partyId,type:'02' }}) 
       },
 

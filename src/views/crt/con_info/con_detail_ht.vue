@@ -9,7 +9,7 @@
 <script>
   // 主合同基本信息  /crt/con_info/con_info_ht_xw.jsp
   import CscFormPage from '@/components/CscFormPage/CscFormPage'
-  import {getConInfoByContractNum} from '@/api/contract' // 暂时没有使用
+  //import {getConInfoByContractNum} from '@/api/contract' // 暂时没有使用
 
 
   export default {
@@ -20,7 +20,7 @@
         refVisible: {pkOrg: false},
         pageDef: {
           disabled: true, // 页面按钮隐藏
-          name: '用户信息',
+          name: '主合同明细信息',
           columnNum: 2,
           pageCols: [
             {label: '客户名称:', inputType: 'input', modelName: 'partyName'},
@@ -77,14 +77,14 @@
 
     methods: {
       async getConInfoByContractNum(param) {
-        console.log("[con_info_ht_xw] param is:"+JSON.stringify(param))
+        console.log("[con_detail_ht] param:"+JSON.stringify(param))
 
-        getConInfoByContractNum(param).then(response => {  // { contractNum: contractNum },{ conStatus: conStatus }
-          this.form = response.data
-          console.log(this.form)
-        }).catch((error) => {
-          console.log(error)
-        })
+        // getConInfoByContractNum(param).then(response => {  
+        //   this.form = response.data
+        //   console.log(this.form)
+        // }).catch((error) => {
+        //   console.log(error)
+        // })
       },
 
       doCancel() {
