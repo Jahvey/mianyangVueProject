@@ -1,7 +1,12 @@
 <!--suppress ALL -->
 <template>
   <div>
-    <csc-form-page :pageDef="pageDef" :formData="form" @click="doCancel">
+    <csc-form-page 
+    :pageDef="pageDef" :formData="form" 
+
+    @doCancel="doCancel" 
+    
+>
     </csc-form-page>
   </div>
 </template>
@@ -9,18 +14,23 @@
 <script>
   // 主合同基本信息  /crt/con_info/con_info_ht_xw.jsp
   import CscFormPage from '@/components/CscFormPage/CscFormPage'
+  import getConInfoByContarctId from '@/api/csm'
+  import axios from 'axios'
+  import qs from 'qs'
   //import {getConInfoByContractNum} from '@/api/contract' // 暂时没有使用
 
 
   export default {
     data() {
       return {
+
+
         srvObj: {},
         form: {},
         refVisible: {pkOrg: false},
         pageDef: {
-          disabled: true, // 页面按钮隐藏
-          name: '主合同基本信息',
+          disabled: false, // 页面按钮隐藏
+          name: 'con_info_ht',//主合同基本信息
           columnNum: 2,
           pageCols: [
             {label: '客户名称:', inputType: 'input', modelName: 'partyName'},
@@ -68,32 +78,100 @@
       }
     },
 
+    props:{
+      paramsConTree:{ //用于接受父组件传来的参数
+
+      }
+    },
     components: {CscFormPage},
-    created() {
+    created:function () {
       // this.getConInfoByContractNum(this.$store.state.urlParam.queryParam.contractNum)
-      let param=this.$store.state.urlParam.queryParam
-      this.getConInfoByContractNum(param)
+     // let param=this.$store.state.urlParam.queryParam
+      //this.getConInfoByContractNum(param)
+      console.log("从父组件conTree传来的参数:"+JSON.stringify(this.paramsConTree))
+      let param=this.paramsConTree  //取到了传过来的参数值
+      this.initFormData(param)
+      //this.getConInfoByContarctId(param)
     },
 
+    // mounted() {        // 页面加载完毕之后进行的渲染
+    //   this.getConInfoByContarctId();
+    // },
     methods: {
-      async getConInfoByContractNum(param) {
-        console.log("[con_info_ht] param:"+JSON.stringify(param))
 
-        // getConInfoByContractNum(param).then(response => {  
-        //   this.form = response.data
-        //   console.log(this.form)
-        // }).catch((error) => {
+      async initFormData(data){
+        console.log("[con_info_ht]初始化页面参数 "+JSON.stringify(data))
+        console.log("[contractId]初始化页面参数 "+JSON.stringify(data.contractId))
+        let contractId = data.contractId;//业务合同ID
+
+        let xgbz= data.xgbz;
+        let proFlag = data.proFlag;//流程中查看标识
+        let productType = data.productType;//流程中查看标识
+        let oldContractId ='';
+
+        let dataParam={contractId:contractId}
+
+        console.log(dataParam)
+
+        //仍然有问题，但是并不知道什么原因
+        // getConInfoByContarctId(contractId).then(function (res) {
+        //   console.log(res.data)
+
+        // }).catch((err)=>{
+        //   console.log(err)
+        // })
+
+        axios.get(
+          '/mybatis-service/process/conInfoSxxy/getConInfoByContarctId',{
+            params:{
+              contractId:contractId
+            }
+          }
+
+          )
+        .then(function (res) {
+         
+          console.log(res.data)
+
+        }).catch(function (err) {
+          
+          console.log(err)
+        })
+
+        // getConInfoByContarctId(dataParam).then(response1=>{
+        //   console.log(response1.data)
+        //   //this.form=response1.data
+        //  // console.log("this.form is "+this.form)
+
+        // }).catch((error)=>{
         //   console.log(error)
         // })
+
+
+
       },
+
+
+      //  getConInfoByContractNum(param) {
+      //   console.log("[con_info_ht] param:"+JSON.stringify(param))
+
+      //   getConInfoByContractNum(param).then(response => {  
+      //     this.form = response.data
+      //     console.log(this.form)
+      //   }).catch((error) => {
+      //     console.log(error)
+      //   })
+
+      // },
 
       doCancel() {
         this.$router.back()
+        console.log("取消")
       }
-      // ,
-      // mounted() {				// 页面加载完毕之后进行的渲染
-      //   this.getConInfoByContractNum()
-      // }
-    },
+
+
+    }
+
+
   }
 </script>

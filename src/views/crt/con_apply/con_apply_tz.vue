@@ -1,5 +1,6 @@
 <template>
-  <csc-single-table 
+  <div> 
+    <csc-single-table 
   :pageDef="pageDef" 
   :entity="entity"
   @view="view"     
@@ -13,12 +14,40 @@
   :disableRowButtons="disableRowButtons" 
   >
   </csc-single-table>
+
+<!--
+  <el-button type="text" @click="dialog1Visible = true">点击打开 Dialog</el-button>
+-->
+<!--
+  <el-dialog
+  title="合同失效提示"
+  :visible.sync="dialog1Visible"
+  width="30%"
+  :before-close="handleClose"
+
+  >
+  <span>{{msgContents}}</span>
+  <span slot="footer" class="dialog-footer">
+    <el-button @click="dialog1Visible = false">取 消</el-button>
+    <el-button type="primary" @click="dialog1Visible = false">确 定</el-button>
+  </span>
+</el-dialog>
+-->
+
+<!--conTree-->
+
+  <conTree :paramsInfo="paramsInfo" v-if="paramsInfo.conTreeVisiable" ></conTree>
+
+
+  </div>
+  
 </template>
 
 <script>
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
+  import conTree from '@/views/csm/con_info/con_tree'
   import { getApproveCons,MainConConractUpdateValidate,updateValidateForCon,disabValidateForCon,tzContractInfo,
-  getConInfoBizType } from '@/api/csm'
+  getConInfoBizType,disConInfo,disConSynColl} from '@/api/csm'
 
 
   // 合同模块也是需要引入用户的，以后需要根据用户查询对应的合同（高级查询）
@@ -26,6 +55,14 @@
   export default {
     data() {
       return {
+        paramsInfo:{//使用父子传参的方式传递参数，父组件向子组件传递多个参数
+          conTreeVisiable:false
+        },
+        
+        partyId:'partyIdxxxxx',//这个id是从session中取到的
+        confirmDisab:false, //是否执行下面的流程操作
+        msgContents:'', //合同失效提示对话框 内容
+        dialog1Visible: false,
         disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮
         disableRowButtons: true, // 隐藏tab表单按钮
         listLoading: false,
@@ -73,7 +110,12 @@
       }
     },
 
-    components: { CscSingleTable }, // 这个没有问题
+    components: { 
+
+    CscSingleTable,
+    conTree
+
+     }, // 这个没有问题
 
     methods: {
 
@@ -100,15 +142,22 @@
           alert("请选择一笔生效合同。")
           return false
         }
+        this.paramsInfo={
 
-        MainConConractUpdateValidate(row).then(response=>{
-          this.entity=response.data
-          console.log("response data...."+this.entity)
-
+         conTreeVisiable:true,
+         contractId:row.contractId,
+         contractType:'02',
+         proFlag:'-1'
         }
-          ).catch((e)=>{
-            console.log(e)
-          })
+
+        // MainConConractUpdateValidate(row).then(response=>{
+        //   this.entity=response.data
+        //   console.log("response data...."+this.entity)
+
+        // }
+          // ).catch((e)=>{
+          //   console.log(e)
+          // })
         // this.$router.push({path: '/contract/contractAdd'})
       },
 
@@ -132,165 +181,124 @@
         return false
        }
 
-       let params={param:row.contractId,name:"XFE_0004"}
-         updateValidateForCon(params).then(response=>{
+       // var vaildateFlag=true
+       let rowData=row
+       updateValidateForCon(row).then(response=>{
           let res=response.data
-          console.log("XFE_0004:res "+JSON.stringify(res))
-          if(res!=0){
-            alert("该合同已被纳入[移交申请],在业务结束前无法处理")
-            return false
+          let vaildateFlag=true
+          console.log("dataMap is "+JSON.stringify(res))
+          //XFE_0004
+          if(res.XFE_0004!=0){
+            alert("[XFE_0004]该合同已被纳入[移交申请],在业务结束前无法处理")
+            this.vaildateFlag=false
+            return {vaildateFlag:this.vaildateFlag,param:row}
           }
 
-         }).catch((error)=>{
-          console.log(error)
-         })
+        //综合授信协议存在在途的调整不允许重复调整
+       if(rowData.bizType=="综合授信协议"){  //TODO 这里的方法根本没有调用 2019-2-14
+        //RCON_0024
+          if(res.RCON_0024!=0){
+            alert("[RCON_0024]有在途综合授信协议")
+            this.vaildateFlag=false
+            return {vaildateFlag:this.vaildateFlag,param:row}
+          }
 
-       //综合授信协议存在在途的调整不允许重复调整
-       if(row.bizType=="综合授信协议"){  //TODO 这里的方法根本没有调用 2019-2-14
-        //
-        params={param:row.applyId,name:"RCON_0024"}
-               updateValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RCON_0024:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("有在途综合授信协议")
-                  return false
-                }
+          //存在在途综合授信调整或单笔批复调整时不得调整综合授信协议
+          if(res.RCON_0058!=0){
+            alert("[RCON_0058]有在途批复调整时不能调整综合授信协议")
+            this.vaildateFlag=false
+            return {vaildateFlag:this.vaildateFlag,param:row}
+          }
 
-               }).catch((error)=>{
-                console.log(error)
-               })
-
-        //存在在途综合授信调整或单笔批复调整时不得调整综合授信协议
-        params={param:row.applyId,name:"RCON_0058"}
-               updateValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RCON_0058:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("[RCON_0058]有在途批复调整时不能调整综合授信协议")
-                  return false
-                }
-
-               }).catch((error)=>{
-                console.log(error)
-               })
-        //存在在途合同调整
-        params={param:row.applyId,name:"RCON_0059"}
-               updateValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RCON_0059:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("[RCON_0059]有在途合同申请或调整时不能调整综合授信协议")
-                  return false
-                }
-
-               }).catch((error)=>{
-                console.log(error)
-               })
+          //存在在途合同调整
+         if(res.RCON_0059!=0){
+            alert("[RCON_0059]有在途合同申请或调整时不能调整综合授信协议")
+            this.vaildateFlag=false
+            return {vaildateFlag:this.vaildateFlag,param:row}
+          }
 
 
        }else{//单笔
         //合同在途调整校验
-        params={param:row.amountDetailId,name:"RCON_0026"}
-               updateValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RCON_0026:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("有在途合同申请")
-                  return false
-                }
+        if(res.RCON_0026!=0){
+            alert("[RCON_0026]有在途合同申请")
+            this.vaildateFlag=false
+            return {vaildateFlag:this.vaildateFlag,param:row}
+          }
 
-               }).catch((error)=>{
-                console.log(error)
-               })
+        //存在在途综合授信协议协议调整
+        if(res.RCON_0060!=0){
+            alert("[RCON_0060]有在途综合授信协议申请或调整时不能调整合同")
+            this.vaildateFlag=false
+            return {vaildateFlag:this.vaildateFlag,param:row}
+          }
 
-               //存在在途综合授信协议协议调整
-        params={param:row.contractId,name:"RCON_0060"}
-                updateValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RCON_0060:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("有在途综合授信协议申请或调整时不能调整合同")
-                  return false
-                }
+        //存在在途综合授信调整或单笔批复调整时不得调整业务合同
+        if(res.RCON_0039!=0){
+            alert("[RCON_0039]存在在途综合授信调整或单笔批复调整")
+            this.vaildateFlag=false
+            return {vaildateFlag:this.vaildateFlag,param:row}
+          }
 
-               }).catch((error)=>{
-                console.log(error)
-               })
-               //存在在途综合授信调整或单笔批复调整时不得调整业务合同
-        params={param:row.contractId,name:"RCON_0039"}
-                updateValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RCON_0039:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("存在在途综合授信调整或单笔批复调整")
-                  return false
-                }
+        //存在在途出账不得调整业务合同
+        if(res.RCON_0040!=0){
+            alert("[RCON_0040]存在在途出账")
+            this.vaildateFlag=false
+            return {vaildateFlag:this.vaildateFlag,param:row}
+          }
 
-               }).catch((error)=>{
-                console.log(error)
-               })
-              //存在在途出账不得调整业务合同
-        params={param:row.contractId,name:"RCON_0040"}
-                updateValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RCON_0040:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("存在在途出账")
-                  return false
-                }
-
-               }).catch((error)=>{
-                console.log(error)
-               })
 
        }
 
+  //规则校验：冻结批复不能调整
+       // if(res.RBIZ_0024!=0){
+       //      alert("[RBIZ_0024]批复已冻结")
+       //      this.vaildateFlag=false
+       //      return {vaildateFlag:this.vaildateFlag,param:row}
+       //    }
 
-       //规则校验：冻结批复不能调整
-        params={param:row.applyId,name:"RBIZ_0024"}
-                updateValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RBIZ_0024:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("批复已冻结")
-                  return false
-                }
+  //合同下有担保合同调整在途
+       if(res.RGRT_0005!=0){
+            alert("[RGRT_0005]合同下有在途的担保合同$[c]调整流程")
+            this.vaildateFlag=false
+            return {vaildateFlag:this.vaildateFlag,param:row}
+          }
 
-               }).catch((error)=>{
-                console.log(error)
-               })
+           //合同下有在途的保证金追加
+       if(res.RGRT_0012!=0){
+            alert("[RGRT_0012]该合同有在途的保证金追加")
+            this.vaildateFlag=false
+            return {vaildateFlag:this.vaildateFlag,param:row}
+          }
+       
+          console.log("vaildateFlag:"+vaildateFlag)
+          return {vaildateFlag:vaildateFlag,param:row,func:this.tzContractInfo}
+         }).then(
+         
+          function (data) {
+            console.log("接受到了参数vaildateFlag "+data.vaildateFlag+",param:"+ JSON.stringify(data.param))
+            if(data.vaildateFlag){
+              
+             // console.log("flag的值"+data.vaildateFlag)
+              data.func(data.vaildateFlag,data.param)
+            }
 
-        //合同下有担保合同调整在途
-        params={param:row.contractId,name:"RGRT_0005"}
-                updateValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RGRT_0005:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("合同下有在途的担保合同$[c]调整流程")
-                  return false
-                }
+          }
 
-               }).catch((error)=>{
-                console.log(error)
-               })
-        //added by shendl合同下有在途的保证金追加
-        params={param:row.contractId,name:"RGRT_0012"}
-                updateValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RGRT_0012:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("该合同有在途的保证金追加")
-                  return false
-                }
 
-               }).catch((error)=>{
-                console.log(error)
-               })
+         ).catch((error)=>{
+          console.log(error)
+         })
 
-        params={contractId:row.contractId,bizType:row.bizType}
 
-                tzContractInfo(params).then(response=>{
+
+
+      },
+
+      tzContractInfo(vaildateFlag,param){
+        if(vaildateFlag){
+          console.log("执行合同更新方法")
+          tzContractInfo(param).then(response=>{
                   let res=response.data
                   console.log("[tzContractInfo]result is:"+JSON.stringify(res))
                   if(res.msg !=null){
@@ -298,25 +306,26 @@
                     return false
                   }
 
-
-                  this.$router.push({name: 'con_tree',
-                    params:{contractId:res.conInfo.contractId,
+                  let params={contractId:res.conInfo.contractId,
                      contractType:"02",
-                     amountDetailId:row.amountDetailId,
+                     amountDetailId:res.amountDetailId,
                      proFlag:"1",
                      processInstId:res.processInstId
 
-                   }})
+                   }
+                   console.log("[con_tree] params "+JSON.stringify(params))
+                  this.$router.push({name: 'con_tree',
+                    params:params
+                  })
 
                 }).catch((error)=>{
                   console.log(error)
                 })
 
+        }
 
-
-
-      },
-
+      }
+      ,
 
 
       disab(row) { 
@@ -326,117 +335,114 @@
         return false
        }
 
-       let params={}
 
-       //综合授信协议不允许手工失效
-       if(row.bizType=="综合授信协议"){
-        alert("综合授信协议不允许手工失效！")
-        return false
+        disabValidateForCon(row).then(response=>{
+          let res=response.data
+          let vaildateFlag=true
+          console.log("dataMap is "+JSON.stringify(res))
 
-       }else{//单笔
-        //合同有在途调整不允许手工失效
-        params={param:row.amountDetailId,name:"RCON_0026"}
-        disabValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RCON_0026:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("[RCON_0026]有在途合同申请")
-                  return false
-                }
+        //综合授信协议不允许手工失效
+         if(row.bizType=="综合授信协议"){
+          alert("综合授信协议不允许手工失效！")
+          return false
 
-               }).catch((error)=>{
-                console.log(error)
-               })
+         }else{//单笔
+              //合同有在途调整不允许手工失效
+              //RCON_0026
+              if(res.RCON_0026!=0){
+                alert("[RCON_0026]有在途合同申请")
+                this.vaildateFlag=false
+                return {vaildateFlag:this.vaildateFlag,param:row}
+              }
 
-        //存在在途出账不得调整业务合同
-        params={param:row.contractId,name:"RCON_0040"}
-        disabValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RCON_0040:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("[RCON_0040]存在在途出账")
-                  return false
-                }
+              //存在在途出账不得调整业务合同
+              //RCON_0040
+              if(res.RCON_0040!=0){
+                alert("[RCON_0040]存在在途出账")
+                this.vaildateFlag=false
+                return {vaildateFlag:this.vaildateFlag,param:row}
+              }
+              //存在未结清借据
+              //RCON_0043
+              if(res.RCON_0043!=0){
+                alert("[RCON_0043]该笔合同下有未结清借据")
+                this.vaildateFlag=false
+                return {vaildateFlag:this.vaildateFlag,param:row}
+              }
 
-               }).catch((error)=>{
-                console.log(error)
-               })
+        }
+          //存在未结清借据
+          //RGRT_0005
+          if(res.RGRT_0005!=0){
+            alert("[RGRT_0005]合同下有在途的担保合同$[c]调整流程")
+            this.vaildateFlag=false
+            return {vaildateFlag:this.vaildateFlag,param:row}
+          }
+          //合同下有在途的保证金追加
+          //RGRT_0012
+          if(res.RGRT_0012!=0){
+            alert("[RGRT_0012]该合同有在途的保证金追加")
+            this.vaildateFlag=false
+            return {vaildateFlag:this.vaildateFlag,param:row}
+          }
+          //新需求：合同下有临时出库的押品  不让做合同失效 
+          //RGRT_0017
+          if(res.RGRT_0017!=0){
+            alert("[RGRT_0017]该合同有临时出库的押品，不允许做合同失效")
+            this.vaildateFlag=false
+            return {vaildateFlag:this.vaildateFlag,param:row}
+          }
 
-        //存在未结清借据
-        params={param:row.contractId,name:"RCON_0043"}
-        disabValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RCON_0043:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("[RCON_0043]该笔合同下有未结清借据")
-                  return false
-                }
+          return {vaildateFlag:vaildateFlag,param:row,func:this.getContractBizType}
 
-               }).catch((error)=>{
-                console.log(error)
-               })
+        }).then(
 
-       }
+          function (data) {
+              console.log("接受到了参数vaildateFlag "+data.vaildateFlag+",param:"+ JSON.stringify(data.param))
+                if(data.vaildateFlag){
+                // console.log("flag的值"+data.vaildateFlag)
+                data.func(data.param.contractId,"2")
+              }
+            }
 
-       //合同下有担保合同调整在途
-       params={param:row.contractId,name:"RGRT_0005"}
-        disabValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RGRT_0005:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("[RGRT_0005]合同下有在途的担保合同$[c]调整流程")
-                  return false
-                }
+          ).catch((error)=>{
+          console.log(error)
+        })
 
-               }).catch((error)=>{
-                console.log(error)
-               })
 
-       //合同下有在途的保证金追加
-       params={param:row.contractId,name:"RGRT_0012"}
-        disabValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RGRT_0012:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("[RGRT_0012]该合同有在途的保证金追加")
-                  return false
-                }
 
-               }).catch((error)=>{
-                console.log(error)
-               })
-
-        //新需求：合同下有临时出库的押品  不让做合同失效 
-        params={param:row.contractId,name:"RGRT_0017"}
-        disabValidateForCon(params).then(response=>{
-                let res=response.data
-                console.log("RGRT_0017:res "+JSON.stringify(res))
-                if(res!=0){
-                  alert("[RGRT_0017]该合同有临时出库的押品，不允许做合同失效")
-                  return false
-                }
-
-               }).catch((error)=>{
-                console.log(error)
-               })
-
-        getContractBizType(row.contractId,"2")
+        //getContractBizType(row.contractId,"2")
 
 
       },
       //获取业务性质
       getContractBizType(contractId, flag) {
         console.log("[getContractBizType]contractId="+contractId+",flag="+flag)
-        let params={contractId:contractId}
+        let params={contractId:contractId,flag:flag,bizType:''}
         getConInfoBizType(params).then(response=>{
-                let res=response.data
-                console.log("获取业务性质: "+JSON.stringify(res))
-                if(res.bizType!=null){
-                  recounted(contractId, flag, res.bizType)
-                }else{
-                  alert("业务信息为空，合同失效操作失败！")
-                  return false
-                }
+                    let res=response.data
+                    console.log("[获取业务性质]: "+JSON.stringify(res))
+                    let biztypeFlag =false
+                    if(res.BIZ_TYPE!=null){
+                      //recounted(contractId, flag, res.bizType)
+                      biztypeFlag=true
+                      params.bizType=res.BIZ_TYPE
+                      return {biztypeFlag:biztypeFlag,param:params,func:this.recounted}
+                      
+                    }else{
+                      alert("业务信息为空，合同失效操作失败！")
+                      return false
+                    }
+                    
+                
+               }).then(function (data) {
+                 console.log("接受到了业务参数vaildateFlag "+data.biztypeFlag+",param:"+ JSON.stringify(data.param))
+
+                  if(data.biztypeFlag){
+              
+                    data.func(data.param.contractId,data.param.flag,data.param.bizType)
+                  }
+
 
                }).catch((error)=>{
                 console.log(error)
@@ -444,12 +450,87 @@
 
       },
       recounted(contractId, flag, bizType) {
-        
+        console.log("[recounted]函数被调用了!contractId="+contractId+" ,flag="+flag+" ,bizType="+bizType)
+
+        var title="合同确认失效?";
+        if(bizType=="01"||bizType=="04"){
+          title="合同失效后批复同步失效，失效后将不能恢复";
+        }
+          //this.msgContents=title;
+         // this.dialog1Visible=true;
+          let params={contractId:contractId,flag:flag}
+
+   
+          this.$confirm(title)
+          .then(_ => {
+
+              disConInfo(params).then(response=>{
+                 let res=response.data
+                 console.log("[disConInfo]params "+JSON.stringify(params)+",res data "+JSON.stringify(res))
+                  let disabFlag=false
+
+                     if (res.msg != null) {
+                        alert(res.msg); //失败时后台直接返回出错信息
+                        return false
+
+                     } else {
+                       alert("更新失败"); //无返回信息
+                        return false
+                     }
+
+                      return {disabFlag:disabFlag,param:{contractId:contractId},func:this.disConSynCollSystem}
+
+                  }).then(function (data) {
+
+                    console.log("接受到了合同失效后参数:disabFlag "+data.disabFlag+",param:"+ JSON.stringify(data.param))
+
+                  if(data.disabFlag){
+              
+                    data.func(data.param.contractId)
+                  }
+                                
+                 }
+               ).catch((error)=>{
+               console.log(error)
+             })
+          })
+          .catch(_ => {});
+
+      },
+      //通知押品系统调整相关的业务逻辑
+      disConSynCollSystem(contractId){
+
+          console.log("[通知押品系统调整相关的业务逻辑]contractId:"+contractId)
 
 
       },
 
+      handleClose(done) {
+        this.$confirm('确认关闭？')
+          .then(_ => {
 
+            done();
+          })
+          .catch(_ => {});
+      },
+      // dialog1Close(done){
+      //   this.confirmDisab=true
+      //   this.$confirm('dialog1Close确认关闭？')
+      //     .then(_ => {
+
+      //       done();
+      //     })
+      //     .catch(_ => {});
+
+      // },
+      // dialogConfirm(){
+            
+      //       console.log("hello....")
+      //       this.confirmDisab=true
+      //       // this.confirmDisable=true
+      //        this.dialog1Visible=false
+      //        console.log("confirmDisab:"+this.confirmDisab)
+      //   },
       doDelete() {
         // deleteContract(row).then(response => {
         //   this.contractList(listQuery)

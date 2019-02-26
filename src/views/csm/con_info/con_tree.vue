@@ -49,7 +49,8 @@
               <el-main style="padding:10px;margin: 1px;margin-top:1px;margin-bottom:5px;border: 1px solid #E4E7ED;">
                 <!--动态组件,paramsInfo:父组件要带给子组件的参数-->
                 <keep-alive>
-                  <compoment v-bind:is="currentView" :paramsInfo="paramsInfo"></compoment>
+                  <compoment v-bind:is="currentView" :paramsConTree="paramsConTree"></compoment>
+
                 </keep-alive>
               </el-main>
             </el-container>
@@ -71,7 +72,7 @@
   //import payInfo from './pay_info'
   //import {getInitPayInfo, getInitProductType} from '@/api/loanInfo'
   import conApplyYwht from '@/views/crt/con_apply/con_apply_ywht'
-  import {getDetailJspByContractId,getConInfoByContarctId,getBankTeamStruct,saveConInfoToPro,RuleEngineMapper}  from '@/api/csm'
+  import {getDetailJspByContractId,getConInfoMapByContarctId,getBankTeamStruct,saveConInfoToPro,RuleEngineMapper}  from '@/api/csm'
 
   import con_dy_list from '@/views/crt/con_grt/con_dy_list'
   import con_zy_list from '@/views/crt/con_grt/con_zy_list'
@@ -91,7 +92,7 @@
   import con_detail_ht_xw_uncycle from '@/views/crt/con_info/con_detail_ht_xw_uncycle'
 
   export default {
-    name: 'conTree',
+    name: "conTree",
     components: {
      // payInfo
      conApplyYwht,
@@ -114,15 +115,26 @@
 
 
     },
+    props:{
+      paramsInfo: {//接收父组件传递过来的参数 
+
+      },
+    },
+
     data() {
       return {
-        paramsInfo:{//使用父子传参的方式传递参数，父组件向子组件传递多个参数
-
+        paramsConTree:{
+         // params:{
+         //   contractId:"xxxx",
+         //   proFlag:"proFlag"
+         // }
+          
         },
+
         dialogVisible: false,//对话框
         fullScreen: true,//是否全屏
         activeTabName: 'baseInfo',//默认选中baseInfo的Tab表单
-        currentView: 'conApplyYwht',//默认选中放款信息
+        currentView: '',//默认选中放款信息
         //怎么在前台写一个json数据，然后丢到这里来？？？
         menuTree: [],//自定义一个全局的tree，这里动态渲染，问题还不小
         data: [],
@@ -139,14 +151,20 @@
       //let param = {contractId: '5AF812FCFC2300CAE05010AC57DD7D12',applyId:'xxx'}
       //let param = {contractId: '5AF812FCD14100CAE05010AC57DD7D12',applyId:'5AF818F3F346C50EE05010AC57DD0143'}
       let param = {contractId: '5AF812FCD14100CAE05010AC57DD7D12',applyId:'ff808081628f641d0162b7d370400096'}
+      console.log("this.paramsInfo is "+JSON.stringify(this.paramsInfo))
+      this.dialogVisible = this.paramsInfo.conTreeVisiable
+      console.log("this.dialogVisible----------->"+this.paramsInfo.conTreeVisiable)
+      param=this.paramsInfo
+      console.log(JSON.stringify(param))
+
       this.initData(param)
     },
     methods: {
       initData(data) {
         let partyId
         //这三个数据都是从request域中得到的
-        let proFlag //1：可修改。0：不可修改
-        let contractId = ''//协议申请ID
+        let proFlag=data.proFlag //1：可修改。0：不可修改
+        let contractId = data.contractId//协议申请ID
         let processInstId=''
         let jspName='1' //合同详细信息页面
         let tableName='tb_con_ldzj'
@@ -157,118 +175,119 @@
         let contypename 
         let bizType='01'
         let applyId
-        let amountDetailId
+        let amountDetailId=data.amountDetailId
         let proFlag_s
 
+
         
-        this.menuTree = [//军育苗做例子，这样怎么把上面定义的参数传递到该指定页面，例如 addr
-            {
-              label: '综合授信协议',
-              id: '1',
-              url:'',
-              icon: 'el-icon-circle-plus',
-              children: [
-                {
-                  id: '1-1',
-                  label: '基本信息',
-                  url:'con_info_xy',
-                  params:{
-                    contractId:contractId,
-                    proFlag:proFlag
-                  },
-                  icon: 'el-icon-tickets',
-                },
-                {
-                  id: '1-2',
-                  label: '明细信息',                        
-                  url:'con_detail_xy',
-                  params:{
-                    contractId:contractId,
-                    proFlag:"0"
-                  },
-                  icon: 'el-icon-tickets',
-                },
-                {
-                  id: '1-3',
-                  label: '附属信息',                        
-                  url:'con_fs_xy',
-                  params:{
-                    contractId:contractId,
-                    proFlag:proFlag
-                  },
-                  icon: 'el-icon-tickets',
-                }
-              ]
-            }
-          ]
+        // this.menuTree = [//军育苗做例子，这样怎么把上面定义的参数传递到该指定页面，例如 addr
+        //     {
+        //       label: '综合授信协议',
+        //       id: '1',
+        //       url:'',
+        //       icon: 'el-icon-circle-plus',
+        //       children: [
+        //         {
+        //           id: '1-1',
+        //           label: '基本信息',
+        //           url:'con_info_xy',
+        //           params:{
+        //             contractId:contractId,
+        //             proFlag:proFlag
+        //           },
+        //           icon: 'el-icon-tickets',
+        //         },
+        //         {
+        //           id: '1-2',
+        //           label: '明细信息',                        
+        //           url:'con_detail_xy',
+        //           params:{
+        //             contractId:contractId,
+        //             proFlag:"0"
+        //           },
+        //           icon: 'el-icon-tickets',
+        //         },
+        //         {
+        //           id: '1-3',
+        //           label: '附属信息',                        
+        //           url:'con_fs_xy',
+        //           params:{
+        //             contractId:contractId,
+        //             proFlag:proFlag
+        //           },
+        //           icon: 'el-icon-tickets',
+        //         }
+        //       ]
+        //     }
+        //   ]
 
 
-                this.menuTree.push({
-                    label: '从合同信息',
-                    id: '2',
-                    url:'',
-                    icon: 'el-icon-circle-plus',
-                    children: [
-                      {
-                        id: '2-1',
-                        label: '抵押合同',
-                        url:'con_dy_list',
-                        params:{
-                          contractId:contractId,
-                          subcontractTypeCd:"01",
-                          applyId:applyId,
-                          contractType:"02",
-                          partyId:partyId,
-                          proFlag:proFlag
-                        },
-                        icon: 'el-icon-tickets',
-                      },
-                      {
-                        id: '2-2',
-                        label: '质押合同',                        
-                        url:'con_zy_list',
-                        params:{
-                          contractId:contractId,
-                          subcontractTypeCd:"02",
-                          applyId:applyId,
-                          contractType:"02",
-                          partyId:partyId,
-                          proFlag:proFlag
-                        },
-                        icon: 'el-icon-tickets',
-                      },
-                      {
-                        id: '2-3',
-                        label: '保证合同',                        
-                        url:'con_bzr_list',
-                        params:{
-                          contractId:contractId,
-                          subcontractTypeCd:"04",
-                          applyId:applyId,
-                          contractType:"02",
-                          partyId:partyId,
-                          proFlag:proFlag
-                        },
-                        icon: 'el-icon-tickets',
-                      },
-                      {
-                        id: '2-4',
-                        label: '关联保证金',                        
-                        url:'con_bzj_list',
-                        params:{
-                          contractId:contractId,
-                          subcontractTypeCd:"03",
-                          applyId:applyId,
-                          contractType:"02",
-                          partyId:partyId,
-                          proFlag:proFlag,
-                          proFlag_s:proFlag_s
-                        },
-                        icon: 'el-icon-tickets',
-                      }
-                    ]
+        //         this.menuTree.push({
+        //             label: '从合同信息',
+        //             id: '2',
+        //             url:'',
+        //             icon: 'el-icon-circle-plus',
+        //             children: [
+        //               {
+        //                 id: '2-1',
+        //                 label: '抵押合同',
+        //                 url:'conDyList',
+        //                 params:{
+        //                   contractId:contractId,
+        //                   subcontractTypeCd:"01",
+        //                   applyId:applyId,
+        //                   contractType:"02",
+        //                   partyId:partyId,
+        //                   proFlag:proFlag
+        //                 },
+        //                 icon: 'el-icon-tickets',
+        //               },
+        //               {
+        //                 id: '2-2',
+        //                 label: '质押合同',                        
+        //                 url:'con_zy_list',
+        //                 params:{
+        //                   contractId:contractId,
+        //                   subcontractTypeCd:"02",
+        //                   applyId:applyId,
+        //                   contractType:"02",
+        //                   partyId:partyId,
+        //                   proFlag:proFlag
+        //                 },
+        //                 icon: 'el-icon-tickets',
+        //               },
+        //               {
+        //                 id: '2-3',
+        //                 label: '保证合同',                        
+        //                 url:'con_bzr_list',
+        //                 params:{
+        //                   contractId:contractId,
+        //                   subcontractTypeCd:"04",
+        //                   applyId:applyId,
+        //                   contractType:"02",
+        //                   partyId:partyId,
+        //                   proFlag:proFlag
+        //                 },
+        //                 icon: 'el-icon-tickets',
+        //               },
+        //               {
+        //                 id: '2-4',
+        //                 label: '关联保证金',                        
+        //                 url:'con_bzj_list',
+        //                 params:{
+        //                   contractId:contractId,
+        //                   subcontractTypeCd:"03",
+        //                   applyId:applyId,
+        //                   contractType:"02",
+        //                   partyId:partyId,
+        //                   proFlag:proFlag,
+        //                   proFlag_s:proFlag_s
+        //                 },
+        //                 icon: 'el-icon-tickets',
+        //               }
+        //             ]
 
-                })
+        //         })
 
 
         // let menuTree=this.menuTree
@@ -290,10 +309,10 @@
 
         console.log("[测试拿到数据了没有]productType:"+productType+",tableName:"+tableName)
 
-        getConInfoByContarctId(data).then(response=>{
+        getConInfoMapByContarctId(data).then(response=>{
           let mydata=response.data
 
-          console.log("getConInfoByContarctId"+JSON.stringify(mydata))
+         // console.log("getConInfoByContarctId"+JSON.stringify(mydata))
             contypename="综合授信项下主合同"
 
           //公司客户
@@ -337,10 +356,28 @@
           productType=mydata.conInfo.productType
           amountDetailId=mydata.conInfo.amountDetailId
         
-          console.log("bizType"+bizType)
+          console.log("bizType "+bizType)
 
           if(bizType=='01'||bizType=='02'||bizType=='05'){
+              this.currentView='con_info_ht'
+              this.paramsConTree={
+                contractId:contractId,
+                proFlag:proFlag,
+                productType:productType,
+                conSrc:conSrc
+              }
+              console.log("currentView.."+JSON.stringify(this.currentView))
+              console.log("params...."+JSON.stringify(this.paramsConTree))
             if("01"==mydata.contractType){
+
+              this.currentView='con_info_xy'
+              this.paramsConTree={
+                contractId:contractId,
+                proFlag:proFlag
+              }
+              console.log("currentView.."+JSON.stringify(this.currentView))
+              console.log("params...."+JSON.stringify(this.paramsConTree))
+
                     this.menuTree = [//军育苗做例子，这样怎么把上面定义的参数传递到该指定页面，例如 addr
                         {
                           label: '综合授信协议',
@@ -435,7 +472,7 @@
 
                 })
 
-
+             
            }
 
            if("02"==mydata.contractType){
@@ -499,7 +536,7 @@
              ]
 
 
-
+  
 
             }// 银承
             else if("01008001"==productType||"01008002"==productType || "01008010"==productType){
@@ -559,7 +596,7 @@
                   }
 
              ]
-
+ 
             }
             else{
 
@@ -602,6 +639,8 @@
                   }
 
              ]
+
+             
 
             }
 
@@ -718,6 +757,7 @@
 
              ]
 
+         
             this.menuTree.push({
                     label: '从合同信息',
                     id: '2',
@@ -788,6 +828,18 @@
 
 
           }else if(bizType=='04'||bizType=='06'){//小微
+
+            this.currentView=con_info_ht_xw
+
+              this.paramsConTree={
+                  contractId:contractId,
+                  proFlag:proFlag,
+                  productType:productType
+              }
+              console.log("currentView.."+JSON.stringify(this.currentView))
+              console.log("params...."+JSON.stringify(this.paramsConTree))
+
+
             if("02002"==productType.substr(0,5)||"02005003"==productType||"02005001"==productType){//房贷
 
               this.menuTree=[
@@ -1044,6 +1096,9 @@
         this.$confirm('确认关闭？')
           .then(_ => {
             //this.currentView = "summaryInfo";
+            //这个代码加入是确保能 够修改父组件的布尔值，能够将值重置为false，能够重复打开模态框 2019/2/22
+             this.$set(this.paramsInfo, 'conTreeVisiable', false) 
+            
             done();
           })
           .catch(_ => {
@@ -1055,6 +1110,9 @@
       /*树方法开始*/
       handleNodeClick(item, node, self) {//2019年1月31日14:33:19  点击选中
         console.log("[handleNodeClick]item:"+JSON.stringify(item))
+        this.paramsConTree=item.params
+
+
         if(null==item.url){
           return false;
         }
@@ -1076,7 +1134,7 @@
 
 
         if(item.label=="主合同明细信息"){
-          param1={param:item.params.contractId,name:"RCON_0003"}
+         let param1={param:item.params.contractId,name:"RCON_0003"}
           //合同基本信息保存校验
           RuleEngineMapper(param1).then(response1=>{
                 let res=response1.data
@@ -1095,7 +1153,8 @@
         //this.currentView=item.url
         this.currentView=item.url
         console.log("currentView is:"+item.url)
-        this.$router.push({path:item.url,params:item.params})
+
+        //this.$router.push({name:item.url,params:item.params})
         
         //this.$router.push({name:'biz_pj_all',params:item.params})
 

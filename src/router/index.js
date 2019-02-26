@@ -399,137 +399,137 @@ export const constantRouterMap = [
     ]
   },
 
-{//by wanghao
-    path: '/crt',
-    component: Layout,
+// {//by wanghao
+//     path: '/crt',
+//     component: Layout,
 
-    name: 'con_tree_test',
-    meta: { title: 'con_tree_test', icon: 'organization' },
-    roles: ['admin'], // 这里需要更改
-    children: [
+//     name: 'con_tree_test',
+//     meta: { title: 'con_tree_test', icon: 'organization' },
+//     roles: ['admin'], // 这里需要更改
+//     children: [
 
-      // {
-      //   path: 'con_grt/con_dy_list',
-      //   name: '抵押合同',
-      //   component: _import('crt/con_grt/con_dy_list'),
-      //   meta: { title: '抵押合同', icon: 'manage' }
-      // },
-      // {
-      //   path: 'con_grt/con_zy_list',
-      //   name: '质押合同',
-      //   component: _import('crt/con_grt/con_zy_list'),
-      //   meta: { title: '质押合同', icon: 'manage' }
-      // },
+//       // {
+//       //   path: 'con_grt/con_dy_list',
+//       //   name: '抵押合同',
+//       //   component: _import('crt/con_grt/con_dy_list'),
+//       //   meta: { title: '抵押合同', icon: 'manage' }
+//       // },
+//       // {
+//       //   path: 'con_grt/con_zy_list',
+//       //   name: '质押合同',
+//       //   component: _import('crt/con_grt/con_zy_list'),
+//       //   meta: { title: '质押合同', icon: 'manage' }
+//       // },
 
-      // {
-      //   path: 'con_grt/con_bzr_list',
-      //   name: '保证合同',
-      //   component: _import('crt/con_grt/con_bzr_list'),
-      //   meta: { title: '保证合同', icon: 'manage' }
-      // },
-      // {
-      //   path: 'con_grt/con_bzj_list',
-      //   name: '保证金协议',
-      //   component: _import('crt/con_grt/con_bzj_list'),
-      //   meta: { title: '保证金协议', icon: 'manage' }
-      // },
-      //基本信息
-      {
-        path: 'con_info/con_info_xy',
-        name:'con_info_xy',
-        component: _import('crt/con_info/con_info_xy'),
-        meta: { title: '基本信息', icon: 'manage' }
-      },
-      {
-        path: 'con_info/con_detail_xy',
-        name: 'con_detail_xy',
-        component: _import('crt/con_info/con_detail_xy'),
-        meta: { title: '明细信息', icon: 'manage' }
+//       // {
+//       //   path: 'con_grt/con_bzr_list',
+//       //   name: '保证合同',
+//       //   component: _import('crt/con_grt/con_bzr_list'),
+//       //   meta: { title: '保证合同', icon: 'manage' }
+//       // },
+//       // {
+//       //   path: 'con_grt/con_bzj_list',
+//       //   name: '保证金协议',
+//       //   component: _import('crt/con_grt/con_bzj_list'),
+//       //   meta: { title: '保证金协议', icon: 'manage' }
+//       // },
+//       //基本信息
+//       {
+//         path: 'con_info/con_info_xy',
+//         name:'con_info_xy',
+//         component: _import('crt/con_info/con_info_xy'),
+//         meta: { title: '基本信息', icon: 'manage' }
+//       },
+//       {
+//         path: 'con_info/con_detail_xy',
+//         name: 'con_detail_xy',
+//         component: _import('crt/con_info/con_detail_xy'),
+//         meta: { title: '明细信息', icon: 'manage' }
 
-      },
-      {
-        path: 'con_info/con_fs_xy',
-        name: '附属信息',
-        component: _import('crt/con_info/con_fs_xy'),
-        meta: { title: '附属信息', icon: 'manage' }
+//       },
+//       {
+//         path: 'con_info/con_fs_xy',
+//         name: '附属信息',
+//         component: _import('crt/con_info/con_fs_xy'),
+//         meta: { title: '附属信息', icon: 'manage' }
 
-      },
-      //主合同基本信息
-      {
-        path: 'con_info/con_info_ht',
-        name: '主合同基本信息',
-        component: _import('crt/con_info/con_info_ht'),
-        meta: { title: '主合同基本信息', icon: 'manage' }
+//       },
+//       //主合同基本信息
+//       {
+//         path: 'con_info/con_info_ht',
+//         name: '主合同基本信息',
+//         component: _import('crt/con_info/con_info_ht'),
+//         meta: { title: '主合同基本信息', icon: 'manage' }
 
-      },
-      {
-        path: 'con_info/con_detail_ht',
-        name: '主合同明细信息',
-        component: _import('crt/con_info/con_detail_ht'),
-        meta: { title: '主合同明细信息', icon: 'manage' }
+//       },
+//       {
+//         path: 'con_info/con_detail_ht',
+//         name: '主合同明细信息',
+//         component: _import('crt/con_info/con_detail_ht'),
+//         meta: { title: '主合同明细信息', icon: 'manage' }
 
-      },
-      {
-        path: 'con_info/biz_tx_all',
-        name: '票据明细信息',
-        component: _import('crt/con_info/biz_tx_all'),
-        meta: { title: '票据明细信息', icon: 'manage' }
+//       },
+//       {
+//         path: 'con_info/biz_tx_all',
+//         name: '票据明细信息',
+//         component: _import('crt/con_info/biz_tx_all'),
+//         meta: { title: '票据明细信息', icon: 'manage' }
 
-      },
-      {
-        path: 'con_info/biz_pj_all',
-        name: '票据明细信息2',
-        component: _import('crt/con_info/biz_pj_all'),
-        meta: { title: '票据明细信息2', icon: 'manage' }
+//       },
+//       {
+//         path: 'con_info/biz_pj_all',
+//         name: '票据明细信息2',
+//         component: _import('crt/con_info/biz_pj_all'),
+//         meta: { title: '票据明细信息2', icon: 'manage' }
 
-      },
+//       },
 
-      //单笔业务下合同
-      {
-        path: 'con_info/con_info_ht_xw',
-        name: '主合同基本信息3',
-        component: _import('crt/con_info/con_info_ht_xw'),
-        meta: { title: '主合同基本信息3', icon: 'manage' }
+//       //单笔业务下合同
+//       {
+//         path: 'con_info/con_info_ht_xw',
+//         name: '主合同基本信息3',
+//         component: _import('crt/con_info/con_info_ht_xw'),
+//         meta: { title: '主合同基本信息3', icon: 'manage' }
 
-      },
-      {
-        path: 'con_info/con_detail_ht_xw_house',
-        name: '主合同明细信息30',
-        component: _import('crt/con_info/con_detail_ht_xw_house'),
-        meta: { title: '主合同明细信息30', icon: 'manage' }
+//       },
+//       {
+//         path: 'con_info/con_detail_ht_xw_house',
+//         name: '主合同明细信息30',
+//         component: _import('crt/con_info/con_detail_ht_xw_house'),
+//         meta: { title: '主合同明细信息30', icon: 'manage' }
 
-      },
-      {
-        path: 'con_info/con_detail_ht_xw_cycle',
-        name: '主合同明细信息31',
-        component: _import('crt/con_info/con_detail_ht_xw_cycle'),
-        meta: { title: '主合同明细信息31', icon: 'manage' }
+//       },
+//       {
+//         path: 'con_info/con_detail_ht_xw_cycle',
+//         name: '主合同明细信息31',
+//         component: _import('crt/con_info/con_detail_ht_xw_cycle'),
+//         meta: { title: '主合同明细信息31', icon: 'manage' }
 
-      },
-      {
-        path: 'con_info/con_detail_ht_xw_uncycle',
-        name: '主合同明细信息32',
-        component: _import('crt/con_info/con_detail_ht_xw_uncycle'),
-        meta: { title: '主合同明细信息32', icon: 'manage' }
+//       },
+//       {
+//         path: 'con_info/con_detail_ht_xw_uncycle',
+//         name: '主合同明细信息32',
+//         component: _import('crt/con_info/con_detail_ht_xw_uncycle'),
+//         meta: { title: '主合同明细信息32', icon: 'manage' }
 
-      },
-      {
-        path: 'con_info/con_tree',
-        name: '测试合同树加载',
-        component: _import('csm/con_info/con_tree'),
-        meta: { title: '测试合同树加载', icon: 'manage' }
+//       },
+//       {
+//         path: 'con_info/con_tree',
+//         name: '测试合同树加载',
+//         component: _import('csm/con_info/con_tree'),
+//         meta: { title: '测试合同树加载', icon: 'manage' }
 
-      }
-      ,
-      {
-        path: 'con_apply/con_apply_ywh',
-        name: 'con_apply_ywh',
-        component: _import('crt/con_apply/con_apply_ywht'),
-        meta: { title: 'con_apply_ywh', icon: 'manage' }
+//       }
+//       ,
+//       {
+//         path: 'con_apply/con_apply_ywh',
+//         name: 'con_apply_ywh',
+//         component: _import('crt/con_apply/con_apply_ywht'),
+//         meta: { title: 'con_apply_ywh', icon: 'manage' }
 
-      }
-    ]
-  },
+//       }
+//     ]
+//   },
 
     {//by wanghao
     path: '/crt',
@@ -546,6 +546,7 @@ export const constantRouterMap = [
         component: _import('crt/con_apply/con_apply_tz'),
         meta: { title: '主合同管理', icon: 'manage' }
       },
+
       {
         path: 'subContractManage/subContarct_list',
         name: '担保合同管理',

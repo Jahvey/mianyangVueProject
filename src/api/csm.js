@@ -65,6 +65,20 @@ export function getConInfoBizType(queryParams) {
   return myGet('/mybatis-service/process/conApply/getConInfoBizType',queryParams)
 }
 
+//合同失效主要功能
+export function disConInfo(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/process/conApply/disConInfo',queryParams)
+}
+
+
+//合同失效后通知押品系统
+export function disConSynColl(queryParams) {
+  console.log(queryParams)
+  return myGet('/mybatis-service/process/conSynToCollByWebService/disConSynColl',queryParams)
+}
+
+
 
 
 //con_tree.jsp
@@ -75,8 +89,16 @@ export function getDetailJspByContractId(queryParams) {
   return myGet('/mybatis-service/process/conContractInfo/getDetailJspByContractId',queryParams)
 }
 
-export function getConInfoByContarctId(queryParams) {
+
+export function getConInfoMapByContarctId(queryParams) {
   console.log(queryParams)
+  return myGet('/mybatis-service/process/conInfoSxxy/getConInfoMapByContarctId',queryParams)
+}
+
+
+//根据合同id 拿到相关合同明细
+export function getConInfoByContarctId(queryParams) {
+  console.log("myGet getConInfoByContarctId..."+JSON.stringify(queryParams))
   return myGet('/mybatis-service/process/conInfoSxxy/getConInfoByContarctId',queryParams)
 }
 
@@ -116,6 +138,16 @@ export function MainConConractUpdateValidate(queryParams) {
   console.log("jsonToStrMap(queryParams)"+objToStrMap(queryParams))
   return myGet('/mybatis-service/ruleEngine/MainConConractUpdateValidate', queryParams)
 }
+
+
+
+//得到抵押合同列表 2019/2/22
+export function getConGrtList(queryParams) {
+  // body...
+  console.log(queryParams)
+  return myGet('/mybatis-service/conGrt/getConGrtList',queryParams)
+}
+
 
 
 //

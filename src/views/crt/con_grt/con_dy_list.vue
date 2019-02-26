@@ -1,34 +1,45 @@
 <template>
-  <csc-single-table :pageDef="pageDef" :entity="entity" :disableQueryForm="disableQueryForm" @findOne="findOne"
-       :disableRowButtons="disableRowButtons"             @contractList="contractList"       >
+  <csc-single-table 
+  :pageDef="pageDef" 
+  :entity="entity" 
+  :disableQueryForm="disableQueryForm" 
+
+:disableRowButtons="disableRowButtons"
+@pageQuery="doPageQuery"
+@addBtn="addBtn"
+@importBtn="importBtn"
+@findBtn="findBtn"
+@editBtn="editBtn"
+@deleteBtn="deleteBtn"
+
+>
   </csc-single-table>
 </template>
 
 <script>
   // 从合同信息之抵押合同 http://192.168.1.105:7001/default/crt/con_grt/con_dy_list.jsp
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable' // 引入的这个是子组件，需要把父组件的值传递给子组件修改子组件
-  import { getContractList } from '@/api/contract'// 正常往后台发送异步请求的类
-  //  import { getContractList } from '@/api/api'//api是自己写的用来测试mock假数据的路径，配置了这个之后mock会拦截正常请求
+  import { getConGrtList } from '@/api/csm'
+
 
   export default {
-    name: 'mortgageContract',
+    name: 'con_dy_list',//抵押合同列表
     data: function() {
       return {
         disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮
         disableRowButtons: true, // 隐藏tab表单按钮
-        listLoading: false,
         entity: {// 这个就相当于一个form表单，在这里定义之后可以直接在上面去使用 entity.属性名
-          data: [
-            {
-              SUBCONTRACT_NUM: 'HT111063729',
-              PARTY_NAME: '苟富贵',
-              IF_TOP_SUBCON: '是',
-              BZ: '人民币',
-              SUBCONTRACT_AMT: 15000.00,
-              SURETY_AMT: 14000.00,
-              OPERATION_TYPE: '填什么？'
-            }
-          ]
+          // data: [
+          //   {
+          //     SUBCONTRACT_NUM: 'HT111063729',
+          //     PARTY_NAME: '苟富贵',
+          //     IF_TOP_SUBCON: '是',
+          //     BZ: '人民币',
+          //     SUBCONTRACT_AMT: 15000.00,
+          //     SURETY_AMT: 14000.00,
+          //     OPERATION_TYPE: '填什么？'
+          //   }
+          // ]
         },
         // disableQueryForm: true,
         pageDef: {
@@ -36,6 +47,7 @@
           queryDef: {},
 
           tabDef: {
+            isCheckRadio:true,
             isSelect: false, // 是否可以多选
             isIndex: true, // 是否有序号
             // 表格字段定义
@@ -50,58 +62,66 @@
             ]
           },
           buttons: [
-            { label: '查看', funcName: 'findOne' }
+            { label: '增加', funcName: 'addBtn' },
+            { label: '引入', funcName: 'importBtn' },
+            { label: '查看', funcName: 'findBtn' },
+            { label: '编辑', funcName: 'editBtn' },
+            { label: '删除', funcName: 'deleteBtn' }
           ]
         }
       }
     },
 
     components: { CscSingleTable }, // 引入的子组件
-    // mounted()页面加载完毕之后进行的渲染
-    // computed: {				// 页面加载完毕之后进行的渲染
-    //   disableQueryForm() {
-    //     return this.disableQueryForm
-    //   }
-    // },
+
 
     methods: {
-      doPageQuery() {
-        // this.contractList(listQuery)
-        // console.log('doPageQuery...')
-      },
+      doPageQuery(params) {
+        console.log("[con_dy_list]")
+       // params={pageSize:'20',pageNum:'1'}
 
-      contractList(listQuery) {
-        const params = {
-          listQuery: this.listQuery
-        }
+        console.log(typeof(params))
+        params.subcontractType="04"
+        getConGrtList(params).then(response => {
+          this.entity = response.data
+          this.$store.dispatch('setListLoading', false)
 
-        this.listLoading = true
-        console.log('listQuery ....' + listQuery)
-        getContractList(params).then(response => {
-          this.entity = response
-          // console.log(" response.data.entity"+ response.data.entity)
-          this.listLoading = false
         }).catch((error) => {
-          // alert(error)
           console.log(error)
         })
+
+       //console.log("[con_dy_list]"+JSON.stringify(row))
       },
-      findOne() { // 重置表单就是直接清空表单里面的数据
-        alert('查询')
-      }
+
+
+
+      addBtn(row){
+        console.log("增加")
+      },
+      importBtn(row){
+        console.log("引入")
+      },
+      findBtn(row){
+        console.log("查看")
+      },
+     editBtn(row){
+        console.log("编辑")
+      },
+
+      deleteBtn(row){
+        console.log("删除")
+      },
+
+
+
     },
     computed: { // 计算属性
-      disabled() { // 控制页面渲染
-        // return this.disableQueryForm = true
-      }
+
 
     },
     mounted() {
-      // disableQueryForm() {
-      //   console.log('emit disableQueryForm.....')
-      //   return this.disableQueryForm
-      // },
-      this.contractList() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
+
+      this.doPageQuery() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
     }
 
   }
