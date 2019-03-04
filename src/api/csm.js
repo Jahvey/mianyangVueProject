@@ -16,8 +16,8 @@ export function getUserListbyId(queryParams) {
     entity: queryParams
   })
 } */
-function objToStrMap(obj) {
-    let strMap = new Map();
+export function objToStrMap(obj) {
+    let strMap = new Map()
     for (let k of Object.keys(obj)) {
       //
       console.log("k:"+k)
@@ -26,14 +26,40 @@ function objToStrMap(obj) {
         obj[k]=obj[k].replace(/[%22]/g, "")
       }
 
-      strMap.set(k, obj[k]);
+      strMap.set(k, obj[k])
     }
-    return strMap;
+    return strMap
   }
 
-  function jsonToStrMap(jsonStr){
-    return objToStrMap(JSON.parse(jsonStr));
-  }
+export function jsonToStrMap(jsonStr){
+  return objToStrMap(JSON.parse(jsonStr))
+}
+
+//con_info_ht.vue
+export function updateConInfo(queryParams){
+  console.log(queryParams)
+  return myGet("/mybatis-service/process/ApplyDaoEos/updateConInfo",queryParams)
+
+}
+
+export function getMonthAddDate(queryParams){
+  console.log(queryParams)
+  return myGet("/mybatis-service/process/dateCountUtil/MonthAddDate",queryParams)
+
+}
+
+export function getTermByEndDate(queryParams){
+  console.log(queryParams)
+  return myGet("/mybatis-service/process/dateCountUtil/getTermByEndDate",queryParams)
+
+}
+
+export function getChangeRate(queryParams){
+  console.log(queryParams)
+  return myGet("/mybatis-service/process/conInfoSxxy/getChangeRate",queryParams)
+
+}
+
 
 //con_apply_tz.jsp
 

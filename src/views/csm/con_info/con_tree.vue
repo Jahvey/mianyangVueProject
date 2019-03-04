@@ -161,22 +161,24 @@
     },
     methods: {
       initData(data) {
-        let partyId
+        let partyId=''
         //这三个数据都是从request域中得到的
         let proFlag=data.proFlag //1：可修改。0：不可修改
         let contractId = data.contractId//协议申请ID
         let processInstId=''
+        let contractType=data.contractType
+
         let jspName='1' //合同详细信息页面
         let tableName='tb_con_ldzj'
         let conSrc='2'   //区分是单笔业务还是综合授信业务，单笔为1，综合为2
         let syndicatedObjectCd = "100"
-        let productType
-        let cycleIndCon
-        let contypename 
+        let productType=''
+        let cycleIndCon=''
+        let contypename =''
         let bizType='01'
-        let applyId
+        let applyId=''
         let amountDetailId=data.amountDetailId
-        let proFlag_s
+        let proFlag_s=''
 
 
         
@@ -307,7 +309,7 @@
           console.log('将品种对应的合同明细页面取出来报错了')
         })
 
-        console.log("[测试拿到数据了没有]productType:"+productType+",tableName:"+tableName)
+        console.log("[测试拿到数据了没有]productType:"+this.productType+",tableName:"+this.tableName)
 
         getConInfoMapByContarctId(data).then(response=>{
           let mydata=response.data
@@ -320,7 +322,7 @@
             contypename="用信项下主合同"
           }
 
-          proFlag=data.proFlag1
+          proFlag=mydata.proFlag1
 
           //如果是银团，行内银团合同只有利率信息
           if(mydata.bizInfo.isBankTeam!=null && mydata.bizInfo.isBankTeam !=''){
@@ -355,8 +357,17 @@
           partyId=mydata.bizInfo.partyId
           productType=mydata.conInfo.productType
           amountDetailId=mydata.conInfo.amountDetailId
+
+          contractType=mydata.contractType
         
           console.log("bizType "+bizType)
+          console.log("contractType "+contractType)
+          console.log("productType "+productType)
+          console.log("proFlag "+proFlag)
+          console.log("applyId "+applyId)
+          console.log("partyId "+partyId)
+          console.log("amountDetailId "+amountDetailId)
+
 
           if(bizType=='01'||bizType=='02'||bizType=='05'){
               this.currentView='con_info_ht'
