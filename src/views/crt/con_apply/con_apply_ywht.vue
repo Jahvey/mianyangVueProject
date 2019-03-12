@@ -1,5 +1,6 @@
 <template>
-  <csc-single-table 
+<div v-show=isShowYWHT>
+    <csc-single-table 
   :pageDef="pageDef" 
   :entity="entity"  
   @create="create" 
@@ -8,24 +9,50 @@
   :disableQueryForm="disableQueryForm" 
   :disableRowButtons="disableRowButtons" 
   >
+
   </csc-single-table>
+
+
+ <!-- <conTree :paramsInfo="paramsInfo" v-if="paramsInfo.conTreeVisiable" ></conTree> -->
+  
+</div>
+
 </template>
 
 <script>
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
+  // import conTree from '@/views/csm/con_info/con_tree' 
+
   import { createConInfo,getApproveAndSxxy } from '@/api/csm'
 
-
-
   export default {
+    name:"conApplyYwht",
+
+    components: { 
+      CscSingleTable
+      // conTree
+    }, 
+    props: {
+
+      paramsConApplyTz:{ //用于接受父组件传来的参数
+        //con_apply_tz传递过来的参数放在这里
+      }
+    },
+
+
     data() {
       return {
+        paramsInfo:{//使用父子传参的方式传递参数，父组件向子组件传递多个参数
+          
+        },
         disableQueryForm: true, // 父组件给的新的值，隐藏form表单按钮
         disableRowButtons: true, // 隐藏tab表单按钮
         listLoading: false,
         entity: {
 
         },
+        isShowYWHT:false,
+
         pageDef: {
           // 查询条件定义
           queryDef: {
@@ -43,31 +70,34 @@
             tabCols: [
 
               
-              { label: '业务编号', prop: 'bizNum', isSort: true},
+              { label: '业务编号', prop: 'bizNum', isSort: true,isLink: true,url:'/csm/con_info/con_tree',param:["creditMode","partyName"]},
               { label: '客户名称', prop: 'partyName', isSort: true },
               { label: '业务性质', prop: 'creditMode', isSort: true,isFormat:true,enumType:'creditMode' },
-              { label: '业务类型', prop: 'bizHappenType', isSort: true },
+              { label: '业务类型', prop: 'bizHappenType', isSort: true,isFormat:true,enumType:'bizHappenType' },
+              { label: '业务品种', prop: 'productType', isSort: true,isFormat:true,enumType:'productType' },
               { label: '币种', prop: 'currencyCd', isSort: true ,isFormat:true,enumType:'currencyCd'},
               { label: '业务额度', prop: 'detailAmt', isSort: true },
 
-              { label: '可用金额(元)', prop: 'boUse', isSort: true },
+              { label: '可用额度(元)', prop: 'boUse', isSort: true },
               { label: '起始日期', prop: 'validDate', isSort: true }
 
 
             ]
           },
           buttons: [
-    
             { label: '合同创建', funcName: 'create' },
-   
             ]
         }
       }
     },
 
-    components: { CscSingleTable }, // 这个没有问题
+
     created(){
-      let param=this.$route.params
+     // let param=this.$route.params
+      let param =this.paramsConApplyTz
+
+      this.isShowYWHT=this.paramsConApplyTz.isShowYWHT
+
       console.log("页面跳转成功："+JSON.stringify(param))
 
     },
@@ -75,30 +105,54 @@
     methods: {
 
       doPageQuery(listQuery) {
+        console.log("doPageQuery"  +JSON.stringify(listQuery))
+        let initParams=Object.assign({},listQuery,this.paramsConApplyTz)
+        console.log("initParams " +JSON.stringify(initParams))
 
-        getApproveAndSxxy(listQuery).then(response => {
+        getApproveAndSxxy(initParams).then(response => {
           this.entity = response.data
-          //console.log("[getApproveAndSxxy]"+JSON.stringify(this.entity))
           this.$store.dispatch('setListLoading', false)
 
         }).catch((error) => {
-    
           console.log(error)
         })
       },
       // 行事件
       doEdit(row) {
         console.log('row ....')
-      //  this.$router.push({path: '/contract/add/edit/' + row.contractId})
+      
       },
      
       create(row) { 
        console.log('[con_apply_ywht] create合同...'+JSON.stringify(row))
        createConInfo(row).then(response1 => {
-          this.entity = response1.data
-          console.log("合同创建成功！！[ConInfo] "+JSON.stringify(this.entity))
-        
+          let res = response1.data
 
+          if(res.msg!=''&&res.msg!=null){
+            alert(res.msg)
+            return false
+          }
+
+         // console.log("合同创建成功！！[ConInfo] "+JSON.stringify(res))
+          console.log("con_tree visiable "+JSON.stringify(this.paramsConApplyTz))
+          this.paramsInfo={
+            conTreeVisiable:true,
+            contractId:res.conInfo.contractId,
+            contractType:'02',
+            amountDetailId:row.amountDetailId,
+            proFlag:'1',
+            processInstId:res.processInstId
+          }
+          // this.paramsInfo.conTreeVisiable=true;
+          // this.paramsInfo.contractId=res.conInfo.contractId;
+          // this.paramsInfo.contractType='02';
+          // this.paramsInfo.amountDetailId=row.amountDetailId;
+          // this.paramsInfo.proFlag='1';
+          // this.paramsInfo.processInstId=res.processInstId;
+          console.log("con_tree visiable2 "+JSON.stringify(this.paramsInfo))
+          console.log("创建合同完成，调用父页面中的回调函数openConTree....")
+          this.$emit('openConTree',this.paramsInfo);
+          // this.$emit('update:conTreeVisiable',this.paramsInfo.conTreeVisiable)
         }).catch((error) => {
     
           console.log(error)

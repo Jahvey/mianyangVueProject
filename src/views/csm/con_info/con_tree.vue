@@ -71,7 +71,7 @@
 <script>
   //import payInfo from './pay_info'
   //import {getInitPayInfo, getInitProductType} from '@/api/loanInfo'
-  import conApplyYwht from '@/views/crt/con_apply/con_apply_ywht'
+  //import conApplyYwht from '@/views/crt/con_apply/con_apply_ywht'
   import {getDetailJspByContractId,getConInfoMapByContarctId,getBankTeamStruct,saveConInfoToPro,RuleEngineMapper}  from '@/api/csm'
 
   import con_dy_list from '@/views/crt/con_grt/con_dy_list'
@@ -95,7 +95,7 @@
     name: "conTree",
     components: {
      // payInfo
-     conApplyYwht,
+     //conApplyYwht,
      con_dy_list,
      con_zy_list,
      con_bzr_list,
@@ -124,11 +124,7 @@
     data() {
       return {
         paramsConTree:{
-         // params:{
-         //   contractId:"xxxx",
-         //   proFlag:"proFlag"
-         // }
-          
+        
         },
 
         dialogVisible: false,//对话框

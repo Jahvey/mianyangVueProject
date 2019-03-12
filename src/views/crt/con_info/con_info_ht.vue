@@ -1253,12 +1253,29 @@
           this.dataMap.partyId=this.conInfoForm.partyId
           this.dataMap.bizType=this.conInfoForm.bizType
 
-          let conInfoQuery=JSON.parse(this.dataMap)
-          updateConInfo(conInfoQuery).then((response)=>{
+
+          
+          // axios.post(
+          //   "/mybatis-service/process/ApplyDaoEos/updateConInfo",
+          //   JSON.stringify(this.dataMap),{
+          //   headers: {
+          //    'Content-Type':'application/json; charset=UTF-8'
+          //   }
+          // }).then((res)=>{
+          //   let value=res.data
+          //  console.log(value)
+          //  alert("保存成功！")
+
+          // }).catch((error)=>{
+          //   console.log(error)
+          // })
+          
+
+          updateConInfo(this.dataMap).then((response)=>{
             let res=response.data
             console.log("【updateConInfo】res "+JSON.stringify(res))
             alert("保存成功！");
-            this.initConInfoHt(res);
+           // this.initConInfoHt(res);
 
           }).catch((error)=>{
             console.log(error)

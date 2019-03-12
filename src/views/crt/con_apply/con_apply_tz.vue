@@ -6,7 +6,7 @@
   @view="view"     
   @create="create" 
   @disab="disab" 
-  @update="update" 
+  @update="update"
 @pageQuery="doPageQuery" 
 @doEdit="doEdit"
 @doDelete="doDelete"
@@ -39,6 +39,22 @@
   <conTree :paramsInfo="paramsInfo" v-if="paramsInfo.conTreeVisiable" ></conTree>
 
 
+  <el-dialog
+      width="95%"
+      height="90%"
+      :visible.sync="paramsConApplyTz.isShowYWHT"
+      append-to-body
+      >
+
+      <conApplyYwht :paramsConApplyTz="paramsConApplyTz" @openConTree="openConTree"
+      v-if="paramsConApplyTz.isShowYWHT" ><!-- v-bind:is="currentView" -->
+      </conApplyYwht>
+
+    </el-dialog>
+
+  
+  
+
   </div>
   
 </template>
@@ -46,6 +62,7 @@
 <script>
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
   import conTree from '@/views/csm/con_info/con_tree'
+  import conApplyYwht from  '@/views/crt/con_apply/con_apply_ywht'
   import { getApproveCons,MainConConractUpdateValidate,updateValidateForCon,disabValidateForCon,tzContractInfo,
   getConInfoBizType,disConInfo,disConSynColl} from '@/api/csm'
 
@@ -58,8 +75,10 @@
         paramsInfo:{//使用父子传参的方式传递参数，父组件向子组件传递多个参数
           conTreeVisiable:false
         },
-        
-        partyId:'partyIdxxxxx',//这个id是从session中取到的
+        paramsConApplyTz:{
+          isShowYWHT:false
+        },
+        partyId:'5AF8118FE752FABDE05010AC57DD79A2',//TODO 这个id是从session中取到的
         confirmDisab:false, //是否执行下面的流程操作
         msgContents:'', //合同失效提示对话框 内容
         dialog1Visible: false,
@@ -113,7 +132,8 @@
     components: { 
 
     CscSingleTable,
-    conTree
+    conTree,
+    conApplyYwht
 
      }, // 这个没有问题
 
@@ -133,7 +153,7 @@
       // 行事件
       doEdit(row) {
         console.log('row ....')
-      //  this.$router.push({path: '/contract/add/edit/' + row.contractId})
+
       },
       view(row) {
         console.log('view 合同...')
@@ -150,15 +170,6 @@
          proFlag:'-1'
         }
 
-        // MainConConractUpdateValidate(row).then(response=>{
-        //   this.entity=response.data
-        //   console.log("response data...."+this.entity)
-
-        // }
-          // ).catch((e)=>{
-          //   console.log(e)
-          // })
-        // this.$router.push({path: '/contract/contractAdd'})
       },
 
 
@@ -169,8 +180,13 @@
         return false
        }
 
-
-       this.$router.push({name: '业务合同列表',params:{partyId:row.partyId,type:'02' }}) 
+      this.paramsConApplyTz={
+        isShowYWHT:true,
+        //conYwhtVisiable:true,
+        partyId:this.partyId,   //注意，这个partyId是写死的
+        type:'02'
+      }
+       //this.$router.push({name: '业务合同列表',params:{partyId:row.partyId,type:'02' }}) 
       },
 
 
@@ -300,23 +316,34 @@
           console.log("执行合同更新方法")
           tzContractInfo(param).then(response=>{
                   let res=response.data
-                  console.log("[tzContractInfo]result is:"+JSON.stringify(res))
+                  console.log("[tzContractInfo] result is:"+JSON.stringify(res))
                   if(res.msg !=null){
                     alert(res.msg)
                     return false
                   }
 
-                  let params={contractId:res.conInfo.contractId,
-                     contractType:"02",
-                     amountDetailId:res.amountDetailId,
-                     proFlag:"1",
-                     processInstId:res.processInstId
+                 this.paramsInfo={
 
-                   }
-                   console.log("[con_tree] params "+JSON.stringify(params))
-                  this.$router.push({name: 'con_tree',
-                    params:params
-                  })
+                    conTreeVisiable:true,
+                    contractId:res.conInfo.contractId,
+                    contractType:'02',
+                    amountDetailId:param.amountDetailId,
+                    proFlag:'1',
+                    processInstId:res.processInstId
+
+                  }
+
+                  // let params={contractId:res.conInfo.contractId,
+                  //    contractType:"02",
+                  //    amountDetailId:res.amountDetailId,
+                  //    proFlag:"1",
+                  //    processInstId:res.processInstId
+
+                  //  }
+                  //  console.log("[con_tree] params "+JSON.stringify(params))
+                  // this.$router.push({name: 'con_tree',
+                  //   params:params
+                  // })
 
                 }).catch((error)=>{
                   console.log(error)
@@ -540,6 +567,11 @@
         //   })
         // })
         console.log('del ....')
+      },
+      openConTree(param){
+        console.log("[openConTree] invoke..."+JSON.stringify(param))
+        this.paramsConApplyTz.isShowYWHT=false;
+        this.paramsInfo=param;
       }
     },
     mounted() {				

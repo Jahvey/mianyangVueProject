@@ -38,7 +38,7 @@ export function jsonToStrMap(jsonStr){
 //con_info_ht.vue
 export function updateConInfo(queryParams){
   console.log(queryParams)
-  return myGet("/mybatis-service/process/ApplyDaoEos/updateConInfo",queryParams)
+  return myPost("/mybatis-service/process/ApplyDaoEos/updateConInfo",queryParams)
 
 }
 
