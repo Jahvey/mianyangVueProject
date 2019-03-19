@@ -597,6 +597,41 @@ export const constantRouterMap = [
         component: _import('csm/con_info/con_tree'),
         meta: { title: '测试合同树加载', icon: 'manage' }
 
+      },
+      {
+        path: 'con_info/con_detail_ht',
+        name: '测试con_detail_ht',
+        component: _import('crt/con_info/con_detail_ht'),
+        meta: { title: '测试con_detail_ht', icon: 'manage' }
+
+      },
+      {
+        path: 'biz_product_detail/con_dkll_rate',
+        name: '测试con_dkll_rate',
+        component: _import('biz/biz_product_detail/con_dkll_rate'),
+        meta: { title: '测试con_dkll_rate', icon: 'manage' }
+
+      },
+      {
+        path: 'biz_product_detail/biz_public_notice',
+        name: '测试biz_public_notice',
+        component: _import('biz/biz_product_detail/biz_public_notice'),
+        meta: { title: '测试biz_public_notice', icon: 'manage' }
+
+      },
+      {
+        path: 'biz_product_detail/biz_public_zcfs',
+        name: '测试biz_public_zcfs',
+        component: _import('biz/biz_product_detail/biz_public_zcfs'),
+        meta: { title: '测试biz_public_zcfs', icon: 'manage' }
+
+      },
+      {
+        path: 'con_info/con_info_ht_xw',
+        name: '测试con_info_ht_xw',
+        component: _import('crt/con_info/con_info_ht_xw'),
+        meta: { title: '测试con_info_ht_xw', icon: 'manage' }
+
       }
     ]
   },
