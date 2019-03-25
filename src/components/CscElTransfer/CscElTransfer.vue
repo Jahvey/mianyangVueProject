@@ -86,10 +86,11 @@
       },
       created:function () {
         console.log("CscElTransfer:"+this.pageDef.rightData);
+        //2019-01-17 测试初始化时查询两边列表框数据
+        this.doQuery();
       },
       mounted:function () {
-          //2019-01-17 测试初始化时查询两边列表框数据
-        this.doQuery();
+
       },
       methods:{
         doQuery(){

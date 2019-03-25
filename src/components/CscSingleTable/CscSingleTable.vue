@@ -293,7 +293,7 @@
             <el-button v-for="rowButton in pageDef.rowButtons"
                        @click="doRowClick(rowButton.funcName, scope.$index, scope.row)"
                        :type="rowButton.type" size="mini" :disabled="evalRegulation(rowButton.regulation, scope.row)"
-                       v-if="rowButton">
+                       >
               {{rowButton.label}}
             </el-button>
           </template>

@@ -324,8 +324,6 @@ export default {
         })
       }
     },
-    
-
 
     disab(row) {
       console.log('disable 合同...')
@@ -436,9 +434,9 @@ export default {
     recounted(contractId, flag, bizType) {
       console.log('[recounted]函数被调用了!contractId=' + contractId + ' ,flag=' + flag + ' ,bizType=' + bizType)
 
-      var title = '合同确认失效?';
+      var title = '合同确认失效?'
       if (bizType == '01' || bizType == '04') {
-        title = '合同失效后批复同步失效，失效后将不能恢复';
+        title = '合同失效后批复同步失效，失效后将不能恢复'
       }
       // this.msgContents=title;
       // this.dialog1Visible=true;
@@ -452,10 +450,10 @@ export default {
             const disabFlag = false
 
             if (res.msg != null) {
-              alert(res.msg) //失败时后台直接返回出错信息
+              alert(res.msg) // 失败时后台直接返回出错信息
               return false
             } else {
-              alert('更新失败') //无返回信息
+              alert('更新失败') // 无返回信息
               return false
             }
 
@@ -472,7 +470,6 @@ export default {
           })
         })
         .catch(_ => { })
-
     },
     // 通知押品系统调整相关的业务逻辑
     disConSynCollSystem(contractId) {

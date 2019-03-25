@@ -39,13 +39,6 @@
             {tabName:'额度信息',name:'tab5',url:'/user/ManyTable',components:["",""],param:{"contractNum":"dddd","customerNum":"321"}},
             {tabName:'业务申请',name:'tab2',url:'/user/ManyTable',components:["",""],param:{"contractNum":"dddd","customerNum":"321"}},
             {tabName:'合同签约',name:'tab3',url:'/user/ManyTable',components:["",""],param:{"contractNum":"dddd","customerNum":"321"}}
-
-
-            //  {tabName:'客户信息',name:'tab1',url:'/user/ManyTable',components:["",""],param:{"contractNum":"dddd","customerNum":"321"}},
-            // {tabName:'评级信息',name:'tab4',url:'/user/ManyTable',components:["",""],param:{"contractNum":"dddd","customerNum":"321"}},
-            // {tabName:'额度信息',name:'tab5',url:'/user/ManyTable',components:["",""],param:{"contractNum":"dddd","customerNum":"321"}},
-            // {tabName:'业务申请',name:'tab2',url:'/user/ManyTable',components:["",""],param:{"contractNum":"dddd","customerNum":"321"}},
-            // {tabName:'合同签约',name:'tab3',url:'/user/ManyTable',components:["",""],param:{"contractNum":"dddd","customerNum":"321"}}
           ],
 
           //查询条件定义
@@ -136,11 +129,11 @@
 
     },
 
-    mounted() { 
+    mounted() {
 
       this.pageDef.dialogFormVisible=true;
       console.log("doEdit进来没有:"+"---"+this.pageDef.dialogFormVisible+"-----"+this.form["username"]);
-     // this.doEdit() 
+     // this.doEdit()
     }
   }
 </script>

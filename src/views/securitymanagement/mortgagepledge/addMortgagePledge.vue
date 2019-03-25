@@ -478,7 +478,7 @@
       },
       customerInfo:function (info) {
         this.grtCollateralInfo.partyName = info.partyName;
-        this.grtCollateralInfo.customerNum =info.partyNum;
+        this.grtCollateralInfo.customerNum =info.partyId;
         this.customerPopoverIsVisible = false;
       },
     },

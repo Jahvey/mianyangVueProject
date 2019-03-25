@@ -3,30 +3,30 @@ import { myGet, myPost } from '@/utils/request1'
 
 /* export function getUserList(queryParams) {
   return request({
-    url: 'csc-service/user/paginQueryUserByOrgid',
-    method: 'post',
-    entity: queryParams
+	url: 'csc-service/user/paginQueryUserByOrgid',
+	method: 'post',
+	entity: queryParams
   })
 }
 
 export function getUserListbyId(queryParams) {
   return request({
-    url: 'csc-service/user/queryUserById',
-    method: 'post',
-    entity: queryParams
+	url: 'csc-service/user/queryUserById',
+	method: 'post',
+	entity: queryParams
   })
 } */
 export function objToStrMap(obj) {
   const strMap = new Map()
   for (let k of Object.keys(obj)) {
-    //
-    console.log('k:' + k)
-    k = k.replace(/[%22]/g, '')
-    if (obj[k] != null) {
-      obj[k] = obj[k].replace(/[%22]/g, '')
-    }
+	//
+	console.log('k:' + k)
+	k = k.replace(/[%22]/g, '')
+	if (obj[k] != null) {
+	  obj[k] = obj[k].replace(/[%22]/g, '')
+	}
 
-    strMap.set(k, obj[k])
+	strMap.set(k, obj[k])
   }
   return strMap
 }
@@ -39,32 +39,32 @@ export function jsonToStrMap(jsonStr) {
 export function updateConInfo(queryParams) {
   console.log(queryParams)
   return myPost(
-    '/mybatis-service/process/ApplyDaoEos/updateConInfo',
-    queryParams
+	'/mybatis-service/process/ApplyDaoEos/updateConInfo',
+	queryParams
   )
 }
 
 export function getMonthAddDate(queryParams) {
   console.log(queryParams)
   return myGet(
-    '/mybatis-service/process/dateCountUtil/MonthAddDate',
-    queryParams
+	'/mybatis-service/process/dateCountUtil/MonthAddDate',
+	queryParams
   )
 }
 
 export function getTermByEndDate(queryParams) {
   console.log(queryParams)
   return myGet(
-    '/mybatis-service/process/dateCountUtil/getTermByEndDate',
-    queryParams
+	'/mybatis-service/process/dateCountUtil/getTermByEndDate',
+	queryParams
   )
 }
 
 export function getChangeRate(queryParams) {
   console.log(queryParams)
   return myGet(
-    '/mybatis-service/process/conInfoSxxy/getChangeRate',
-    queryParams
+	'/mybatis-service/process/conInfoSxxy/getChangeRate',
+	queryParams
   )
 }
 
@@ -94,8 +94,8 @@ export function tzContractInfo(queryParams) {
 export function getConInfoBizType(queryParams) {
   console.log(queryParams)
   return myGet(
-    '/mybatis-service/process/conApply/getConInfoBizType',
-    queryParams
+	'/mybatis-service/process/conApply/getConInfoBizType',
+	queryParams
   )
 }
 
@@ -109,8 +109,8 @@ export function disConInfo(queryParams) {
 export function disConSynColl(queryParams) {
   console.log(queryParams)
   return myGet(
-    '/mybatis-service/process/conSynToCollByWebService/disConSynColl',
-    queryParams
+	'/mybatis-service/process/conSynToCollByWebService/disConSynColl',
+	queryParams
   )
 }
 
@@ -120,16 +120,16 @@ export function disConSynColl(queryParams) {
 export function getDetailJspByContractId(queryParams) {
   console.log(queryParams)
   return myGet(
-    '/mybatis-service/process/conContractInfo/getDetailJspByContractId',
-    queryParams
+	'/mybatis-service/process/conContractInfo/getDetailJspByContractId',
+	queryParams
   )
 }
 
 export function getConInfoMapByContarctId(queryParams) {
   console.log(queryParams)
   return myGet(
-    '/mybatis-service/process/conInfoSxxy/getConInfoMapByContarctId',
-    queryParams
+	'/mybatis-service/process/conInfoSxxy/getConInfoMapByContarctId',
+	queryParams
   )
 }
 
@@ -137,24 +137,24 @@ export function getConInfoMapByContarctId(queryParams) {
 export function getConInfoByContarctId(queryParams) {
   console.log('myGet getConInfoByContarctId...' + JSON.stringify(queryParams))
   return myGet(
-    '/mybatis-service/process/conInfoSxxy/getConInfoByContarctId',
-    queryParams
+	'/mybatis-service/process/conInfoSxxy/getConInfoByContarctId',
+	queryParams
   )
 }
 
 export function getBankTeamStruct(queryParams) {
   console.log(queryParams)
   return myGet(
-    '/mybatis-service/process/bizInfo/getBankTeamStruct',
-    queryParams
+	'/mybatis-service/process/bizInfo/getBankTeamStruct',
+	queryParams
   )
 }
 
 export function saveConInfoToPro(queryParams) {
   console.log(queryParams)
   return myGet(
-    '/mybatis-service/process/conApply/saveConInfoToPro',
-    queryParams
+	'/mybatis-service/process/conApply/saveConInfoToPro',
+	queryParams
   )
 }
 
@@ -179,8 +179,8 @@ export function MainConConractUpdateValidate(queryParams) {
   console.log(queryParams)
   console.log('jsonToStrMap(queryParams)' + objToStrMap(queryParams))
   return myGet(
-    '/mybatis-service/ruleEngine/MainConConractUpdateValidate',
-    queryParams
+	'/mybatis-service/ruleEngine/MainConConractUpdateValidate',
+	queryParams
   )
 }
 
@@ -205,8 +205,8 @@ export function getPrintCons(queryParams) {
 export function findSubContractList(queryParams) {
   console.log(queryParams)
   return myGet(
-    '/mybatis-service/subContractManage/findSubContractList',
-    queryParams
+	'/mybatis-service/subContractManage/findSubContractList',
+	queryParams
   )
 }
 
@@ -214,8 +214,8 @@ export function findSubContractList(queryParams) {
 export function getEntrustAccountsByPartyId(queryParams) {
   console.log(queryParams)
   return myGet(
-    '/mybatis-service/natural/getEntrustAccountsByPartyId',
-    queryParams
+	'/mybatis-service/natural/getEntrustAccountsByPartyId',
+	queryParams
   )
 }
 
@@ -252,8 +252,8 @@ export function getHisIrmByParty(queryParams) {
 export function getCsmImpornantEventInfo(queryParams) {
   console.log(queryParams)
   return myGet(
-    '/mybatis-service/corporation/getCsmImpornantEventInfo',
-    queryParams
+	'/mybatis-service/corporation/getCsmImpornantEventInfo',
+	queryParams
   )
 }
 
@@ -306,12 +306,55 @@ export function getBizInfo(queryParams) {
   return myGet('/mybatis-service/BizInfo/getBizInfo', queryParams)
 }
 
-//
+//业务申请查询
 export function getBizList(queryParams) {
   console.log(queryParams)
-  return myGet('/mybatis-service/BizSql/getBizList', queryParams)
+return myGet('/mybatis-service/BizSql/getBizList', queryParams)
 }
-// 借新还旧(循环通/续借贷)
+//业务申请重算额度
+export function newly(queryParams){
+
+  console.log(queryParams)
+  return myPost('/mybatis-service/bizSql/newly',queryParams)
+}
+//业务申请弹窗确定(保存基本、额度、业务明细信息)
+export function saveAppBizInfo(queryParams){
+
+  console.log(queryParams)
+  return myPost('/mybatis-service/bizApply/saveAppBizInfo',queryParams)
+}
+//业务申请基本信息更新
+export function updateAppBizInfo(queryParams){
+
+  console.log(queryParams)
+  return myPost('/mybatis-service/bizApply/updateAppBizInfo',queryParams)
+}
+//业务申请业务明细保存更新
+export function saveAndUpdateXwProductDetail(queryParams){
+
+  console.log(queryParams)
+  return myPost('/mybatis-service/bizApply/saveAndUpdateXwProductDetail',queryParams)
+}
+//家庭财务信息保存更新
+export function saveAndUpdateFamilyFinace(queryParams){
+
+  console.log(queryParams)
+  return myPost('/mybatis-service/bizApply/saveAndUpdateFamilyFinace',queryParams)
+}
+//合作项目额度保存更新
+export function saveAndUpdateXmxxApply(queryParams){
+
+  console.log(queryParams)
+  return myPost('/mybatis-service/bizApply/saveAndUpdateXmxxApply',queryParams)
+}
+//监管保送信息保存更新
+export function saveAndUpdateYesOrNoApply(queryParams){
+
+  console.log(queryParams)
+  return myPost('/mybatis-service/bizApply/saveAndUpdateYesOrNoApply',queryParams)
+}
+
+//借新还旧(循环通/续借贷)
 export function getApplyJxhjBizInfo(queryParams) {
   console.log(queryParams)
   return myGet('/mybatis-service/bizApply/getApplyJxhjBizInfo', queryParams)
@@ -327,8 +370,8 @@ export function findOldDbList(queryParams) {
 export function findOldContractList(queryParams) {
   console.log(queryParams)
   return myGet(
-    '/mybatis-service/subContractManage/findOldContractList',
-    queryParams
+	'/mybatis-service/subContractManage/findOldContractList',
+	queryParams
   )
 }
 

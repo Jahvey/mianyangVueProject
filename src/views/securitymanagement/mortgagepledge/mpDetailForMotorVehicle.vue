@@ -1004,8 +1004,8 @@
               trigger: 'change'
             },
             {
-              max: 50,
-              message: '长度不超过 50 个字符',
+              max: 6,
+              message: '长度不超过 6 个字符',
               trigger: 'blur'
             },
           ],

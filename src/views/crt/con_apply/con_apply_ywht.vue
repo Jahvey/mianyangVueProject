@@ -44,6 +44,9 @@ export default {
 
       },
       isShowYWHT: false,
+      initParams: {
+
+      },
 
       pageDef: {
         // 查询条件定义
@@ -87,21 +90,25 @@ export default {
     this.isShowYWHT = this.paramsConApplyTz.isShowYWHT
 
     console.log('页面跳转成功：' + JSON.stringify(param))
+    this.doPageQuery() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
   },
 
   methods: {
 
     doPageQuery(listQuery) {
-      console.log('doPageQuery' + JSON.stringify(listQuery))
-      const initParams = Object.assign({}, listQuery, this.paramsConApplyTz)
-      console.log('initParams ' + JSON.stringify(initParams))
+      if (listQuery != undefined) {
+        console.log('doPageQuery' + JSON.stringify(listQuery))
+        this.initParams = Object.assign({}, listQuery, this.paramsConApplyTz)
+        console.log('initParams ' + JSON.stringify(this.initParams))
 
-      getApproveAndSxxy(initParams).then(response => {
-        this.entity = response.data
-        this.$store.dispatch('setListLoading', false)
-      }).catch((error) => {
-        console.log(error)
-      })
+        getApproveAndSxxy(this.initParams).then((response) => {
+          this.entity = response.data
+          console.log('[getApproveAndSxxy]get data' + JSON.stringify(this.entity))
+          this.$store.dispatch('setListLoading', false)
+        }).catch((error) => {
+          console.log(error)
+        })
+      }
     },
     // 行事件
     doEdit(row) {
@@ -132,7 +139,6 @@ export default {
         console.log('con_tree visiable2 ' + JSON.stringify(this.paramsInfo))
         console.log('创建合同完成，调用父页面中的回调函数openConTree....')
         this.$emit('openConTree', this.paramsInfo)
-
       }).catch((error) => {
         console.log(error)
       })
@@ -150,7 +156,7 @@ export default {
     }
   },
   mounted() {
-    this.doPageQuery() // 这个方法是调用上面的方法从后台获取数据，会发送异步请求
+
   }
 
 }

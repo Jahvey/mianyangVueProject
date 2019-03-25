@@ -13,16 +13,15 @@
         <legend>
           <span>基本信息</span>
         </legend>
-        <hr>
+
         <div id="table1">
           <el-col :span="12">
             <el-form-item label="客户名称:"
                           prop="partyName"
                           class="special-input">
               <el-input v-model="conInfoForm.partyName"
-                        style="width:100%"
-                        :disabled=true></el-input>
-              <!--style="width:150px"-->
+                        style="width:100%"></el-input>
+
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -30,8 +29,7 @@
                           prop="partyNum"
                           class="special-input">
               <el-input v-model="conInfoForm.partyNum"
-                        style="width:100%"
-                        :disabled=true></el-input>
+                        style="width:100%"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -39,8 +37,7 @@
                           prop="productTypeCd"
                           class="special-input">
               <el-select v-model="conInfoForm.productType"
-                         style="width:100%"
-                         :disabled=true>
+                         style="width:100%">
                 <el-option v-for="(value,key) in productTypeCd"
                            :key="key"
                            :label="value"
@@ -53,8 +50,7 @@
                           prop="contractNum"
                           class="special-input">
               <el-input v-model="conInfoForm.contractNum"
-                        style="width:100%"
-                        :disabled=true></el-input>
+                        style="width:100%"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -63,7 +59,7 @@
                           class="special-input">
               <el-input v-model="conInfoForm.paperConNum"
                         style="width:100%"
-                        :disabled=true></el-input>
+                        placeholder="请输入纸质合同编号"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -71,8 +67,7 @@
                           prop="oldContractNum"
                           class="special-input">
               <el-input v-model="conInfoForm.oldContractNum"
-                        style="width:100%"
-                        :disabled=true></el-input>
+                        style="width:100%"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -81,7 +76,7 @@
                           class="special-input">
               <el-select v-model="conInfoForm.currencyCd"
                          style="width:100%"
-                         :disabled=isCurrencyCd
+                         :disabled="disCurrencyCd"
                          @change="bzChange">
                 <el-option v-for="(value,key) in currencyCd"
                            :key="key"
@@ -95,20 +90,27 @@
             <el-form-item label="金额:"
                           prop="contractAmt"
                           class="special-input">
-              <el-input type="number"
-                        v-model.number="conInfoForm.contractAmt"
-                        style="width:100%"
-                        :disabled=isContractAmt></el-input>
+              <el-input v-model="conInfoForm.contractAmt"
+                        style="width:100%;float:left"
+                        :disabled="disContractAmt"
+                        @change="validAmt"></el-input>
+
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="12"
+                  v-show="isBzjbl">
             <el-form-item label="保证金比例:"
                           prop="bzjbl"
-                          class="special-input"
-                          v-show="assure_per">
-              <el-input v-model="conInfoForm.bzjbl"
-                        style="width:100%"
-                        :disabled=true></el-input>
+                          class="special-input">
+              <el-input-number v-model="conInfoForm.bzjbl"
+                               controls-position="right"
+                               :precision="2"
+                               :step="0.1"
+                               :min="0"
+                               :max="100"
+                               style="width:100%"
+                               :disabled="disBzjbl"></el-input-number>
+
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -120,20 +122,19 @@
                               v-model="conInfoForm.beginDate"
                               style="width:100%"
                               placeholder="选择起始日期"
-                              :disabled=isXgbz
-                              @change="validateBeginDate"></el-date-picker>
+                              @change="validateBeginDate"
+                              :disabled="disbeginDate"></el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="12">
             <el-form-item label="合同期限:"
-                          prop="sqqx"
+                          prop="contractTerm"
                           class="special-input">
               <el-input v-model="conInfoForm.contractTerm"
                         style="width:60%;float:left"
                         @blur="getConEndate"></el-input>
               <el-select v-model="conInfoForm.cycleUnit"
-                         style="width:40%;float:left"
-                         :disabled=false>
+                         style="width:40%;float:left">
                 <el-option v-for="(value,key) in cycleUnit"
                            :key="key"
                            :label="value"
@@ -150,8 +151,8 @@
                               v-model="conInfoForm.endDate"
                               style="width:100%"
                               placeholder="选择截止日期"
-                              :disabled=isXgbz
-                              @change="getTerm"></el-date-picker>
+                              @change="getTerm"
+                              :disabled="disendDate"></el-date-picker>
 
             </el-form-item>
           </el-col>
@@ -167,7 +168,7 @@
 
               <el-select v-model="conInfoForm.repaymentType"
                          style="width:100%"
-                         :disabled=isRepaymentType
+                         :disabled=disRepaymentType
                          @change="conRpTpChg">
                 <el-option v-for="(value,key) in repaymentType"
                            :key="key"
@@ -178,34 +179,33 @@
             </el-form-item>
           </el-col>
           <el-col :span="12"
-                  v-if="schkq">
+                  v-show="schkq">
             <el-form-item label="首次还款期次:"
                           prop="firstRepayTerm"
                           class="special-input">
               <el-input v-model="conInfoForm.firstRepayTerm"
                         style="width:100%"
-                        :disabled=isFirstRepayTerm></el-input>
+                        :disabled=disFirstRepayTerm></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12"
-                  v-if="zdhkr">
+                  v-show="zdhkr">
             <el-form-item label="指定还款日:"
                           prop="specPaymentDate"
                           class="special-input">
               <el-input v-model="conInfoForm.specPaymentDate"
                         style="width:100%"
-                        :disabled=isXgbz
-                        placeholder="请指定还款日"></el-input>
+                        placeholder="请指定还款日"
+                        :disabled="disspecPaymentDate"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12"
-                  v-if="jgts">
+                  v-show="jgts">
             <el-form-item label="间隔天数:"
                           prop="internalDays"
                           class="special-input">
               <el-input v-model="conInfoForm.internalDays"
-                        style="width:100%"
-                        :disabled=true></el-input>
+                        style="width:100%"></el-input>
             </el-form-item>
           </el-col>
 
@@ -218,7 +218,7 @@
                           class="special-input">
               <el-select v-model="conInfoForm.cycleIndCon"
                          style="width:100%"
-                         :disabled=isCycleIndCon>
+                         :disabled=disCycleIndCon>
                 <el-option v-for="(value,key) in cycleIndCon"
                            :key="key"
                            :label="value"
@@ -235,10 +235,10 @@
                               format="yyyy-MM-dd"
                               v-model="conInfoForm.contractDate"
                               style="width:100%"
-                              :disabled=isXgbz
                               placeholder="请选择签约日期"
-                              @change="qyrq"></el-date-picker>
-              <!-- @change="childValidateEndDate" -->
+                              @change="qyrq"
+                              :disabled="discontractDate"></el-date-picker>
+
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -247,7 +247,7 @@
                           class="special-input">
               <el-input v-model="conInfoForm.contractAddress"
                         style="width:100%"
-                        :disabled=isXgbz></el-input>
+                        :disabled="discontractAddress"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -256,7 +256,7 @@
                           class="special-input">
               <el-input v-model="conInfoForm.loanUse"
                         style="width:100%"
-                        :disabled=isXgbz></el-input>
+                        :disabled="disloanUse"></el-input>
             </el-form-item>
           </el-col>
         </div>
@@ -268,8 +268,11 @@
                           prop="exchangeRate"
                           class="special-input">
               <el-input v-model="conInfoForm.exchangeRate"
-                        style="width:100%"
-                        :disabled=true></el-input>
+                        style="width:60%;float:left"></el-input>
+              <el-button type="primary"
+                         icon="el-icon-search"
+                         style="width:40%;float:left"
+                         @click="pjcx">获取汇率</el-button>
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -278,7 +281,6 @@
                           class="special-input">
               <el-input v-model="conInfoForm.rmbAmt"
                         style="width:100%"
-                        :disabled=true
                         @change="validAmt"></el-input>
             </el-form-item>
           </el-col>
@@ -289,17 +291,18 @@
              v-show="dbfs">
           <el-col :span="12">
             <el-form-item label="担保方式:"
-                          prop="guarantyType"
                           class="special-input">
-              <el-select v-model="conInfoForm.guarantyType"
-                         style="width:100%"
-                         :disabled=true
-                         @change="guarantyTypechg">
-                <el-option v-for="(value,key) in guarantyType"
-                           :key="key"
-                           :label="value"
-                           :value="key"></el-option>
-              </el-select>
+
+              <el-checkbox-group v-model="conInfoForm.guarantyType"
+                                 @change="guarantyTypechg"
+                                 :disabled="disGuarantyType">
+                <el-checkbox label="01">信用</el-checkbox>
+                <el-checkbox label="02">抵押</el-checkbox>
+                <el-checkbox label="03">质押</el-checkbox>
+                <el-checkbox label="04">保证</el-checkbox>
+                <el-checkbox label="05">保证金</el-checkbox>
+              </el-checkbox-group>
+
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -307,8 +310,7 @@
                           prop="mainGuarantyType"
                           class="special-input">
               <el-select v-model="conInfoForm.mainGuarantyType"
-                         style="width:100%"
-                         :disabled=true>
+                         style="width:100%">
                 <el-option v-for="(value,key) in mainGuarantyType"
                            :key="key"
                            :label="value"
@@ -326,7 +328,6 @@
                           class="special-input">
               <el-select v-model="conInfoForm.agriculLoans"
                          style="width:100%"
-                         :disabled=true
                          @change="changeCon">
                 <el-option v-for="(value,key) in agriculLoans"
                            :key="key"
@@ -345,7 +346,7 @@
         <legend>
           <span>标志信息</span>
         </legend>
-        <hr>
+
         <div id="table2"
              v-show="table2">
           <el-col :span="12">
@@ -354,8 +355,9 @@
                           class="special-input">
               <el-select v-model="conInfoForm.loanTurn"
                          style="width:100%"
-                         :disabled=isXgbz
-                         @change="selectTrade4">
+                         placeholder="--请选择--"
+                         @change="selectTrade4"
+                         :disabled="disloanTurn">
                 <el-option v-for="(value,key) in loanTurn"
                            :key="key"
                            :label="value"
@@ -369,7 +371,7 @@
                           class="special-input">
               <el-select v-model="conInfoForm.riskInfo"
                          style="width:100%"
-                         :disabled=isXgbz>
+                         :disabled="disriskInfo">
                 <el-option v-for="(value,key) in riskInfo"
                            :key="key"
                            :label="value"
@@ -386,7 +388,7 @@
                           class="special-input">
               <el-select v-model="conInfoForm.act"
                          style="width:100%"
-                         :disabled=isXgbz>
+                         :disabled="disact">
                 <el-option v-for="(value,key) in act"
                            :key="key"
                            :label="value"
@@ -404,8 +406,8 @@
                           class="special-input">
               <el-select v-model="conInfoForm.serviceType"
                          style="width:100%"
-                         :disabled=isXgbz
-                         @change="servicetype">
+                         @change="servicetype"
+                         :disabled="disserviceType">
                 <el-option v-for="(value,key) in serviceType"
                            :key="key"
                            :label="value"
@@ -422,7 +424,7 @@
                           class="special-input">
               <el-select v-model="conInfoForm.reduceAmount"
                          style="width:100%"
-                         :disabled=isXgbz>
+                         :disabled="disreduceAmount">
                 <el-option v-for="(value,key) in reduceAmount"
                            :key="key"
                            :label="value"
@@ -439,8 +441,7 @@
                           prop="ajustType"
                           class="special-input">
               <el-select v-model="conInfoForm.ajustType"
-                         style="width:100%"
-                         :disabled=true>
+                         style="width:100%">
                 <el-option v-for="(value,key) in ajustType"
                            :key="key"
                            :label="value"
@@ -453,8 +454,7 @@
                           prop="upgradeType"
                           class="special-input">
               <el-select v-model="conInfoForm.upgradeType"
-                         style="width:100%"
-                         :disabled=true>
+                         style="width:100%">
                 <el-option v-for="(value,key) in upgradeType"
                            :key="key"
                            :label="value"
@@ -467,8 +467,7 @@
                           prop="newProductType"
                           class="special-input">
               <el-select v-model="conInfoForm.newProductType"
-                         style="width:100%"
-                         :disabled=true>
+                         style="width:100%">
                 <el-option v-for="(value,key) in newProductType"
                            :key="key"
                            :label="value"
@@ -485,8 +484,7 @@
                           prop="rhbzffl"
                           class="special-input">
               <el-select v-model="conInfoForm.rhbzffl"
-                         style="width:100%"
-                         :disabled=true>
+                         style="width:100%">
                 <el-option v-for="(value,key) in rhbzffl"
                            :key="key"
                            :label="value"
@@ -499,8 +497,7 @@
                           prop="yjbzffl"
                           class="special-input">
               <el-select v-model="conInfoForm.yjbzffl"
-                         style="width:100%"
-                         :disabled=true>
+                         style="width:100%">
                 <el-option v-for="(value,key) in yjbzffl"
                            :key="key"
                            :label="value"
@@ -511,15 +508,14 @@
 
         </div>
 
-        <div id="table3"
-             v-show="table3">
+        <div id="table1"
+             v-show="table1">
           <el-col :span="12">
             <el-form-item label="是否涉农企业:"
                           prop="whetherArgRelated"
                           class="special-input">
               <el-select v-model="conInfoForm.whetherArgRelated"
                          style="width:100%"
-                         :disabled=true
                          @change="changeArgRelated">
                 <el-option v-for="(value,key) in whetherArgRelated"
                            :key="key"
@@ -528,15 +524,15 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <div id="argType1"
-               v-show="argType1">
+
+          <div v-show="isArgType">
             <el-col :span="12">
               <el-form-item label="涉农企业类型:"
                             prop="argType"
                             class="special-input">
                 <el-select v-model="conInfoForm.argType"
                            style="width:100%"
-                           :disabled=isArgType>
+                           :disabled="disArgType">
                   <el-option v-for="(value,key) in argType"
                              :key="key"
                              :label="value"
@@ -545,15 +541,14 @@
               </el-form-item>
             </el-col>
           </div>
-          <div id="supArgType1"
-               v-show="supArgType1">
+          <div v-show="isSupArgType">
             <el-col :span="12">
               <el-form-item label="支农贷款类型:"
                             prop="supArgType"
                             class="special-input">
                 <el-select v-model="conInfoForm.supArgType"
                            style="width:100%"
-                           :disabled=isSupArgType>
+                           :disabled="disSupArgType">
                   <el-option v-for="(value,key) in supArgType"
                              :key="key"
                              :label="value"
@@ -562,19 +557,21 @@
 
               </el-form-item>
             </el-col>
+
           </div>
 
         </div>
 
-        <div id="greenTable"
+        <div columns="4"
+             id="greenTable"
              v-show="greenTable">
+
           <el-col :span="12">
             <el-form-item label="是否绿色贷款:"
                           prop="greenLoan"
                           class="special-input">
               <el-select v-model="conInfoForm.greenLoan"
                          style="width:100%"
-                         :disabled=true
                          @change="greenLoanChange">
                 <el-option v-for="(value,key) in greenLoan"
                            :key="key"
@@ -584,96 +581,83 @@
             </el-form-item>
           </el-col>
 
-          <div id="greenLoanUse1"
-               v-show="greenLoanUse1">
-            <el-col :span="12">
-              <el-form-item label="绿色贷款的贷款用途:"
-                            prop="greenLoanUse"
-                            class="special-input">
-                <el-select v-model="conInfoForm.greenLoanUse"
-                           style="width:100%"
-                           :disabled=isGreenLoanUse>
-                  <el-option v-for="(value,key) in greenLoanUse"
-                             :key="key"
-                             :label="value"
-                             :value="key"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </div>
+          <el-col :span="12"
+                  v-show="isGreenLoanUse">
+            <el-form-item label="绿色贷款的贷款用途:"
+                          prop="greenLoanUse"
+                          class="special-input">
+              <el-select v-model="conInfoForm.greenLoanUse"
+                         style="width:100%">
+                <el-option v-for="(value,key) in greenLoanUse"
+                           :key="key"
+                           :label="value"
+                           :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
 
-          <div id="greenRiskType1"
-               v-show="greenRiskType1">
-            <el-col :span="12">
-              <el-form-item label="环境、安全等重大风险企业类别:"
-                            prop="greenRiskType"
-                            class="special-input">
-                <el-select v-model="conInfoForm.greenRiskType"
-                           style="width:100%"
-                           :disabled=isGreenRiskType
-                           @change="greenRiskTypeChange">
-                  <el-option v-for="(value,key) in greenRiskType"
-                             :key="key"
-                             :label="value"
-                             :value="key"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </div>
+          <el-col :span="12"
+                  v-show="isGreenRiskType">
+            <el-form-item label="环境、安全等重大风险企业类别:"
+                          prop="greenRiskType"
+                          class="special-input">
+              <el-select v-model="conInfoForm.greenRiskType"
+                         style="width:100%"
+                         @change="greenRiskTypeChange">
+                <el-option v-for="(value,key) in greenRiskType"
+                           :key="key"
+                           :label="value"
+                           :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
 
-          <div id="greenRiskDetail011"
-               v-show="greenRiskDetail011">
-            <el-col :span="12">
-              <el-form-item label="涉及环境保护违法违规类型:"
-                            prop="greenRiskDetail01"
-                            class="special-input">
-                <el-select v-model="conInfoForm.greenRiskDetail01"
-                           style="width:100%"
-                           :disabled=isGeenRiskDetail01>
-                  <el-option v-for="(value,key) in greenRiskDetail01"
-                             :key="key"
-                             :label="value"
-                             :value="key"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </div>
+          <el-col :span="12"
+                  v-show="isGreenRiskDetail01">
+            <el-form-item label="涉及环境保护违法违规类型:"
+                          prop="greenRiskDetail01"
+                          class="special-input">
+              <el-select v-model="conInfoForm.greenRiskDetail01"
+                         style="width:100%">
+                <el-option v-for="(value,key) in greenRiskDetail01"
+                           :key="key"
+                           :label="value"
+                           :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
 
-          <div id="greenRiskDetail021"
-               v-show="greenRiskDetail021">
-            <el-col :span="12">
-              <el-form-item label="安全生产违法违规类型:"
-                            prop="greenRiskDetail02"
-                            class="special-input">
-                <el-select v-model="conInfoForm.greenRiskDetail02"
-                           style="width:100%"
-                           :disabled=isGeenRiskDetail02>
-                  <el-option v-for="(value,key) in greenRiskDetail02"
-                             :key="key"
-                             :label="value"
-                             :value="key"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </div>
+          <el-col :span="12"
+                  v-show="isGreenRiskDetail02">
+            <el-form-item label="安全生产违法违规类型:"
+                          prop="greenRiskDetail02"
+                          class="special-input">
+              <el-select v-model="conInfoForm.greenRiskDetail02"
+                         style="width:100%">
+                <el-option v-for="(value,key) in greenRiskDetail02"
+                           :key="key"
+                           :label="value"
+                           :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+        </div>
 
-          <div id="greenRiskDetail041"
-               v-show="greenRiskDetail041">
-            <el-col :span="12">
-              <el-form-item label="职业病预防控制措施不达标类型:"
-                            prop="greenRiskDetail04"
-                            class="special-input">
-                <el-select v-model="conInfoForm.greenRiskDetail04"
-                           style="width:100%"
-                           :disabled=isGeenRiskDetail04>
-                  <el-option v-for="(value,key) in greenRiskDetail04"
-                             :key="key"
-                             :label="value"
-                             :value="key"></el-option>
-                </el-select>
-              </el-form-item>
-            </el-col>
-          </div>
+        <el-col :span="12"
+                v-show="isGreenRiskDetail04">
+          <el-form-item label="职业病预防控制措施不达标类型:"
+                        prop="greenRiskDetail04"
+                        class="special-input">
+            <el-select v-model="conInfoForm.greenRiskDetail04"
+                       style="width:100%">
+              <el-option v-for="(value,key) in greenRiskDetail04"
+                         :key="key"
+                         :label="value"
+                         :value="key"></el-option>
+            </el-select>
+          </el-form-item>
+        </el-col>
+
         </div>
 
       </fieldset>
@@ -683,18 +667,14 @@
     <el-row align="middle"
             class="bottomBtn">
       <el-col align="center"
-              v-if="!showDisabled">
+              v-show="showSave">
         <el-button size="medium"
                    type="primary"
-                   @click="save">保存</el-button>
+                   @click="save"
+                   :disabled="disSave">保存</el-button>
 
       </el-col>
-      <el-col align="center"
-              v-else>
-        <el-button size="medium"
-                   type="primary"
-                   @click="doCancel">返回</el-button>
-      </el-col>
+
     </el-row>
 
   </el-row>
@@ -704,47 +684,62 @@
 
 import { getConInfoMapByContarctId, RuleEngineMapper, updateConInfo,
   getMonthAddDate, getTermByEndDate, getChangeRate } from '@/api/csm'
+
+import { validatePhoneTwo, validatePostCode, validateEMail } from '@/utils/conValidate.js'
 import enums from '@/utils/enums'// 格式化的枚举
 import axios from 'axios'
 import qs from 'qs'
 
 export default {
-  name: 'conInfoHt1',
+  name: 'conInfoHt',
 
   components: {
-    // 引入的组件
+
   },
   props: {
 
     paramsConTree: { // 用于接受父组件传来的参数
       // con_tree传递过来的参数放在这里
+      proFlag: '1',
+      contractId: '123'
+
     }
+  },
+  computed: {
+    selected: ''
   },
   data() {
     return {
 
       isconInfoForm: false, // 只开放相关的提供查看
 
-      showDisabled: false, // 默认是选择查看，不允许编辑
-
-      assure_per: true,
+      showSave: true, // 默认是选择查看，不允许编辑
 
       // disable
+      disGuarantyType: false, // CDZC0005 抵押方式的多选框是否禁用
 
-      isCycleIndCon: false, // 默认不禁用 是否融单这个选项
-      isFirstRepayTerm: false, // 默认选择不禁用 首次还款期次
-      isRepaymentType: false, // 默认显示本次出账方式
-      isContractAmt: false, // 默认是放款金额是可以修改的
-      isCurrencyCd: false, // 默认可行选择其他货币
-      isArgType: false, // 是否涉农
-      isSupArgType: false, // 是否禁用支农贷类型
+      disContractAmt: false, // 默认是放款金额是可以修改的
+      disCurrencyCd: false, // 默认可行选择其他货币
 
-      isGreenLoanUse: false, // 是否显示绿色贷款
-      isGreenRiskType: false, // 是否禁用 风险类别选项
+      disArgType: false, // 是否禁用涉农选项
+      disSupArgType: false, // 是否禁用支农贷类型
+      disBzjbl: false, // 是否禁用保证金比例
+      disSave: false, // 禁用掉是否保存这个选项
+      disCycleIndCon: false, // 默认不禁用 是否融单这个选项
+      disFirstRepayTerm: false, // 默认选择不禁用 首次还款期次
+      disRepaymentType: false, // 默认显示本次出账方式
 
-      isGeenRiskDetail01: false,
-      isGeenRiskDetail02: false,
-      isGeenRiskDetail04: false,
+      disbeginDate: false,
+      disendDate: false,
+      disspecPaymentDate: false,
+      discontractDate: false,
+      discontractAddress: false,
+      disloanUse: false,
+      disloanTurn: false,
+      disriskInfo: false,
+      disact: false,
+      disserviceType: false,
+      disreduceAmount: false,
 
       // show or not 默认都是显示的
       hkfs: true,
@@ -753,7 +748,6 @@ export default {
       jgts: true,
 
       bzxx: true, // 是否显示标志信息内容
-      isXgbz: true,
       kfdk: true,
       hkxx: true, // 将默认的还款方式 界面设置为可见
       exchangeRate: true,
@@ -761,19 +755,27 @@ export default {
       cqcs: true,
       jnjpl: true,
       greenTable: true,
+
+      table1: true,
       table2: true,
       dbfs: true,
-      argType1: true, // 是否显示涉农
-      supArgType1: true, // 支农贷款类型
-      greenLoanUse1: true, // 绿色贷款的用途
-      greenRiskType1: true, // 环境、安全等重大风险企业类别
-      greenRiskDetail011: true, // 涉及环境保护违法违规类型
-      greenRiskDetail021: true,
-      greenRiskDetail041: true,
-      table3: true,
 
-      dataMap: '', // 这边保存了 相关合同数据
+      isBzjbl: true, // 是否显示保证金比例
+      isArgType: true, // 是否涉农
+      isSupArgType: true, // 是否支农贷类型
+
+      isGreenRiskDetail01: true, // 涉及环境保护违法违规类型
+      isGreenRiskDetail04: true,
+      isGreenRiskDetail02: true,
+      isGreenLoanUse: true, // 是否显示绿色贷款
+      isGreenRiskType: true, // 是否禁用 风险类别选项
+
+      o: {
+        conInfo: { guarantyType: '' }
+
+      }, // 这边保存了 相关合同数据
       conInfoForm: {// 初始化con_info_ht的form表单
+        guarantyType: ['01', '05']
 
       },
       // 合同明细页面需要展示的相关数据参数
@@ -785,22 +787,41 @@ export default {
       legCode: '0700', // TODO 先写死
 
       rules: {// 表单验证
-        // contractAmt: [
-        //   { required: true, message: '金额不允许为空', trigger: 'blur' },
-        //   // {type: 'number', message: '请输入数字', trigger: 'blur'},
-        //   { min: 100, max: 100000000000, message: '请在出账范围内出账', trigger: 'blur' }
+        paperConNum: [
+          { required: true, message: '纸质合同编号不能为空!', trigger: 'blur' }
+        ],
+        currencyCd: [{
+          required: true, message: '币种信息不能为空!', trigger: 'blur'
+        }],
+        contractAmt: [
+          { required: true, message: '请输入合同金额', trigger: 'blur' },
+          {
+            pattern: /^([1-9][\d]{2,10})(\.[\d]{1,2})?$/,
+            message: '请输入正确的金额,在100 ~ 100,000,000,000 之间,并保留两位小数',
+            trigger: 'blur'
+          }
+        ],
+        bzjbl: [
+          { required: true, message: '保证金比例不能为空', trigger: 'blur' },
+          {
+            pattern: /^([1-9][\d]{0,2}|0)$/,
+            message: '请输入正确的比例,在0 ~ 100之间,并保留两位小数',
+            trigger: 'blur'
 
-        // ],
-        // bzjbl: [ // 保证金比例
-        //   { required: true, message: '保证金不允许为空', trigger: 'blur' },
-        //   { min: 0, max: 100, message: '保证金比例必须在0~1之间', trigger: 'blur' }
-
-        // ]
+          }
+        ],
+        beginDate: [{ required: true, message: '起始日期不能为空', trigger: 'blur' }],
+        contractTerm: [{ required: true, message: '合同期限不能为空', trigger: 'blur' },
+          { pattern: /^([1-9][\d]{0,3}|[1-8][\d]{4}|[9][0-4][\d]{3}|[9][5][0]{3}|0)?$/,
+            message: '请输入正确的合同期限,在0 ~ 95000 之间',
+            trigger: 'blur'
+          }
+        ]
 
       },
 
-      guarantyType: enums.guarantyTypeCd, // 担保方式 CDZC0005
-      mainGuarantyType: enums.mainGuarantyTypeCd, // 主担保方式 CDZC0005
+      // guarantyType: enums.guarantyTypeCd, // 担保方式 CDZC0005
+      mainGuarantyType: enums.guarantyTypeCd, // 主担保方式 CDZC0005
       agriculLoans: enums.YesOrNoCd,
 
       currencyCd: enums.currencyCd, // 币种格式化  CD000001
@@ -842,6 +863,7 @@ export default {
     this.productType = param.productType
     this.oldContractId = ''
 
+    this.kfdk = false
     if (this.productType == '01002003') {
       this.kfdk = true
     }
@@ -863,16 +885,70 @@ export default {
 
     this.initConInfoHt(param)
   },
+  mounted() {
+    // this.clearValidate('conInfoForm') // 清除整个表单的校验
+  },
   methods: {
+    // clearValidate(formName) {
+    //   this.$refs[formName].clearValidate()
+    // },
+    // 牌价查询---获取当前币种的汇率信息
+    pjcx() {
+      var bz = this.conInfoForm.currencyCd
+      if (bz == 'CNY') {
+        // 人民币  汇率默认1
+        this.o.conInfo.exchangeRate = '1'
+        this.conInfoForm.exchangeRate = '1'
+        this.count()
+      } else {
+        var json = { bz: bz }
+        getChangeRate(json).then((response) => {
+          const text = response.date
+          console.log('[getChangeRate]..' + JSON.stringify(text))
+          if (text) {
+            if (text.validityInd == '1') {
+              if (text.msg == '' || text.msg == null) {
+                this.conInfoForm.exchangeRate = parseFloat(parseFloat(text.disRateOfRmb) / parseFloat(100)).toFixed(8)
+                this.o.conInfo.exchangeRate = this.conInfoForm.exchangeRate
+
+                alert('币种[' + bz + ']的汇率信息获取成功')
+                this.count()
+              } else {
+                alert(text.msg + ',请国结系统推送当天的利率信息到信贷系统！')
+              }
+            } else {
+              alert('未获取到汇率信息')
+            }
+          } else {
+            alert('未获取到汇率信息')
+          }
+        }).catch((error) => {
+          console.log(error)
+        })
+      }
+    },
+
+    changeCon() {
+      var agriculLoans = this.conInfoForm.agriculLoans
+      if (agriculLoans == '1') {
+        this.disCycleIndCon = false
+      } else {
+        this.conInfoForm.cycleIndCon = '0'
+        this.disCycleIndCon = true
+      }
+    },
 
     // 合同起期不能小于批复生效日
     validateBeginDate() {
+      console.log('[validateBeginDate] invoke...')
       this.getConEndate()// 合同起期变化时 止期也变化(放在前面 避免合同调整时被屏蔽)
       if (this.oldContractId != null && this.oldContractId != '') { // 合同调整不校验
         return
       } else {
-        var beginDate = this.dataMap.conInfo.beginDate
-        var validDate = this.dataMap.bizInfo.validDate
+        // var beginDate = this.o.conInfo.beginDate
+        var beginDate = this.conInfoForm.beginDate
+        var validDate = this.o.bizInfo.validDate
+        console.log('beginDate:' + beginDate + ',validDate:' + validDate)
 
         if (beginDate != null && beginDate != '') {
           if (beginDate.substr(0, 10) < validDate.substr(0, 10)) {
@@ -886,11 +962,14 @@ export default {
 
     // 通过起始日期和期限 计算出合同到期日期
     getConEndate() {
-      var beginDate = this.dataMap.conInfo.beginDate// 合同起始日期
-      var conTerm = this.dataMap.conInfo.contractTerm// 合同期限
-      var conUnit = this.dataMap.conInfo.cycleUnit// 合同期限单位
-      var creditTerm = this.dataMap.bizDtlInfo.creditTerm// 批复里的期限
-      var cycleUnit = this.dataMap.bizDtlInfo.cycleUnit// 批复里的期限单位
+      console.log('[getConEndate] invoke...')
+
+      var beginDate = this.conInfoForm.beginDate// 合同起始日期
+      var conTerm = this.conInfoForm.contractTerm// 合同期限
+      var conUnit = this.conInfoForm.cycleUnit// 合同期限单位
+      var creditTerm = this.o.bizDtlInfo.creditTerm// 批复里的期限
+      var cycleUnit = this.o.bizDtlInfo.cycleUnit// 批复里的期限单位
+      console.log('beginDate:' + beginDate + ',conTerm:' + conTerm + ',conUnit:' + conUnit + ',creditTerm' + creditTerm + ',cycleUnit:' + cycleUnit)
       var qxdw// 期限单位(后台)
       var conqxdw = '月'// 期限单位(页面显示)
       if (conUnit != null) { // 合同里存的期限单位
@@ -927,11 +1006,12 @@ export default {
         var date = beginDate.substring(0, 10)// 截取起始日期
         var json = { 'qxdw': qxdw, 'qx': conTerm, 'rq': date }
         console.log('json is ' + JSON.stringify(json))
+
         getMonthAddDate(json).then(response => {
           const data = response.data
           console.log('[getMonthAddDate] res ' + JSON.stringify(data))
 
-          this.dataMap.conInfo.endDate = data.dqrq
+          this.o.conInfo.endDate = data.dqrq
           this.conInfoForm.endDate = data.dqrq
         }).catch((error) => {
           console.log(error)
@@ -940,25 +1020,36 @@ export default {
     },
 
     initConInfoHt(data) { // 初始化页面合同信息
-      axios.get(
-        '/mybatis-service/process/conInfoSxxy/getConInfoMapByContarctId', {
-          params: {
-            contractId: this.contractId,
-            contractType: '02'
-          }
-        }
+      // axios.get(
+      //   '/mybatis-service/process/conInfoSxxy/getConInfoMapByContarctId', {
+      //     params: {
+      //       contractId: this.contractId,
+      //       contractType: '02'
+      //     }
+      //   }
 
-      )
+      // )
+      const params = {
+        contractId: this.contractId,
+        contractType: '02'
+      }
+      getConInfoMapByContarctId(params)
         .then((res) => { // 这里必须使用箭头函数来赋值
-          // console.log(res.data)
           console.log('initConInfoHt.....')
           const childData = res.data
-          this.dataMap = childData // 将请求后台得到的相关的数据信息保存到dataMap中
-          console.log(this.dataMap)
+          this.o = childData // 将请求后台得到的相关的数据信息保存到dataMap中
+          // console.log('o is :' + JSON.stringify(this.o))
+
+          if (!childData.tbConFlagInfo.greenLoan) {
+            this.conInfoForm.greenLoan = '0'
+          } else {
+            this.conInfoForm.greenLoan = childData.tbConFlagInfo.greenLoan
+          }
+
+          this.enableAassurePer(childData.conInfo.productType)
 
           this.conInfoForm.partyName = childData.party.partyName
           this.conInfoForm.partyNum = childData.party.partyNum
-
           // 基本信息
           this.conInfoForm.productType = childData.conInfo.productType
           this.conInfoForm.contractNum = childData.conInfo.contractNum
@@ -981,7 +1072,7 @@ export default {
           this.conInfoForm.loanUse = childData.conInfo.loanUse
           this.conInfoForm.exchangeRate = childData.conInfo.exchangeRate
           this.conInfoForm.rmbAmt = childData.conInfo.rmbAmt
-          this.conInfoForm.guarantyType = childData.conInfo.guarantyType
+          this.conInfoForm.guarantyType = childData.conInfo.guarantyType.split(',')
           this.conInfoForm.mainGuarantyType = childData.conInfo.mainGuarantyType
           this.conInfoForm.agriculLoans = childData.conInfo.agriculLoans
 
@@ -999,21 +1090,12 @@ export default {
           this.conInfoForm.whetherArgRelated = childData.tbConFlagInfo.whetherArgRelated
           this.conInfoForm.argType = childData.tbConFlagInfo.argType
           this.conInfoForm.supArgType = childData.tbConFlagInfo.supArgType
-
           this.conInfoForm.greenLoanUse = childData.tbConFlagInfo.greenLoanUse
           this.conInfoForm.greenRiskType = childData.tbConFlagInfo.greenRiskType
-
-          if (!childData.tbConFlagInfo.greenLoan) {
-            this.conInfoForm.greenLoan = '0'
-          } else {
-            this.conInfoForm.greenLoan = childData.tbConFlagInfo.greenLoan
-          }
 
           this.conInfoForm.greenRiskDetail01 = childData.tbConFlagInfo.greenRiskDetail01
           this.conInfoForm.greenRiskDetail02 = childData.tbConFlagInfo.greenRiskDetail02
           this.conInfoForm.greenRiskDetail04 = childData.tbConFlagInfo.greenRiskDetail04
-
-          this.enableAassurePer(childData.conInfo.productType)
 
           // 调整时初始化原合同金额
           if (childData.conInfo.loanUse == null || childData.conInfo.loanUse == '') {
@@ -1032,7 +1114,6 @@ export default {
               this.conInfoForm.agriculLoans = '0'
             }
           } else {
-            // nui.get("conInfo.agriculLoans").hide();
             this.nongdandai = false
           }
 
@@ -1041,7 +1122,7 @@ export default {
           if (cycleIndCon != '1') {
             this.conInfoForm.cycleIndCon = '0'
           }
-          this.isCycleIndCon = true // 选择禁止修改是否融单这个选项
+          this.disCycleIndCon = true // 选择禁止修改是否融单这个选项
 
           if (this.oldContractId != null && this.oldContractId != '') {
             if (this.productType == '01007001' || this.productType == '01007002' || this.productType == '01007003' ||
@@ -1059,17 +1140,16 @@ export default {
                 // nui.get("bizDtlInfo.repaymentType").setData(getDictData('XD_SXCD1162','str','1100,1400'));//去掉了1700等本等息
               }
 
-              this.isFirstRepayTerm = false
+              this.disFirstRepayTerm = false
             } else if (this.productType == '01006001' || this.productType == '01006002' ||
               this.productType == '01006010') { // 村镇银行贴现产品
               this.conInfoForm.repaymentType = '21'
-              this.isRepaymentType = true
-              // nui.get("conInfo.repaymentType").setValue("21");
-              // nui.get("conInfo.repaymentType").setEnabled(false);
-              // nui.get("conInfo.repaymentType").validate();
+              this.disRepaymentType = true
             } else {
               // TODO 还款方式这边需要将下拉选项框给 动态添加，现在无法搞定 2019/03/01
-              if (childData.conInfo.cycleIndCon != null && childData.conInfo.cycleIndCon != '' && childData.conInfo.cycleIndCon == '1') {
+              if (childData.conInfo.cycleIndCon != null &&
+                childData.conInfo.cycleIndCon != '' &&
+                childData.conInfo.cycleIndCon == '1') {
                 if (this.legCode == '5099') {
                   // nui.get("conInfo.repaymentType").setData(getDictData('XD_SXCD1162','str','1100,1200'));
                 } else {
@@ -1083,7 +1163,7 @@ export default {
                 }
               }
 
-              this.isFirstRepayTerm = true
+              this.disFirstRepayTerm = false
             }
 
             // 出账成功不允许调整合同金额
@@ -1093,13 +1173,13 @@ export default {
 
               console.log('[RCON_0089]msg ' + msg)
               if (msg == '0') {
-                this.isContractAmt = true // 出账成功后不允许调整合同金额
+                this.disContractAmt = true // 出账成功后不允许调整合同金额
               } else {
-                this.isContractAmt = false
+                this.disContractAmt = false
                 console.log('该合同已出账成功合同调整不允许调整金额!')// 允许调整金额
               }
 
-              this.isCurrencyCd = true // 将金额这一栏给不允许调整
+              this.disCurrencyCd = true // 将金额这一栏给不允许调整
             }).catch((error) => {
               console.log(error)
             })
@@ -1109,13 +1189,13 @@ export default {
             this.productType == '01006010' // 村镇银行贴现产品
           ) {
             console.log('村镇银行贴现产品...')
-            $('#dbfs').css('display', 'none')
-            this.dataMap.conInfo.repaymentType = '21'
+            this.dbfs = false
+            this.o.conInfo.repaymentType = '21'
             this.conInfoForm.repaymentType = '21'
-            this.isRepaymentType = true
+            this.disRepaymentType = true
           } else {
             // 如果担保方式有保证金，主担保方式换成质押，如果已有质押，则直接去掉
-            var grt = this.dataMap.conInfo.guarantyType
+            var grt = this.o.conInfo.guarantyType
             if (grt.indexOf('03') != -1) {
               grt = grt.replace('05', '')
             } else {
@@ -1127,30 +1207,28 @@ export default {
           }
 
           // 设计环境、安全等重大情况 节能环保服务及项目类型 重点关注行业类型 默认为 未涉及 0非节能环保服务及项目类型 0非重点关注行业类型
-          if (this.dataMap.tbConFlagInfo.riskInfo == null || this.dataMap.tbConFlagInfo.riskInfo == '') {
-            this.dataMap.tbConFlagInfo.riskInfo = '0'
+          if (this.o.tbConFlagInfo.riskInfo == null || this.o.tbConFlagInfo.riskInfo == '') {
+            this.o.tbConFlagInfo.riskInfo = '0'
             this.conInfoForm.riskInfo = '0'
           }
-          if (this.dataMap.tbConFlagInfo.serviceType == null || this.dataMap.tbConFlagInfo.serviceType == '') {
-            this.dataMap.tbConFlagInfo.serviceType = '0'
+          if (this.o.tbConFlagInfo.serviceType == null || this.o.tbConFlagInfo.serviceType == '') {
+            this.o.tbConFlagInfo.serviceType = '0'
             this.conInfoForm.serviceType = '0'
           }
           // 间隔天数反显7天
-          if (this.dataMap.conInfo.internalDays == null || this.dataMap.conInfo.internalDays == '') {
-            this.dataMap.conInfo.internalDays = '7'
+          if (this.o.conInfo.internalDays == null || this.o.conInfo.internalDays == '') {
+            this.o.conInfo.internalDays = '7'
             this.conInfoForm.internalDays = '7'
           }
 
           this.exchangeRate = false
           this.riskinfo()
           this.servicetype()
-          // form.validate();
 
           // 国结贸易融资表内业务要求能在合同签约的时候操作还款方式
           if (this.productType == '01007001' || this.productType == '01007003' || this.productType == '01007004' || this.productType == '01007009' ||
             this.productType == '01007012' || this.productType == '01007011' || this.productType == '01007006' || this.productType == '01007005') {
-            this.hkfs = true
-            // nui.get("conInfo.repaymentType").setEnabled(true);
+            this.disRepaymentType = false
           }
           // 国结：等额本息、等额本金、阶段性等额本金、阶段性等额本息---不要
           if (this.productType == '01007001' || this.productType == '01007003' || this.productType == '01007004' ||
@@ -1161,14 +1239,11 @@ export default {
             // nui.get("conInfo.repaymentType").setData(getDictData('XD_SXCD1162','str','1100,1200,1400'));//去掉了1700等本等息
           }
 
-          // let params={proFlag:this.proFlag,isExchangeRate:this.isExchangeRate,showDisabled:this.showDisabled,isBzxx:this.isBzxx,isXgbz:this.isXgbz}
-          // return {conInfoForm:this.conInfoForm,params:params,func:this.setShowMode}
-
           return { currencyCd: this.conInfoForm.currencyCd, func: this.setShowMode }
         }).then(
           function(data) {
-            // console.log("合同加载完成之后的操作!"+JSON.stringify(data))
-            // data.func(data.conInfoForm,data.params)
+            console.log('合同加载完成之后的操作!' + JSON.stringify(data))
+
             data.func(data.currencyCd)
           }).catch((err) => {
           console.log(err)
@@ -1177,36 +1252,54 @@ export default {
     // 合同明细页面加载晚吃之后进行的一些相关操作
     setShowMode(currencyCd) {
       console.log('[setShowMode]currencyCd ' + JSON.stringify(currencyCd))
-      // console.log("[setShowMode]conInfoFrom "+JSON.stringify(conInfoForm)+",params "+JSON.stringify(params))
+
       const bz = currencyCd
       console.log('币种 bz = ' + bz)
       if (bz == '' || bz == null || bz == 'null' || bz == 'undefined') {
 
       } else if (bz != 'CNY') {
-        this.isExchangeRate = true
+        this.disExchangeRate = true
       } else {
-        this.isExchangeRate = false
+        this.disExchangeRate = false
       }
 
       console.log('proFlag :' + this.proFlag + ',xbgz :' + this.xgbz)
       // proFlag   如果流程标识为0表示为查看，隐藏保存按钮禁用控件
       if (this.proFlag != '1') {
-        this.showDisabled = true
+        this.showSave = false
+        this.isconInfoForm = true
       }
 
       if (this.xgbz == '1') {
-        $('#bzxx').css('display', 'none')
-        // this.bzxx=true
-        // this.xgbz=true
+        this.bzxx = false
+
+        this.disbeginDate = true
+        this.disendDate = true
+        this.disspecPaymentDate = true
+        this.discontractDate = true
+        this.discontractAddress = true
+        this.disloanUse = true
+
+        this.disloanTurn = true
+        this.disriskInfo = true
+        this.disact = true
+        this.disserviceType = true
+        this.disreduceAmount = true
       }
     },
 
     // 通过起始日期、到期日期、期限单位计算期限
     getTerm() {
-      var beginDate = this.dataMap.conInfo.beginDate.substring(0, 10)// 合同起期
-      var endDate = this.dataMap.conInfo.endDate.substring(0, 10)// 合同止期
-      var termUnit = this.dataMap.conInfo.cycleUnit// 合同期限单位
-      var creditTerm = this.dataMap.bizDtlInfo.creditTerm// 批复里的期限
+      console.log('[getTerm] invoke...')
+      // var beginDate = this.o.conInfo.beginDate.substring(0, 10)// 合同起期
+      // var endDate = this.o.conInfo.endDate.substring(0, 10)// 合同止期
+      // var termUnit = this.o.conInfo.cycleUnit// 合同期限单位
+      // var creditTerm = this.o.bizDtlInfo.creditTerm// 批复里的期限
+      var beginDate = this.conInfoForm.beginDate.substring(0, 10)// 合同起期
+      var endDate = this.conInfoForm.endDate.substring(0, 10)// 合同止期
+      var termUnit = this.conInfoForm.cycleUnit// 合同期限单位
+      var creditTerm = this.o.bizDtlInfo.creditTerm// 批复里的期限
+      console.log('beginDate:' + beginDate + ',endDate:' + endDate + ',termUnit:' + termUnit + ',creditTerm:' + creditTerm)
       if (beginDate != null && termUnit != null) {
         if (endDate <= beginDate) {
           this.conInfoForm.endDate = ''// 将合同止期置为空
@@ -1227,7 +1320,7 @@ export default {
             }
           }
           this.conInfoForm.contractTerm = data.term
-          this.dataMap.conInfo.contractTerm = data.term
+          this.o.conInfo.contractTerm = data.term
         }).catch((error) => {
           console.log(error)
         })
@@ -1236,208 +1329,197 @@ export default {
 
     // 签约日期要大于或等于批复起期
     qyrq() {
-      var conDate = this.dataMap.conInfo.contractDate
-      var validDate = this.dataMap.bizInfo.validDate
+      var conDate = this.conInfoForm.contractDate
+      var validDate = this.o.bizInfo.validDate
       if (conDate != null && conDate != '') {
         if (conDate <= validDate) {
           alert('签约日期不能小于批复生效日期!')
           this.conInfoForm.contractDate = ''
-          // nui.get("conInfo.contractDate").setValue('');
-          // nui.get("conInfo.contractDate").validate();
         }
-      }
-    },
-
-    changeCon() {
-      var agriculLoans = this.dataMap.conInfo.agriculLoans
-      if (agriculLoans == '1') {
-        this.isCycleIndCon = false
-      } else if (agriculLoans == '0') {
-        this.conInfoForm.cycleIndCon = '0'
-        this.dataMap.conInfo.cycleIndCon = '0'
-        this.isCycleIndCon = true
       }
     },
 
     // 担保方式发生改变
     guarantyTypechg() {
-      var guarantyType = this.dataMap.conInfo.guarantyType
+      var guarantyType = this.conInfoForm.guarantyType
       console.log('原担保方式:guarantyType ' + guarantyType)
-
+      guarantyType = guarantyType.toString()
       if (guarantyType.indexOf('03') != -1) {
         guarantyType = guarantyType.replace('05', '')
       } else {
         guarantyType = guarantyType.replace('05', '03')
       }
+      console.log('现担保方式:guarantyType ' + guarantyType)
+      this.conInfoForm.guarantyType = guarantyType.split(',') // 注意这个地方必须要分割，这个Form中，这个元素是一个数组
+      this.o.conInfo.guarantyType = guarantyType
       this.conInfoForm.mainGuarantyType = ''
       // nui.get("conInfo.mainGuarantyType").setData(getDictData('CDZC0005','str',guarantyType));
-      // nui.get("conInfo.mainGuarantyType").setValue('');
-      // nui.get("conInfo.mainGuarantyType").validate();
     },
 
     // 是否涉农
     changeArgRelated(e) {
-      console.log('[changeArgRelated] invoke....')
-      if (e.value == '1') {
-        $('#argType1').css('display', 'block')
-        if (this.dataMap.tbConFlagInfo.argType) { this.argType1 = true }
-        // nui.get("tbConFlagInfo.argType").setVisible(true);
-        getSupArgType(1)
-        // nui.get('table1').refreshTable();
+      console.log('[changeArgRelated] invoke....' + e)
+      if (e == '1') {
+        this.isArgType = true
+
+        this.supArgTypeFun(1)
       } else {
-        $('#argType1').css('display', 'none')
-        if (this.dataMap.tbConFlagInfo.argType) {
-          this.argType1 = false
-          this.conInfoForm.argType = ''
-          //  nui.get("tbConFlagInfo.argType").setVisible(false);
-          //  nui.get("tbConFlagInfo.argType").setValue("");
-          getSupArgType(0)
-          //  nui.get('table1').refreshTable();
-        }
+        this.isArgType = false
+
+        this.conInfoForm.argType = ''
+
+        this.supArgTypeFun(0)
       }
     },
-    getSupArgType(x) {
-      console.log('[getSupArgType] invoke....')
+    supArgTypeFun(x) {
+      console.log('[supArgType] invoke.....' + x)
       if (x == '0') {
-        $('#supArgType1').css('display', 'none')
-        if (this.dataMap.tbConFlagInfo.supArgType) { this.conInfoForm.supArgType = '' }
-        this.isSupArgType = true
+        this.isSupArgType = false
+
+        if (this.conInfoForm.supArgType) { this.conInfoForm.supArgType = '' }
       } else {
-        $('#supArgType1').css('display', 'block')
-        if (this.dataMap.tbConFlagInfo.supArgType) { this.isSupArgType = false }
+        this.isSupArgType = true
       }
     },
 
     greenLoanChange() {
-      console.log('[greenLoanChange] invoke....')
-      if (this.dataMap.tbConFlagInfo.greenLoan == '1') {
-        setGreenShow('greenLoanUse1', true)
-        setGreenShow('greenRiskType1', true)
+      console.log('[greenLoanChange] invoke....' + this.conInfoForm.greenLoan)
+      if (this.conInfoForm.greenLoan == '1') {
+        this.isGreenLoanUse = true
+        this.isGreenRiskType = true
       } else {
-        setGreenShow('greenLoanUse1', false)// 隐藏绿色贷款用途
-        setGreenShow('greenRiskType1', false)// 隐藏环境、安全等重大风险企业类别
-        setGreenShow('greenRiskDetail011', false) // 隐藏涉及环境保护违法违规类型
-        setGreenShow('greenRiskDetail021', false) // 隐藏安全生产违法违规类型
-        setGreenShow('greenRiskDetail041', false) // 隐藏职业病预防控制措施不达标类型s
+        this.isGreenLoanUse = false// 隐藏绿色贷款用途
+        this.isGreenRiskType = false// 隐藏环境、安全等重大风险企业类别
+        this.isGreenRiskDetail01 = false// 隐藏涉及环境保护违法违规类型
+        this.isGreenRiskDetail02 = false // 隐藏安全生产违法违规类型
+        this.isGreenRiskDetail04 = false// 隐藏职业病预防控制措施不达标类型s
       }
     },
     greenRiskTypeChange() {
-      console.log('[greenRiskTypeChange] invoke....')
-      var greenRiskType = this.dataMap.tbConFlagInfo.greenRiskType
-      setGreenShow('greenRiskDetail011', greenRiskType == '1')
-      setGreenShow('greenRiskDetail021', greenRiskType == '2')
-      setGreenShow('greenRiskDetail041', greenRiskType == '4')
-    },
+      const greenRiskType = this.conInfoForm.greenRiskType
+      console.log('[greenRiskTypeChange] invoke...' + greenRiskType)
 
-    setGreenShow(title, show) {
-      console.log('[setGreenShow] invoke...')
-      if (show) {
-        $('#' + title).css('display', 'block')
-        this.title = true
-        // nui.get("tbConFlagInfo."+title).setVisible(true);
-      } else {
-        $('#' + title).css('display', 'none')
-        this.title = false
-        title = title.substring(0, title.length - 1)
-        console.log('title ' + title)
-        this.conInfoForm.title = ''
+      if (greenRiskType == '1' || greenRiskType == '2' || greenRiskType == '4') {
+        if (greenRiskType == '1') {
+          this.isGreenRiskDetail01 = true
+        } else {
+          this.isGreenRiskDetail01 = false
+        }
 
-        // nui.get("tbConFlagInfo."+title).setValue(null);
-        // nui.get("tbConFlagInfo."+title).setVisible(false);
+        if (greenRiskType == '2') {
+          this.isGreenRiskDetail02 = true
+        } else {
+          this.isGreenRiskDetail02 = false
+        }
+
+        if (greenRiskType == '4') {
+          this.isGreenRiskDetail04 = true
+        } else {
+          this.isGreenRiskDetail04 = false
+        }
       }
     },
 
     selectTrade4(e) {
       console.log('TODO [selectTrade4] invoke.....')
-      // var btnEdit = this
-      // nui.open({
-      //     url: nui.context + "/pub/dict/code_tree.jsp?dicttypeid=CDXY0300",
-      //     title: "选择字典项",
-      //     width: 800,
-      //     height: 450,
-      //     ondestroy: function (action) {
-      //         if (action == "ok") {
-      //             var iframe = this.getIFrameEl();
-      //             var data = iframe.contentWindow.currentNode;
-      //             data = nui.clone(data);
-      //             if (data) {
-      //                 btnEdit.setValue(data.dictid);
-      //                 btnEdit.setText(data.dictname);
-      //             }
-      //         }
-      //         if (action == "clear") { //清空选择的内容
-      //         	btnEdit.setValue("");
-      //         	btnEdit.setText("");
-      //     	}
-      // 	}
-      // });
+    },
+
+    ValidateForm() { // 子组件的form表单验证
+      let flg = false
+      this.$refs.conInfoForm.validate((valid) => {
+        if (valid) {
+          flg = true
+        } else {
+          alert('请按规则填写信息!')
+          flg = false
+        }
+      })
+      return flg
+    },
+    childSaveShow(data) { // 在保存成功之后需要返显数据
+
     },
     save() {
       console.log('点击了保存按钮。。。')
 
-      // if (form.isValid()==false){
-      // 	alert("请按规则填写信息");
-      // 	return;
-      // }
+      // 有关表单的ref属性
+      this.$refs['conInfoForm'].validate((valid) => {
+        console.log(valid)
+
+        if (valid) {
+          console.log('校验通过！')
+        } else {
+          alert('请按规则填写信息！')
+          return false
+        }
+      })
+
       // 合同币种不是人民币的时候新增的汇率信息和折算人民币金额必须要
-      var bz = this.conInfoForm.currencyCd
-      var conInfoExchangeRate = this.conInfoForm.exchangeRate
-      var conInfoRmbAmt = this.conInfoForm.rmbAmt
+      var bz = this.o.conInfo.currencyCd
+      var conInfoExchangeRate = this.o.conInfo.exchangeRate
+      var conInfoRmbAmt = this.o.conInfo.rmbAmt
 
       if (bz != 'CNY') {
-        this.isExchangeRate = false
+        this.disExchangeRate = false
         if (conInfoExchangeRate == null || conInfoExchangeRate == '' || conInfoRmbAmt == null || conInfoRmbAmt == '') {
           alert('汇率信息和折算人民币信息错误！')
           return
         }
       }
 
-      console.log(this.contractId + '...' + JSON.stringify(this.dataMap))
-      this.dataMap.tbConFlagInfo.contractId = this.contractId // 从vue 的data中取出相应的数据
+      console.log(this.contractId + '...' + JSON.stringify(this.o))
+      this.o.tbConFlagInfo.contractId = this.contractId // 从vue 的data中取出相应的数据
 
-      if (this.dataMap.tbConFlagInfo.greenLoan == '0') {
-        this.dataMap.tbConFlagInfo.greenLoanUse = null
-        this.dataMap.tbConFlagInfo.greenRiskType = null
-        this.dataMap.tbConFlagInfo.greenRiskDetail = null
+      if (this.o.tbConFlagInfo.greenLoan == '0') {
+        this.o.tbConFlagInfo.greenLoanUse = null
+        this.o.tbConFlagInfo.greenRiskType = null
+        this.o.tbConFlagInfo.greenRiskDetail = null
       } else {
-        this.dataMap.tbConFlagInfo.greenRiskDetail = this.getGreenRiskDetail()
+        this.o.tbConFlagInfo.greenRiskDetail = this.getGreenRiskDetail()
       }
       // 给合同余额赋值
-      var conBalance = this.conInfoForm.conBalance
-      var oldAmt = this.conInfoForm.oldAmt// 合同调整时页面初始化此隐藏域
+      var conBalance = this.o.conInfo.conBalance
+      var oldAmt = this.o.conInfo.oldamt// 合同调整时页面初始化此隐藏域
       if (conBalance == '' || conBalance == null || conBalance == 'null') {
         conBalance = 0
       }
       if (conBalance != 0) {
         var ocupy = parseFloat(oldAmt) - parseFloat(conBalance)
-        this.dataMap.conInfo.conBalance = parseFloat(this.conInfoForm.contractAmt) - parseFloat(ocupy)
+        this.o.conInfo.conBalance = parseFloat(this.conInfoForm.contractAmt) - parseFloat(ocupy)
       } else {
-        this.dataMap.conInfo.conBalance = parseFloat(this.conInfoForm.contractAmt)
+        this.o.conInfo.conBalance = parseFloat(this.conInfoForm.contractAmt)
       }
       // 贴现没有担保方式，但是为了算业务别默认质押
       if (this.productType == '01006001' || this.productType == '01006002' ||
         this.productType == '01006010' // 村镇银行贴现产品
       ) {
-        this.dataMap.conInfo.mainGuarantyType = '03'
+        this.o.conInfo.mainGuarantyType = '03'
       }
+      console.log('o conInfo' + this.o.conInfo.conBalance)
       // 期限校验
-      var condate = this.conInfoForm.endDate
-      var conbedate = this.conInfoForm.beginDate
-      condate = condate + ''
-      conbedate = conbedate + ''
-      if (condate.substring(0, 10) <= conbedate.substring(0, 10)) {
+      var condate = this.o.conInfo.endDate
+      var conbedate = this.o.conInfo.beginDate
+      condate = condate.toString()
+      conbedate = conbedate.toString()
+      if (condate != null || condate != undefined || conbedate != null || conbedate != undefined) {
+        alert('合同终止日期不能为空')
+        this.disSave = false
+
+        return
+      }
+      if (condate.substr(0, 10) <= conbedate.substr(0, 10)) {
         alert('合同止期不能小于等于合同起期') // 失败时后台直接返回出错信息
-        this.showDisabled = false // 显示保存按钮
+        this.disSave = false // 显示保存按钮
 
         return
       }
       // 评级行业分类和综合授信行业不一致时，不允许发起综合授信业务申报
-      this.dataMap.partyId = this.conInfoForm.partyId
-      this.dataMap.bizType = this.conInfoForm.bizType
+      this.o.partyId = this.o.party.partyId
+      this.o.bizType = this.o.bizInfo.bizType
 
       // axios.post(
       //   "/mybatis-service/process/ApplyDaoEos/updateConInfo",
-      //   JSON.stringify(this.dataMap),{
+      //   JSON.stringify(this.o),{
       //   headers: {
       //    'Content-Type':'application/json; charset=UTF-8'
       //   }
@@ -1450,105 +1532,83 @@ export default {
       //   console.log(error)
       // })
 
-      updateConInfo(this.dataMap).then((response) => {
+      updateConInfo(this.o).then((response) => {
         const res = response.data
         console.log('【updateConInfo】res ' + JSON.stringify(res))
         alert('保存成功！')
-        // this.initConInfoHt(res);
+        // this.initConInfoHt(res)
       }).catch((error) => {
         console.log(error)
       })
     },
-    doReset() {
-      this.conInfoForm = {}
-      console.log('点击了重置')
-    },
-
-    doCancel() {
-      // this.$emit("doCancel")
-      console.log('点击了取消。。。')
-      // if (window.history.length <= 1) {
-      //   //this.$router.push({path:'/'})
-
-      //   return false
-      // } else {
-      //   this.$router.back(-1)
-      // }
-    },
 
     riskinfo() {
       console.log('[riskinfo] invoke.....')
-      var riskinfo = this.dataMap.tbConFlagInfo.riskInfo
+      var riskinfo = this.o.tbConFlagInfo.riskInfo
       if (riskinfo == '0' || riskinfo == '') {
         this.cqcs = false
       } else {
         this.cqcs = true
       }
-      // form.validate(); TODO rules中的相关的校验规则
     },
 
     servicetype() {
       console.log('[servicetype] invoke....')
-      var riskinfo = this.dataMap.tbConFlagInfo.serviceType
+      var riskinfo = this.o.tbConFlagInfo.serviceType
 
       if (riskinfo == '0' || riskinfo == '') {
         this.jnjpl = false
       } else {
         this.jnjpl = true
       }
-      // form.validate();
     },
 
     enableAassurePer(productCd, value) {
-      console.log('[enableAassurePer] invoke.....')
+      console.log('[enableAassurePer] invoke..... productCd:' + productCd + ' , value ' + value)
       if (productCd == '01008002' || productCd == '01008010' || productCd == '01008001' || productCd == '01009001' || productCd == '01009002' || productCd == '01009010' || productCd == '010090022' || productCd == '01007014') {
-        // showInput("conInfo.bzjbl", "assure_per", value);
-        this.assure_per = true
+        this.disBzjbl = true
         this.conInfoForm.bzjbl = value
       } else {
-        this.assure_per = false
-        // hideInput("conInfo.bzjbl", "assure_per");
+        this.disBzjbl = false
       }
-      // nui.get("table1").refreshTable();
     },
 
     getGreenRiskDetail() {
       const greenRiskType = this.conInfoForm.greenRiskType
-
+      console.log('[getGreenRiskDetail] invoke...' + greenRiskType)
       if (greenRiskType == '1') {
-        return this.conInfoForm.greenRiskDetail01
+        return this.o.tbConFlagInfo.greenRiskDetail01
       } else if (greenRiskType == '2') {
-        return this.conInfoForm.greenRiskDetail02
+        return this.o.tbConFlagInfo.greenRiskDetail02
       } else if (greenRiskType == '4') {
-        return this.conInfoForm.greenRiskDetail04
+        return this.o.tbConFlagInfo.greenRiskDetail04
       }
       return null
     },
     bzChange() {
-      console.log('[bzChange] invoke.....')
       const bz = this.conInfoForm.currencyCd
+      console.log('[bzChange] invoke.....' + bz)
 
       if (bz == '' || bz == null || bz == 'null' || bz == 'undefined') {
 
       } else if (bz != 'CNY') {
-        this.isExchangeRate = false
+        this.disExchangeRate = false
         this.conInfoForm.exchangeRate = ''
         this.conInfoForm.rmbAmt = ''
       } else {
         var conAmt = this.conInfoForm.contractAmt
-        this.isExchangeRate = true
+        this.disExchangeRate = true
         this.conInfoForm.exchangeRate = '1'
         this.conInfoForm.rmbAmt = conAmt
       }
-      count()
+      this.count()
     },
 
     validAmt() {
-      console.log('[validAmt] invoke....')
-
       var appAmt = this.conInfoForm.rmbAmt// 批复折算人民币金额
       var conAmt = this.conInfoForm.contractAmt// 合同金额
       var exchangeRate = this.conInfoForm.exchangeRate// 批复币种汇率
+      console.log('[validAmt] invoke....appAmt:' + appAmt + ',conAmt:' + conAmt + ',exchangeRate:' + exchangeRate)
       if (exchangeRate == '' || exchangeRate == null) {
         exchangeRate = 1
       }
@@ -1584,7 +1644,7 @@ export default {
       if (bz == 'CNY') {
         this.conInfoForm.rmbAmt = changeAmt
       }
-      count()
+      this.count()
     },
     // 折算人民币金额的计算
     count() {

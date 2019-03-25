@@ -29,7 +29,7 @@
         <!--<el-button size="medium" type="primary" @click="doReset">重置</el-button>-->
         <el-button size="medium" type="primary" @click="doReset">取消</el-button>
       </el-col>
-      <el-col align="center" v-else>
+      <el-col align="center" v-if="!disabled"><!--<el-col align="center" v-else>-->
         <el-button size="medium" type="primary" @click="doCancel">返回</el-button>
       </el-col>
     </el-row>

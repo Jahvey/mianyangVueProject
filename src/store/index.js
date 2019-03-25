@@ -1,32 +1,22 @@
 import Vue from 'vue'
-import Vuex from 'vuex'
+import vuex from 'vuex'
+
+Vue.use(vuex);
+
 import app from './modules/app'
+import iframe from './modules/iframe'
 import user from './modules/user'
-import org from './modules/org'
-import loading from './modules/loading'
-import getters from './getters'
-import nav from './modules/nav'
 import menu from './modules/menu'
-import urlParam from './modules/urlParam'
-import indexStore from './modules/indexStore'
+import dept from './modules/dept'
 
-Vue.use(Vuex)
-
-const store = new Vuex.Store({
-  modules: {
-    app,
-    user,
-    org,
-    loading,
-    nav,
-
-    menu,
-    urlParam,
-    indexStore
-  },
-  getters
-
-
+const store = new vuex.Store({
+    modules: {
+        app: app,
+        iframe: iframe,
+        user: user,
+        menu: menu,
+        dept: dept
+    }
 })
 
 export default store

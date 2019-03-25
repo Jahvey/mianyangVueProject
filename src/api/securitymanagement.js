@@ -302,3 +302,112 @@ export function deleteGrtCollateralById(param) {
 export function deleteGrtCollateralBatch(param) {
   return myGet('/mybatis-service/grtCollateral/deleteGrtCollateralBatch',param);
 }
+/*以下查询将会移动位置*/
+//查询自然人或公司客户信息
+export function selectCustomerAllByPartyTypeCd(param) {
+  return myGet('/mybatis-service/customer/natural/selectCustomerAllByPartyTypeCd',param);
+}
+//根据获取客户信息
+export function getPartyInfoByPartyId(param) {
+  return myGet('/mybatis-service/guarantorController/getPartyInfoByPartyId',param);
+}
+//根据业务申请查询id查询业务信息
+export function queryApplyInfoByApplyId(param) {
+  return myGet('/mybatis-service/guarantorController/queryApplyInfoByApplyId',param);
+}
+//查询TB_CON_GUARANTE_QUOTA,担保公司为暂停新增时
+export function queryCompanyStatus(param) {
+  return myGet('/mybatis-service/guarantorController/queryCompanyStatus',param);
+}
+//新增保证基本信息、保证人、业务与保证关联信息
+export function addGuaranteeApplyTbGrtGuaranteer(param) {
+  return myGet('/mybatis-service/guarantorController/addGuaranteeApplyTbGrtGuaranteer',param);
+}
+//查询担保基金专用账户
+export function selectGuaranteeConZh(param) {
+  return myGet('/mybatis-service/guarantorController/selectGuaranteeConZh',param);
+}
+//查询业务申请下关联 保证人
+export function getGuaranteerList(param) {
+  return myGet('/mybatis-service/guarantorController/getGuaranteerList',param);
+}
+//根据主键查询保证人信息
+export function getGuaranteerBySuretyId(param) {
+  return myGet('/mybatis-service/guarantorController/getGuaranteerBySuretyId',param);
+}
+//修改保证基本信息、保证人、业务与保证关联信息
+export function updateGuaranteeApplyTbGrtGuaranteer(param) {
+  return myGet('/mybatis-service/guarantorController/updateGuaranteeApplyTbGrtGuaranteer',param);
+}
+//珊瑚保证基本信息、保证人、业务与保证关联信息
+export function deleteGuaranteeApplyTbGrtGuaranteerBySuretyId(param) {
+  return myGet('/mybatis-service/guarantorController/deleteGuaranteeApplyTbGrtGuaranteerBySuretyId',param);
+}
+//查询保证金信息
+export function getCashDepositList(param) {
+  return myGet('/mybatis-service/depositController/getCashDepositList',param);
+}
+//保存保证金信息
+export function saveDeposit(param) {
+  return myGet('/mybatis-service/depositController/saveDeposit',param);
+}
+//根据主键删除保证金信息
+export function deleteDepositBySuretyKeyId(param) {
+  return myGet('/mybatis-service/depositController/deleteDepositBySuretyKeyId',param);
+}
+//根据主键查询保证金信息
+export function selectDepositBySuretyKeyId(param) {
+  return myGet('/mybatis-service/depositController/selectDepositBySuretyKeyId',param);
+}
+//根据主键更新保证金信息
+export function updateDeposit(param) {
+  return myGet('/mybatis-service/depositController/updateDeposit',param);
+}
+//查询信用保险信息
+export function getCreditsafeList(param) {
+  return myGet('/mybatis-service/creditInsuranceController/getCreditsafeList',param);
+}
+//添加信用保险信息
+export function addGuaranteeApplyTbGrtCreditsafe(param) {
+  return myGet('/mybatis-service/creditInsuranceController/addGuaranteeApplyTbGrtCreditsafe',param);
+}
+//surety_id查询信用保险信息
+export function getTbGrtCreditsafeBySuretyId(param) {
+  return myGet('/mybatis-service/creditInsuranceController/getTbGrtCreditsafeBySuretyId',param);
+}
+//更新信用保险信息
+export function updateGuaranteeApplyTbGrtCreditsafe(param) {
+  return myGet('/mybatis-service/creditInsuranceController/updateGuaranteeApplyTbGrtCreditsafe',param);
+}
+//根据surety_id删除信用保险信息
+export function delTbGrtCreditsafeBySuretyId(param) {
+  return myGet('/mybatis-service/creditInsuranceController/delTbGrtCreditsafeBySuretyId',param);
+}
+//获取担保评价，抵押，质押信息
+export function getMortgageList(param) {
+  return myGet('/mybatis-service/grtMortgageBasicController/getMortgageList',param);
+}
+//担保评价，获取抵质押品信息
+export function getCollateralList(param) {
+  return myGet('/mybatis-service/grtMortgageBasicController/getCollateralList',param);
+}
+//担保评价，保存抵押、质押信息
+export function saveMortgageBasic(param) {
+  return myGet('/mybatis-service/grtMortgageBasicController/saveMortgageBasic',param);
+}
+//担保评价，更新抵押、质押信息
+export function updateMortgageBasic(param) {
+  return myGet('/mybatis-service/grtMortgageBasicController/updateMortgageBasic',param);
+}
+//担保评价，根据suretyId查询抵押、质押信息
+export function selectMortgageBasicByRelationId(param) {
+  return myGet('/mybatis-service/grtMortgageBasicController/selectMortgageBasicByRelationId',param);
+}
+//担保评价，根据relationId删除抵押、质押信息
+export function deleteMortgageByRelationId(param) {
+  return myGet('/mybatis-service/grtMortgageBasicController/deleteMortgageByRelationId',param);
+}
+//TODO 根据applyId获取业务信息
+export function getBizInfo(param) {
+  return myGet('/mybatis-service/creditInsuranceController/getBizInfo',param);
+}

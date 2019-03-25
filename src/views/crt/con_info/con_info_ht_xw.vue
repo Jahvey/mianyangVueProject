@@ -239,14 +239,17 @@
             <el-form-item label="担保方式:"
                           prop="guarantyType"
                           class="special-input">
-              <el-select v-model="conInfoXwForm.guarantyType"
-                         style="width:100%"
-                         @change="guarantyTypechg">
-                <el-option v-for="(value,key) in guarantyType"
-                           :key="key"
-                           :label="value"
-                           :value="key"></el-option>
-              </el-select>
+
+              <el-checkbox-group v-model="conInfoXwForm.guarantyType"
+                                 @change="guarantyTypechg"
+                                 :disabled="isGuarantyType">
+                <el-checkbox label="01">信用</el-checkbox>
+                <el-checkbox label="02">抵押</el-checkbox>
+                <el-checkbox label="03">质押</el-checkbox>
+                <el-checkbox label="04">保证</el-checkbox>
+                <el-checkbox label="05">保证金</el-checkbox>
+              </el-checkbox-group>
+
             </el-form-item>
           </el-col>
           <el-col :span="12">
@@ -428,8 +431,7 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <div id="argType"
-               v-show="isArgType">
+          <div v-show="isArgType">
             <el-col :span="12">
               <el-form-item label="涉农企业类型:"
                             prop="argType"
@@ -445,8 +447,7 @@
               </el-form-item>
             </el-col>
           </div>
-          <div id="supArgType"
-               v-show="isSupArgType">
+          <div v-show="isSupArgType">
             <el-col :span="12">
               <el-form-item label="支农贷款类型:"
                             prop="supArgType"
@@ -597,16 +598,17 @@ export default {
 
   },
 
-  data() {
+  data () {
     return {
       isconInfoXwForm: false, // 默认所有的设置都是打开的
       showDisabled: true,
 
       conInfoXwForm: {
+        guarantyType: ['01', '05']
 
       },
       o: {
-
+        conInfo: { guarantyType: '' }
       },
       rules: {
 
@@ -624,6 +626,7 @@ export default {
       isShowSave: true,
 
       // 控制页面是否显示具体表单项
+
       hkfs: true,
       schkq: true,
       isGreenRiskDetail04: true,
@@ -635,6 +638,7 @@ export default {
       isSupArgType: true,
 
       // 控制页面是否disable某个页面元素
+      isGuarantyType: false,
       isSave: false,
       iscycleIndCon: false,
       isloanUse: false,
@@ -682,7 +686,7 @@ export default {
 
     }
   },
-  created() {
+  created () {
     console.log('created....')
 
     const params = { // TODO 这个contractId 记得要放开
@@ -693,7 +697,7 @@ export default {
     this.initPage(params)
   },
   methods: {
-    initPage(params) {
+    initPage (params) {
       this.contractId = params.contractId
       this.contractType = params.contractType
       this.proFlag = this.paramsConTree.proFlag
@@ -737,7 +741,8 @@ export default {
         this.conInfoXwForm.specPaymentDate = this.o.conInfo.specPaymentDate
         this.conInfoXwForm.internalDays = this.o.conInfo.internalDays
         this.conInfoXwForm.loanUse = this.o.conInfo.loanUse
-        this.conInfoXwForm.guarantyType = this.o.conInfo.guarantyType
+        
+        this.conInfoXwForm.guarantyType = this.o.conInfo.guarantyType.split(',')
         this.conInfoXwForm.mainGuarantyType = this.o.conInfo.mainGuarantyType
 
         // 标志信息
@@ -845,7 +850,7 @@ export default {
         this.isconInfoXwForm = true
       }
     },
-    save() {
+    save () {
       console.log('save invoke....')
 
       this.$refs['conInfoXwForm'].validate((valid) => {
@@ -907,7 +912,7 @@ export default {
 
     // 剩下的都是一些action操作
 
-    riskinfo() {
+    riskinfo () {
       // var riskinfo = this.o.tbConFlagInfo.riskInfo
       var riskinfo = this.conInfoXwForm.riskInfo
       if (riskinfo == '0' || riskinfo == '') {
@@ -917,7 +922,7 @@ export default {
       }
     },
 
-    servicetype() {
+    servicetype () {
       // var riskinfo = this.o.tbConFlagInfo.serviceType
       var riskinfo = this.conInfoXwForm.serviceType
       if (riskinfo == '0' || riskinfo == '') {
@@ -927,7 +932,7 @@ export default {
       }
     },
 
-    getGreenRiskDetail() {
+    getGreenRiskDetail () {
       // var greenRiskType = this.o.tbConFlagInfo.greenRiskType
       var greenRiskType = this.conInfoXwForm.greenRiskType
       console.log('[getGreenRiskDetail] invoke...' + greenRiskType)
@@ -941,7 +946,7 @@ export default {
       return null
     },
 
-    greenLoanChange() {
+    greenLoanChange () {
       // console.log('[greenLoanChange] invoke....1' + this.o.tbConFlagInfo.greenLoan)
       console.log('[greenLoanChange] invoke....' + this.conInfoXwForm.greenLoan)
       if (this.conInfoXwForm.greenLoan == '1') {
@@ -956,7 +961,7 @@ export default {
       }
     },
 
-    greenRiskTypeChange() {
+    greenRiskTypeChange () {
       const greenRiskType = this.conInfoXwForm.greenRiskType
       console.log('[greenRiskTypeChange] invoke...' + greenRiskType)
 
@@ -993,7 +998,7 @@ export default {
     //   }
     // },
     // 合同起期不能小于批复生效日
-    validateBeginDate() {
+    validateBeginDate () {
       if (this.oldContractId != null && this.oldContractId != '') { // 合同调整
         return
       } else {
@@ -1012,7 +1017,7 @@ export default {
         this.getConEndate()// 起始日期变动时 自动计算合同到期日期
       }
     },
-    qyrq() {
+    qyrq () {
       var conDate = this.conInfoXwForm.contractDate
       var validDate = this.conInfoXwForm.validDate
       if (conDate != null && conDate != '') {
@@ -1024,21 +1029,26 @@ export default {
       }
     },
     // 担保方式
-    guarantyTypechg() {
+    guarantyTypechg () {
       // 初始化时 对担保形式的显隐藏
-      var guarantyType = this.conInfoXwForm.guarantyType
 
+      var guarantyType = this.conInfoXwForm.guarantyType
+      console.log('原担保方式:guarantyType ' + guarantyType)
+      guarantyType = guarantyType.toString()
       if (guarantyType.indexOf('03') != -1) {
         guarantyType = guarantyType.replace('05', '')
       } else {
         guarantyType = guarantyType.replace('05', '03')
       }
+      console.log('现担保方式:guarantyType ' + guarantyType)
+      this.conInfoXwForm.guarantyType = guarantyType.split(',')
+      this.o.conInfo.guarantyType = guarantyType
       // nui.get('conInfo.mainGuarantyType').setData(getDictData('CDZC0005', 'str', guarantyType))
       this.conInfoXwForm.mainGuarantyType = ''
     },
 
     // 只有阶段性还款方式才显示首次还本期次
-    conRpTpChg() {
+    conRpTpChg () {
       var hkfs = this.conInfoXwForm.repaymentType
       console.log('[conRpTpChg]' + hkfs)
       if (hkfs == '0300' || hkfs == '0400') {
@@ -1050,7 +1060,7 @@ export default {
       }
     },
     // 通过起始日期、到期日期、期限单位计算期限
-    getTerm() {
+    getTerm () {
       var beginDate = this.conInfoXwForm.beginDate // 合同起期
       beginDate = (beginDate + '').substring(0, 10)
       var endDate = (this.conInfoXwForm.endDate + '').substring(0, 10)// 合同止期
@@ -1085,32 +1095,26 @@ export default {
     },
 
     // 是否涉农
-    changeArgRelated(e) {
+    changeArgRelated (e) {
       console.log('[changeArgRelated] invoke....' + e)
       if (e == '1') {
         this.isArgType = true
-        if (this.conInfoXwForm.argType) {
-          this.disArgType = false
-        }
 
         this.supArgTypeFun(1)
       } else {
         this.isArgType = false
-        if (this.conInfoXwForm.argType) {
-          this.disArgType = true
-        }
+
         this.conInfoXwForm.argType = ''
 
         this.supArgTypeFun(0)
       }
     },
-    supArgTypeFun(x) {
+    supArgTypeFun (x) {
       console.log('[supArgType] invoke.....' + x)
       if (x == '0') {
         this.isSupArgType = false
-        // $('#supArgType').css('display', 'none')
-        // if (nui.get('tbConFlagInfo.supArgType')) { nui.get('tbConFlagInfo.supArgType').setValue('') }
-        // nui.get('tbConFlagInfo.supArgType').setVisible(false)
+
+        if (this.conInfoXwForm.supArgType) { this.conInfoXwForm.supArgType = '' }
       } else {
         this.isSupArgType = true
 
@@ -1118,7 +1122,7 @@ export default {
         // if (nui.get('tbConFlagInfo.supArgType')) { nui.get('tbConFlagInfo.supArgType').setVisible(true) }
       }
     },
-    selectTrade4(e) {
+    selectTrade4 (e) {
       // var btnEdit = this
       console.log(JSON.stringify(e))
       console.log('[selectTrade4]打开字典树。。。。')
@@ -1146,7 +1150,7 @@ export default {
     },
 
     // 计算合同到期日期
-    getConEndate() {
+    getConEndate () {
       console.log('getConEndate ......')
       const beginDate = this.o.conInfo.beginDate
       const approveTerm = this.o.bizDtlInfo.creditTerm

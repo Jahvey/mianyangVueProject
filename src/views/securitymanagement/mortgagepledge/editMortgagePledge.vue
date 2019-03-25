@@ -191,6 +191,7 @@
               {label: "币种", prop: "currencyCd",isFormat:true,enumType:"currencyCd"},
               {label: "客户类型", prop: "customerType",isFormat:true,enumType:"CustomerClassCd"},
               {label: "创建时间", prop: "timeMark"},
+              {label: "是否绑定业务", prop: "isBind"},
             ]
           },
           buttons: [
