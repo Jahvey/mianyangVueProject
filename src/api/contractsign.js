@@ -76,3 +76,44 @@ export function delSubGrtRel2(param) {
 export function getConGRTBZJList(param) {
   return myGet('/mybatis-service/subContractSignController/getConGRTBZJList',param);
 }
+//查询保证合同关联的保证金
+export function getConSubBzj(param) {
+  return myGet('/mybatis-service/subContractSignController/getConSubBzj',param);
+}
+//查询业务申请关联的保证金
+export function selSubGrtBzj(param) {
+  return myGet('/mybatis-service/subContractSignController/selSubGrtBzj',param);
+}
+//关联保证金到保证合同
+export function insertSubGrtRel3(param) {
+  return myPost('/mybatis-service/subContractSignController/insertSubGrtRel3',param);
+}
+//删除保证金到保证合同
+export function delSubGrtRel3(param) {
+  return myGet('/mybatis-service/subContractSignController/delSubGrtRel3',param);
+}
+//合同签约时添加保证金
+export function addConCashDeposit(param) {
+  return myPost('/mybatis-service/subContractSignController/addConCashDeposit',param);
+}
+//查询可引入的最高额抵押合同
+export function getMaxLoanCon(param) {
+  return myGet('/mybatis-service/subContractSignController/getMaxLoanCon',param);
+}
+//查询担保合同信息用于输入担保合同本次担保金额时，判断可用金额
+export function getSubCon(param) {
+  return myGet('/mybatis-service/subContractSignController/getSubCon',param);
+}
+//1.综合授信 检查是否已经引入了同样的最高额担保合同
+//2.单笔合同 检查是否已经引入了同样的最高额担保合同
+export function checkHaveRef(param) {
+  return myGet('/mybatis-service/subContractSignController/checkHaveRef',param);
+}
+//引入最高额担保合同保存本次担保金额
+export function addMaxloancon(param) {
+  return myPost('/mybatis-service/subContractSignController/addMaxloancon',param);
+}
+//保存最高额担保合同保存本次担保金额
+export function updateConsubRel(param) {
+  return myPost('/mybatis-service/subContractSignController/updateConsubRel',param);
+}

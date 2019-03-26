@@ -288,7 +288,7 @@
   /* padding: 15px; */
   padding-bottom: 10px !important;
 }
-.custom-tree-node {
+/*.custom-tree-node {
   flex: 1;
   display: flex;
   align-items: center;
@@ -296,5 +296,5 @@
   font-size: 14px;
   padding-right: 8px;
   background:#f00;
-}
+}*/
 </style>

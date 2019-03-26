@@ -536,10 +536,6 @@ export default {
     // 子组件按钮事件 单选框 2019-1-7 子组件table上方按钮事件 类似于 查看 失效 调整等
     doRadioClick(funcName) {
       extend(this.form, this.listQuery);
-      if(this.templateSelection==null){
-        console.log("do ...el-radio.....")
-        return false
-      }
       console.log("子组件doRadioClick:"+JSON.stringify(this.templateSelection));
       this.$emit(funcName, this.templateSelection);//当前选中行
     },

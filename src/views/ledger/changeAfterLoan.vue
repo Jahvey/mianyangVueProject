@@ -10,7 +10,7 @@
   import {queryChangeAfterLoan} from '@/api/ledger'
 
   export default {
-    name: "changeAfterLoan",
+    name: "ChangeAfterLoan",
     data() {
       return {
         entity: {},
@@ -51,7 +51,6 @@
       }
     },
     components: { CscSingleTable },
-
     methods: {
       doPageQuery(listQuery) {
         this.queryChangeAfterLoan(listQuery)

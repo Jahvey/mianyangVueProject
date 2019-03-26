@@ -7,7 +7,7 @@
 <script>
 
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import {queryTechProcess} from '@/api/ledger'
+  import {queryTechProcess} from '@/api/Ledger'
 
   export default {
     name: "techProcessQuery",

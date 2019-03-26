@@ -39,11 +39,15 @@
 <script>
   import { getConGrtBZRList,saveGrtCon,delConGrtRel} from '@/api/contractsign'
   import guaranteeContractInfo from '../Common/GuaranteeContractInfo'
+  import maxLoanList from '../Common/MaxLoanList'
+  import maxLoanConfirm from '../Common/MaxLoanConfirm'
   import enums from "@/utils/enums"
     export default {
         name: "bz-contract-list",
       components:{
         guaranteeContractInfo,
+        maxLoanList,
+        maxLoanConfirm,
       },
       beforeMount(){
         this.deliverData.page='guarantor';
@@ -238,7 +242,17 @@
           });
 
         },
-        ref(){},
+        ref(){
+          this.dialogTitle="引入最高额担保合同";
+          this.currentView='maxLoanList';
+          this.deliverData.applyId = this.info.applyId;
+          this.deliverData.subcontractType = this.info.subcontractType;
+          this.deliverData.contractId = this.info.contractId;
+          this.deliverData.conPartyId = this.info.conPartyId;
+          this.deliverData.contractType = this.info.contractType;
+          this.dialogWidth='60%';
+          this.dialogVisible=true;
+        },
         add(){//添加担保合同
           this.isLoading=true;
           var obj={};
@@ -307,6 +321,17 @@
                 });
               }
             });
+          }
+          if(obj.flag=='showDialog2'){
+            this.dialogVisible=false;
+            this.deliverData.contractId = this.info.contractId;
+            this.deliverData.subcontractId = obj.subcontractId;//担保合同Id
+            this.deliverData.subcontractNum = obj.subcontractNum;//合同编号
+            //this.deliverData.conSubconId = obj.conSubconId;//贷款合同与担保合同关系表id
+            this.dialogTitle="最高额担保确认金额";
+            this.currentView='maxLoanConfirm';
+            this.dialogWidth='40%';
+            this.dialogVisible=true;
           }
         },
       },

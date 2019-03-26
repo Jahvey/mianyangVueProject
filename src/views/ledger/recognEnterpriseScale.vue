@@ -7,7 +7,7 @@
 <script>
 
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import {queryRecognEnterpriseScale} from '@/api/ledger'
+  import {queryRecognEnterpriseScale} from '@/api/Ledger'
 
   export default {
     name: "recognEnterpriseScale",

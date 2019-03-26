@@ -194,7 +194,9 @@
               this.isLoading = true;
               saveDeposit(this.data).then(response => {
                 if(response.data.flag == enums.stateCode.flag.success) {//返回数据成功
-                  this.$emit('backFlag',"ok");
+                  var obj={};
+                  obj.flag='ok';
+                  this.$emit('backFlag',obj);
                   this.$message({
                     message: '数据提交成功！',
                     type: 'success'
@@ -219,7 +221,9 @@
         },
         close:function () {
           this.$refs["validate"].resetFields();
-          this.$emit('backFlag',"close");
+          var obj={};
+          obj.flag='close';
+          this.$emit('backFlag',obj);
         }
       },
     }

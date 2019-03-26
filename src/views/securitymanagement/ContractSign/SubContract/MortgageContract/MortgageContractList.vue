@@ -40,6 +40,8 @@
   import { getConDyList,saveGrtCon,delConGrtRel} from '@/api/contractsign'
   import addApplyRelMpPerson from '../Common/AddApplyRelMpPerson'
   import guaranteeContractInfo from '../Common/GuaranteeContractInfo'
+  import maxLoanList from '../Common/MaxLoanList'
+  import maxLoanConfirm from '../Common/MaxLoanConfirm'
 
   import enums from "@/utils/enums"
     export default {
@@ -47,6 +49,8 @@
       components:{
         addApplyRelMpPerson,
         guaranteeContractInfo,
+        maxLoanList,
+        maxLoanConfirm,
       },
       beforeMount(){
         this.deliverData.page='mortgage';
@@ -161,6 +165,7 @@
           this.deliverData.subcontractType = this.info.subcontractType;
           this.deliverData.applyId = this.info.applyId;
           this.deliverData.partyId = this.info.partyId;
+          this.deliverData.contractId = this.info.contractId;
           this.dialogVisible=true;
         },
         edit(row){
@@ -244,7 +249,17 @@
           });
 
         },
-        ref(){},
+        ref(){
+          this.dialogTitle="引入最高额担保合同";
+          this.currentView='maxLoanList';
+          this.deliverData.applyId = this.info.applyId;
+          this.deliverData.subcontractType = this.info.subcontractType;
+          this.deliverData.contractId = this.info.contractId;
+          this.deliverData.conPartyId = this.info.conPartyId;
+          this.deliverData.contractType = this.info.contractType;
+          this.dialogWidth='60%';
+          this.dialogVisible=true;
+        },
         add(){//添加担保合同
           //需要传递applyId，subcontractType
           this.dialogTitle="选择";
@@ -256,17 +271,16 @@
           this.dialogVisible=true;
         },
         getMsg: function (obj) {
+          this.dialogVisible=false;
           if (obj.flag === 'ok') {
-            this.dialogVisible = false;
             this.refresh();
           }
           if(obj.flag==='close'){
-            this.dialogVisible = false;
+            //this.dialogVisible = false;
           }
           if(obj.flag==='showDialog'){
             this.info.partyId=obj.partyId;
             this.info.subcontractType=obj.subcontractType;
-            this.dialogVisible=false;
             this.refresh();
             saveGrtCon(this.info).then(response=>{
               if(response.data.code == enums.stateCode.code.success) {//返回数据成功
@@ -289,6 +303,16 @@
                 });
               }
             });
+          }
+          if(obj.flag=='showDialog2'){
+            this.deliverData.contractId = this.info.contractId;
+            this.deliverData.subcontractId = obj.subcontractId;//担保合同Id
+            this.deliverData.subcontractNum = obj.subcontractNum;//合同编号
+            //this.deliverData.conSubconId = obj.conSubconId;//贷款合同与担保合同关系表id
+            this.dialogTitle="最高额担保确认金额";
+            this.currentView='maxLoanConfirm';
+            this.dialogWidth='40%';
+            this.dialogVisible=true;
           }
         },
       },

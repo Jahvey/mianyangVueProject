@@ -7,7 +7,7 @@
 <script>
 
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import {queryPostLoanInspect} from '@/api/ledger'
+  import {queryPostLoanInspect} from '@/api/Ledger'
 
   export default {
     name: "postLoanInspectQuery",

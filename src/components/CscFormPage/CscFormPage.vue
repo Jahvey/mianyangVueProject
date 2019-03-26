@@ -13,7 +13,7 @@
                              <!--@change="fieldChange" :idx="idx"></csc-form-column>-->
 
             <csc-form-column :col="col" :form="formData" :disabled=inputDisabled(col.disabledFunc,col.modelName) :span="24/pageDef.columnNum"
-                             @change="fieldChange" :idx="idx" ></csc-form-column>
+                             @change="fieldChange" :idx="idx"></csc-form-column>
 
           </template>
         </template>
@@ -27,7 +27,7 @@
       <el-col align="center" v-if="!disabled">
         <el-button size="medium" type="primary" @click="doSave">保存</el-button>
         <!--<el-button size="medium" type="primary" @click="doReset">重置</el-button>-->
-        <el-button size="medium" type="primary" @click="doReset">取消</el-button>
+        <el-button size="medium" type="primary" @click="doCancel">取消</el-button>
       </el-col>
       <el-col align="center" v-if="!disabled"><!--<el-col align="center" v-else>-->
         <el-button size="medium" type="primary" @click="doCancel">返回</el-button>
@@ -44,8 +44,6 @@ import CscFormColumn from "@/components/CscFormColumn/CscFormColumn"
 export default {
   name: "CscFormPage",
   props: {
-
-    
     pageDef: {
       type: Object,
       required: true
@@ -139,9 +137,7 @@ export default {
       } else {
         this.$router.back(-1)
       }
-    },   
-
- 
+    },
 
     checkNumber(rule, value, callback) {
       //          alert(1)

@@ -234,8 +234,17 @@
             this.deliverData.subcontractId = this.info.subcontractId;
             this.deliverData.contractId=this.info.contractId;
             this.currentView="addConfirmGuarantor";
-
+            this.dialogWidth="40%";
+            this.dialogVisible = true;
           }
+        },
+        handleGoodsDetailInfoClose:function (done) {
+          this.$confirm('确认关闭？')
+            .then(_ => {
+              done();
+              //this.refresh();
+            })
+            .catch(_ => {});
         },
       },
 

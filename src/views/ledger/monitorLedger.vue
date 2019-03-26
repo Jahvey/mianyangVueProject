@@ -7,7 +7,7 @@
 <script>
 
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import {queryMonitorLedger} from '@/api/ledger'
+  import {queryMonitorLedger} from '@/api/Ledger'
 
   export default {
     name: "monitorLedger",

@@ -52,8 +52,8 @@
             this.buttonDisable=false;
             this.buttonText="保存";
             this.isLoading=false;
-            this.data.suretyAmt1=response.data.suretyAmt;
-            this.data.usableGuaranteeLimit=response.data.usableGuaranteeLimit;
+            this.data.suretyAmt1=response.data.grtGuaranteeBasic.suretyAmt;
+            this.data.usableGuaranteeLimit=response.data.grtGuaranteeBasic.usableGuaranteeLimit;
           } else{
             this.$message({
               message: JSON.stringify(response.data),

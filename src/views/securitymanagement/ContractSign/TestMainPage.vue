@@ -62,19 +62,26 @@
         return {
           dialogVisible:false,//对话框
           fullScreen:true,//是否全屏
-          currentView:"mortgageContract",
+          currentView:"mortgageContractList",
           info:{//向子页面传递数据对象
 /*            applyId:"ff8080816588a9070165892cd2b30147",//业务id
             partyId:"5AF8119078FEFABDE05010AC57DD79A2",//客户id 客户为：族满骑业宫借与狸侏牛
             contractId:"ff8080816588a90701658d53ea5c0411",//合同ID*/
+            /*测试合同签约*/
             applyId:"ff808081655a216d01655b1499720630",//业务id
-            partyId:"",//用来保存担保品的客户id
             contractId:"ff808081655a216d01655b5cdb5f0752",//合同ID contractId
+            conPartyId:"ff808081655a216d01655b1037910619",//TODO 合同签订人的客户id,客户id 客户为：杜尤于
+            /*测试合同签约最高额*/
+            //applyId:"ff8080815f774104015f7ad75fa30cbe",//业务id
+            //contractId:"ff80808165c279e60165c2be058101ab",//合同ID contractId
+            //conPartyId:"5AF8118FE818FABDE05010AC57DD79A2",//TODO 合同签订人的客户id,
+            partyId:"",//用来保存担保品的客户id
             subcontractType:"01",//担保合同类型 00即可抵押也可质押 01抵押 02质押 03保证金 04保证人 05信用保险
             contractType:"02",//TODO 不清楚 contractType=02 01关联综合授信协议  		02关联业务合同
             proFlag:"",//TODO 不清楚 控制增加、引入、编辑、删除操作按钮是否显示，//1：可修改。0：不可修改
             xgbz:"",//TODO 不清楚 控制增加、引入按钮是否显示
-            conPartyId:"ff808081655a216d01655b1037910619",//TODO 合同签订人的客户id,客户id 客户为：杜尤于
+
+
             userNum:"200555",//用户编号
             orgNum:"0700",//所属机构
           },
@@ -198,7 +205,7 @@
   /* padding: 15px; */
   padding-bottom: 10px !important;
 }
-.custom-tree-node {
+/*.custom-tree-node {
   flex: 1;
   display: flex;
   align-items: center;
@@ -206,5 +213,5 @@
   font-size: 14px;
   padding-right: 8px;
   background:#f00;
-}
+}*/
 </style>

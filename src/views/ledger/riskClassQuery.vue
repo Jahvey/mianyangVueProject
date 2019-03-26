@@ -7,7 +7,7 @@
 <script>
 
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import {queryRiskClass} from '@/api/ledger'
+  import {queryRiskClass} from '@/api/Ledger'
 
   export default {
     name: "riskClassQuery",

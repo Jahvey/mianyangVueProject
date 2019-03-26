@@ -8,7 +8,7 @@
 </template>
 
 <script>
- // import CscTabTable from "@/components/CscTabTable/CscTabTable"
+  import CscTabTable from "@/components/CscTabTable/CscTabTable"
     export default {
         name: "mywork",
         data() {

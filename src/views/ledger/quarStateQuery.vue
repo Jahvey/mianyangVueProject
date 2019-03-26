@@ -7,7 +7,7 @@
 <script>
 
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import {queryQuarState} from '@/api/ledger'
+  import {queryQuarState} from '@/api/Ledger'
 
   export default {
     name: "quarStateQuery",

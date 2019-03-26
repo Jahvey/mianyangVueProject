@@ -191,12 +191,12 @@
           })
           .catch(_ => {});
       },
-      getMsg: function (flag) {
-        if (flag === 'ok') {
+      getMsg: function (obj) {
+        if (obj.flag === 'ok') {
           this.dialogVisible = false;
           this.refresh();
         }
-        if(flag==='close'){
+        if(obj.flag==='close'){
           this.dialogVisible = false;
         }
       },

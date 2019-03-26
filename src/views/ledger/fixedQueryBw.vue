@@ -8,7 +8,7 @@
 <script>
 
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import {queryBwFixed} from '@/api/ledger'
+  import {queryBwFixed} from '@/api/Ledger'
 
   export default {
     name: "fixedQueryBw",

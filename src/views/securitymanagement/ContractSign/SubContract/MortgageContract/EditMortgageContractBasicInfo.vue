@@ -289,6 +289,20 @@
           <el-button v-if="ifShowButton" size="medium" v-bind:disabled="buttonDisable" type="primary" @click="comfirm" :loading="isLoading">{{buttonText}}</el-button>
         </el-col>
       </el-row>
+      <el-row>
+        <el-dialog
+          class="dialog-style"
+          :title="dialogTitle"
+          :visible.sync="dialogVisible"
+          :width="dialogWidth"
+          :fullscreen="fullScreen"
+          v-if='dialogVisible'
+          :before-close="handleGoodsDetailInfoClose"
+          append-to-body>
+          <!--动态组件-->
+          <compoment v-bind:is="currentView" v-bind:info="deliverData" v-on:backFlag="getMsg"></compoment>
+        </el-dialog>
+      </el-row>
     </el-main>
   </el-container>
 </template>
@@ -296,12 +310,16 @@
 <script>
   import { getGrtConInfo,updateGrtConInfo} from '@/api/contractsign'
   import enums from "@/utils/enums"
+  import signMaxLoanConfirm from '../Common/SignMaxLoanConfirm'
     export default {
       name: "mortgage-contract-basic-info",
       props:{
         info:{
           type:Object,
         },
+      },
+      components:{
+        signMaxLoanConfirm,
       },
       beforeMount(){
         if(this.info.isScan){
@@ -327,6 +345,13 @@
       },
       data(){
         return{
+          //对话框
+          dialogWidth:"60%",//弹出框的宽度
+          dialogVisible:false,//对话框
+          fullScreen:false,//是否全屏
+          currentView:"signMaxLoanConfirm",
+          dialogTitle:'选择',
+          deliverData:{},//传递的数据
           buttonDisable:false,
           isLoading:false,
           buttonText:"确认",
@@ -945,22 +970,28 @@
         comfirm(){
           this.$refs["validate"].validate((valid) => {
             if(valid){
-              if(this.data.ifTopSubcon=='1'){
-                this.$message({
-                  message: '最高额抵押未完工！',
-                  type: 'error'
-                });
-                return;
-              }
               this.buttonText='';
               this.isLoading=true;
               this.buttonDisable=true;
               updateGrtConInfo(this.data).then(response=>{
                 if(response.data.code == enums.stateCode.code.success){//返回数据成功
-                  this.$message({
-                    message: '保存成功！',
-                    type: 'success'
-                  });
+                  this.buttonText='确定';
+                  this.isLoading=false;
+                  this.buttonDisable=false;
+                  if(this.data.ifTopSubcon=='1'){
+                    //当为最高额时，需要另外操作
+                    this.deliverData.conSubconId = this.data.conSubconId;//贷款合同与担保合同关系表id
+                    this.deliverData.subcontractId = this.data.subcontractId;//贷款合同与担保合同关系表id
+                    this.dialogTitle="最高额担保确认金额";
+                    this.currentView='signMaxLoanConfirm';
+                    this.dialogWidth='40%';
+                    this.dialogVisible=true;
+                  } else{
+                    this.$message({
+                      message: '保存成功！',
+                      type: 'success'
+                    });
+                  }
                 } else{
                   this.$message({
                     message: '操作失败啦！'+JSON.stringify(response.data),
@@ -979,6 +1010,11 @@
             }
           });
         },
+        getMsg: function (obj) {
+          if (obj.flag === 'close') {
+            this.dialogVisible = false;
+          }
+        }
       },
 
     }

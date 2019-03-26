@@ -7,7 +7,7 @@
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
   import {queryBorrowQuery} from '@/api/ledger'
   export default {
-    name: "borrowQuery",
+    name: "BorrowQuery",
     data() {
       return {
         entity: {},

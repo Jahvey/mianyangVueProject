@@ -7,7 +7,7 @@
 <script>
 
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import {queryRepaymentPlan} from '@/api/ledger'
+  import {queryRepaymentPlan} from '@/api/Ledger'
 
   export default {
     name: "repaymentPlan",

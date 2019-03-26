@@ -147,7 +147,8 @@
           this.deliverData.conSubconId = row.CON_SUBCON_ID;//贷款合同与担保合同关系表id
           this.deliverData.subcontractType = this.info.subcontractType;
           this.deliverData.applyId = this.info.applyId;
-          this.deliverData.partyId = this.info.partyId;
+          this.deliverData.conPartyId = this.info.conPartyId;
+          this.deliverData.partyId = this.info.conPartyId;
           this.deliverData.contractId = this.info.contractId;
           this.dialogVisible=true;
         },
@@ -185,7 +186,8 @@
             this.deliverData.conSubconId = row.CON_SUBCON_ID;//贷款合同与担保合同关系表id
             this.deliverData.subcontractType = this.info.subcontractType;
             this.deliverData.applyId = this.info.applyId;
-            this.deliverData.partyId = this.info.partyId;
+            this.deliverData.conPartyId = this.info.conPartyId;
+            this.deliverData.partyId = this.info.conPartyId;
             this.deliverData.contractId = this.info.contractId;
             this.dialogVisible=true;
           }
@@ -255,7 +257,8 @@
               this.deliverData.subcontractType = this.info.subcontractType;
               this.deliverData.contractType = this.info.contractType;
               this.deliverData.applyId = this.info.applyId;
-              this.deliverData.partyId = this.info.partyId;
+              this.deliverData.conPartyId = this.info.conPartyId;
+              this.deliverData.partyId = this.info.conPartyId;
               this.deliverData.contractId = this.info.contractId;
               this.dialogVisible=true;
             }else{

@@ -7,7 +7,7 @@
 <script>
 
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import {queryDetailedHistory} from '@/api/ledger'
+  import {queryDetailedHistory} from '@/api/Ledger'
 
   export default {
     name: "detailedHistoryQuery",

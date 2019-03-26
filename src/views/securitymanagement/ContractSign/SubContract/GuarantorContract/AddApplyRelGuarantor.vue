@@ -140,11 +140,6 @@
               });
             }
           });
-/*          var obj={};
-          obj.subcontractType=row.SURETY_TYPE;
-          obj.partyId=row.PARTY_ID;//抵质押人的partyId
-          obj.flag='showDialog';
-          this.$emit('backFlag',obj);*/
         },
         close(){
           this.$emit('backFlag',{flag:'close'});

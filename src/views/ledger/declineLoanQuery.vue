@@ -7,7 +7,7 @@
 <script>
 
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import {queryDeclineLoan} from '@/api/ledger'
+  import {queryDeclineLoan} from '@/api/Ledger'
 
   export default {
     name: "declineLoanQuery",

@@ -5,7 +5,7 @@
 
 <script>
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import {queryLoadDetail} from '@/api/ledger'
+  import {queryLoadDetail} from '@/api/Ledger'
   export default {
     name: "loadDetailQuery",
     data() {

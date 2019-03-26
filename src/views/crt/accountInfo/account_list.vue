@@ -1,11 +1,6 @@
 <template>
-  <csc-single-table :pageDef="pageDef" 
-  :entity="entity" 
-  :disableQueryForm="disableQueryForm" 
-  @findOne="findOne"
-  :disableRowButtons="disableRowButtons"
-  @contractList="contractList" 
-  >
+  <csc-single-table :pageDef="pageDef" :entity="entity" :disableQueryForm="disableQueryForm" @findOne="findOne"
+       :disableRowButtons="disableRowButtons"             @contractList="contractList"       >
   </csc-single-table>
 </template>
 

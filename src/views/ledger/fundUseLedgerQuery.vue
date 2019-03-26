@@ -7,7 +7,7 @@
 <script>
 
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import {queryFundUseLedger} from '@/api/ledger'
+  import {queryFundUseLedger} from '@/api/Ledger'
 
   export default {
     name: "fundUseLedgerQuery",

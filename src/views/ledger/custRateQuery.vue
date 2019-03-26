@@ -7,7 +7,7 @@
 <script>
 
   import CscSingleTable from '@/components/CscSingleTable/CscSingleTable'
-  import {queryCustRateInfo} from '@/api/ledger'
+  import {queryCustRateInfo} from '@/api/Ledger'
 
   export default {
     name: "custRateQuery",
