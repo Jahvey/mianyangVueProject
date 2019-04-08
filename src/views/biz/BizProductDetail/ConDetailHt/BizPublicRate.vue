@@ -1,291 +1,636 @@
 <!--自己用原生的element写，这是利率信息页面-->
 <template>
   <el-container>
-    <el-main>
-      <legend>利率信息</legend>
-      <hr>
-      <div id="tableloanrate">
 
-        <!--表单2-->
-        <el-row :gutter="20"
-                class="form">
-          <el-form el-form
-                   label-width="200px"
-                   size="mini"
-                   :model="form2"
-                   ref="form2"
-                   label-position="right">
-            <el-col :span="12">
-              <el-form-item label="利率类型:"
-                            prop="loanOrg"
-                            class="special-input">
-                <el-input v-model="form2.loanOrg"
-                          :disabled=false
-                          @blur="selectAccOrg"></el-input>
+    <div id="tableloanrate">
 
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="浮动方式:"
-                            v-show="isPayOutFlag"
-                            prop="payOutFlag"
-                            class="special-input">
+      <el-row :gutter="20"
+              class="form">
+        <el-form el-form
+                 label-width="200px"
+                 :model="loanrate"
+                 size="medium"
+                 :rules="rules"
+                 ref="loanrate"
+                 label-position="right"
+                 :disabled="disBizPublicRate">
+          <el-col :span="12">
+            <!--对应原来的id='lllx'-->
+            <el-form-item label="利率类型:"
+                          prop="rateType"
+                          class="special-input">
+              <el-input v-model="loanrate.rateType"
+                        @change="onselectType"></el-input>
 
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="经办人:"
-                            prop="userNum"
-                            class="special-input">
-                <el-input v-model="form2.userNum"
-                          :disabled=true></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="经办机构:"
-                            prop="payOutFlag"
-                            class="special-input">
-                <el-input v-model="form2.orgNum"
-                          :disabled=true></el-input>
-              </el-form-item>
-            </el-col>
-          </el-form>
-        </el-row>
+            </el-form-item>
+          </el-col>
 
-      </div>
+          <el-col :span="12"
+                  v-show="isFloatWay">
+            <el-form-item label="浮动方式:"
+                          prop="floatWay"
+                          class="special-input"
+                          :disabled="disFloatWay">
+              <el-input v-model="loanrate.floatWay"
+                        @change="countRate()"></el-input>
 
-    </el-main>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12"
+                  v-show="isRateFloatProportion">
+            <el-form-item label="浮动比例(%):"
+                          prop="rateFloatProportionq"
+                          class="special-input"
+                          :disabled="disRateFloatProportion">
+              <el-input v-model="loanrate.rateFloatProportion"
+                        @blur="countRate(1)"></el-input>
+            </el-form-item>
+          </el-col>
+          <el-col :span="12">
+            <el-form-item label="申请利率(%):"
+                          prop="yearRate"
+                          class="special-input">
+              <el-input v-model="loanrate.yearRate"
+                        @blur="countRate2"></el-input>
+            </el-form-item>
+          </el-col>
 
-    <el-footer>
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <el-button type="primary"
-                     v-show="isSave"
-                     :disabled=!isSave
-                     @click="save"
-                     size="medium">保存</el-button>
-        </el-col>
+          <el-col :span="12">
+            <!--对应原来的id='isChangeRate'-->
+            <el-form-item label="利率调整方式:"
+                          prop="irUpdateFrequency"
+                          class="special-input">
+              <el-select v-model="loanrate.irUpdateFrequency"
+                         style="width:100%"
+                         :disabled="disIrUpdateFrequency">
+                <el-option v-for="(value,key) in irUpdateFrequency"
+                           :key="key"
+                           :label="value"
+                           :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <!--对应原来的id='jxzq'-->
+            <el-form-item label="结息周期:"
+                          prop="interestCollectType"
+                          class="special-input">
+              <el-select v-model="loanrate.interestCollectType"
+                         style="width:100%">
+                <el-option v-for="(value,key) in interestCollectType"
+                           :key="key"
+                           :label="value"
+                           :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <!--对应原来的id='jjrsybz'-->
+            <el-form-item label="节假日顺延标志:"
+                          prop="holidayFlg"
+                          class="special-input">
+              <el-select v-model="loanrate.holidayFlg"
+                         style="width:100%"
+                         @change="conChangeHoliday">
+                <el-option v-for="(value,key) in holidayFlg"
+                           :key="key"
+                           :label="value"
+                           :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12"
+                  v-show="isHolidayIntFlg">
+            <!--对应原来的id='jjrlxclfs'-->
+            <el-form-item label="节假日利息处理方式:"
+                          prop="holidayIntFlg"
+                          class="special-input">
+              <el-select v-model="loanrate.holidayIntFlg"
+                         style="width:100%"
+                         :disabled="disHolidayIntFlg">
+                <el-option v-for="(value,key) in holidayIntFlg"
+                           :key="key"
+                           :label="value"
+                           :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12"
+                  v-show="true">
+            <!--对应原来的id='kxqfs'-->
+            <el-form-item label="宽限期方式:"
+                          prop="gracePeriodType"
+                          class="special-input">
+              <el-select v-model="loanrate.gracePeriodType"
+                         style="width:100%"
+                         :disabled="disGracePeriodType">
+                <el-option v-for="(value,key) in gracePeriodType"
+                           :key="key"
+                           :label="value"
+                           :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12"
+                  v-show="isGracePeriodDay">
+            <!--对应原来的id='gracePeriodDay'-->
+            <el-form-item label="宽限期天数:"
+                          prop="gracePeriodDay"
+                          class="special-input"
+                          :disabled="disGracePeriodDay">
+
+              <el-input-number v-model="loanrate.gracePeriodDay"
+                               controls-position="right"
+                               :step="1"
+                               :min="1"
+                               :max="10"
+                               style="width:100%"></el-input-number>
+
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12"
+                  v-show="isGraceCountIntFlag">
+            <!--对应原来的id='kxqlxclfs'-->
+            <el-form-item label="宽限期利息处理方式:"
+                          prop="graceCountIntFlag"
+                          class="special-input">
+              <el-select v-model="loanrate.graceCountIntFlag"
+                         style="width:100%"
+                         :disabled="disGraceCountIntFlag">
+                <el-option v-for="(value,key) in graceCountIntFlag"
+                           :key="key"
+                           :label="value"
+                           :value="key"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12">
+            <!--对应原来的id='ovardueRate'-->
+            <el-form-item label="逾期罚息率(%):"
+                          prop="overdueRateUpProportion"
+                          class="special-input">
+
+              <el-input-number v-model="loanrate.overdueRateUpProportion"
+                               controls-position="right"
+                               :precision="2"
+                               :step="1"
+                               :min="30"
+                               :max="50"
+                               style="width:100%"></el-input-number>
+            </el-form-item>
+          </el-col>
+
+          <!--两个表单的隐藏域-->
+          <el-col :span="12"
+                  v-show="false">
+            <el-form-item label="loanrateId:"
+                          prop="loanrateId"
+                          class="special-input">
+              <el-input v-model="loanrate.loanrateId"></el-input>
+
+            </el-form-item>
+          </el-col>
+
+          <el-col :span="12"
+                  v-show="false">
+            <el-form-item label="floatType:"
+                          prop="floatType"
+                          class="special-input">
+              <el-select v-model="loanrate.floatType"
+                         style="width:100%">
+                <el-option v-for="(value,key) in floatType"
+                           :key="key"
+                           :label="value"
+                           :value="key"></el-option>
+              </el-select>
+
+            </el-form-item>
+          </el-col>
+        </el-form>
       </el-row>
-    </el-footer>
+
+    </div>
+
   </el-container>
 
 </template>
 
 <script>
-import qs from 'qs'
+import { getBizTerm, getBasicrate } from '@/api/csm'
+import enums from '@/utils/enums'
 
 export default {
-  name: 'biz_public_rate',
+  name: 'bizPublicRate',
   components: {
 
-    // loanInfo1,
-    // bhInfo,
-    // payOrgSelect
   },
   props: {
-    paramsInfo: {// 接收父组件传递过来的参数
+    conDetailHtData: {// 接收父组件传递过来的参数
 
     }
   },
   data() {
     return {
-      payInfoParam: {// 父子传参，把这个pay_Info的信息传递到嵌入这个页面的子组件
+
+      disBizPublicRate: false, // 控制整个页面是否可以禁用
+      // 必须要添加的属性值，从上个页面传过来的
+      rateFloatProportion: '',
+      baseRate: '',
+      bizTerm: '',
+      productType: '',
+      amountDetailId: '',
+      contractId: '',
+      yearrate: '',
+
+      // 相关的disable选项
+      disHolidayIntFlg: false,
+      disIrUpdateFrequency: false,
+      disGracePeriodType: false,
+      disFloatWay: false,
+      disRateFloatProportion: false,
+      disGracePeriodDay: false,
+      disGraceCountIntFlag: false,
+
+      // 相关的v-show 选项
+      isHolidayIntFlg: true,
+      isDealRate: true,
+      isFloatWay: true,
+      isRateFloatProportion: true,
+      isGracePeriodDay: true,
+      isGraceCountIntFlag: true,
+
+      // 整个表单的页面：
+      loanrate: {
 
       },
-      childFlag: {// 直接从父页面给一些标志位给子页面，要定义很多属性
-        isYearRate: false,
-        isLoanAmt: false,
-        isEndDate: false
+      o: {// 定义一个变量接收后台返回值
+
       },
-      o: '', // 定义一个变量接收后台返回值
-      currentView: '', // 加载的东西
-      isSave: true,
-      isPrintFKPZ: true,
-      isPrintFKCXPZ: true,
-      isLoanInfo1: false, // 基本贷款信息（停用这个）
-      isBhInfo: false, // 保函信息（停用这个）
-      isPayOutFlag: true, // 借新还旧相关
-      dialogVisible: false,
-      form2: {// 原生写法，必须要把form表单里面的所有属性都申明出来，否则无法展示
-        loanOrg: '',
-        payOutFlag: '',
-        userNum: '', // 经办人以后可以直接从session里面去获取，获取实际名字
-        orgNum: ''
+
+      // 相关的格式化的信息
+      floatType: enums.floatTypeCd,
+      holidayIntFlg: enums.holidayIntFlg, // 是否追加罚息
+      holidayFlg: enums.YesOrNoCd, // 节假日顺延标志
+      irUpdateFrequency: enums.irUpdateFrequency, // 利率调整方式 XD_SXCD1148
+      interestCollectType: enums.interestCollectType, // 选择结息周期 XD_SXCD1018
+      gracePeriodType: enums.gracePeriodType, // 宽期限方式 XD_SXYW0210
+      graceCountIntFlag: enums.holidayIntFlg, // 宽限期利息处理方式 XD_SXYW0234
+
+      floatWay: enums.floatWay, // 浮动方式 XD_SXCD1147
+      rateType: enums.rateType, // 利率类型 XD_SXCD1016
+
+      rules: {
+        rateType: [
+          { required: true, message: '请选择利率类型', trigger: 'blur' }
+        ],
+        floatWay: [
+          { required: true, message: '请选择浮动方式', trigger: 'blur' }
+        ],
+        rateFloatProportion: [
+          { required: true, message: '请输入浮动比例', trigger: 'blur' }
+        ],
+        yearRate: [
+          { required: true, message: '请输入利率', trigger: 'blur' }
+        ],
+        irUpdateFrequency: [
+          { required: true, message: '请选择利率调整方式', trigger: 'blur' }
+        ],
+        interestCollectType: [
+          { required: true, message: '请选择结息周期', trigger: 'blur' }
+        ],
+        holidayFlg: [
+          { required: true, message: '请选择节假日顺延标志', trigger: 'blur' }
+        ],
+        holidayIntFlg: [
+          { required: true, message: '请选择节假日利息处理方式', trigger: 'blur' }
+        ],
+        gracePeriodType: [
+          { required: true, message: '请选择宽限期方式', trigger: 'blur' }
+        ],
+        gracePeriodDay: [
+          { required: true, message: '请输入宽限期天数', trigger: 'blur' }
+        ],
+        graceCountIntFlag: [
+          { required: true, message: '请输入宽限期利息处理方式', trigger: 'blur' }
+        ],
+        overdueRateUpProportion: [
+          { required: true, message: '请输入逾期罚息率', trigger: 'blur' }
+        ]
+
       }
+
     }
   },
   created() {
-    // let param = {loanId: this.paramsInfo.loanId, addr: this.paramsInfo.addr}//因为页面加载时间不一致，这些参数可能会在这个页面渲染之后出现，导致报错
-    const param = { loanId: '402881e967bb828101686fbaa3be0122', addr: 'pay/payout_info/loan_info' }
-    this.initPayInfo(param)// 初始化pay_info
+    // const param = { loanId: '402881e967bb828101686fbaa3be0122', addr: 'pay/payout_info/loan_info' }
+    const param = this.conDetailHtData
+    console.log('成功接受到了ConDetailHt页面的信息 ' + JSON.stringify(param))
+    this.initPageInfo(param)// 初始化
   },
   methods: {
-    initPayInfo(data) {
-      getInitPayInfo(data).then(response => { // 初始化pay_info的部分信息，流程id没有接上来
-        const o = response.data
-        this.o = o
-        this.initDate(this.o)// 初始化日期
-        this.form2 = o.loanInfo
-        const productType = o.contractInfo.productType
-        const pjzl = o.loanInfo.pjzl
-        let proFlag
+    initPageInfo() {
 
-        if (productType == '01004001' || productType == '01006001' || productType == '01006002' ||
-          productType == '01008001' || productType == '01008002' || productType == '01008010' || productType == '01010001' ||
-          productType == '01011001' || productType == '01012001' || productType == '01006010') { // 村镇银行贴现产品
-          this.isPrintFKPZ = false
-          this.isPrintFKCXPZ = false
-        } else {
-          if (o.objs) { // 查询是否是会计复核岗
-            const postNum = o.objs
-            if (postNum > 0) {
-              /*             if( o.tbProcess.processdefname.indexOf("repayback")!=-1){//这是流程相关的东西，先注释掉
-                             nui.get("printFKPZ").hide();
-                             nui.get("printFKCXPZ").show();
-                           }else{
-                             nui.get("printFKCXPZ").hide();
-                             nui.get("printFKPZ").show();
-                           }*/
-            } else {
-              this.isPrintFKPZ = false
-              this.isPrintFKCXPZ = false
+    },
+    // 在主页面初始化时也调用此方法，要做特别处理
+    // 利率类型触发事件
+    onselectType() {
+      this.loanrate.holidayFlg = '0'
+
+      var reateType = this.loanrate.rateType
+      console.log('[onselectType]reateType' + reateType)
+      if (reateType == '2') { // 浮动利率
+        // 隐藏固定利率
+        this.dealRate('fixed', 'hide')
+        // 显示浮动利率
+        this.dealRate('float', 'show')
+        // 利率调整方式--浮动时不能选不调整
+
+        this.disIrUpdateFrequency = false
+        // nui.get("loanrate.irUpdateFrequency").setData(getDictData('XD_SXCD1148', 'str', '01,02,03,04,06'));
+        this.loanrate.irUpdateFrequency = '04'
+        if (this.loanrate.irUpdateFrequency) {
+          if (this.loanrate.irUpdateFrequency == '05') {
+            this.loanrate.irUpdateFrequency = ''
+          }
+        }
+      } else if (reateType == '1') { // 固定利率
+        // 显示固定利率
+        this.dealRate('fixed', 'show')
+        // 隐藏浮动利率
+        this.dealRate('float', 'hide')
+        // 利率调整方式--固定时只能选不调整
+        this.disIrUpdateFrequency = true
+
+        // nui.get("loanrate.irUpdateFrequency").setData(getDictData('XD_SXCD1148', 'str', '05'));
+        this.loanrate.irUpdateFrequency = '05'
+      } else { // 非反显
+        this.loanrate.irUpdateFrequency = ''
+        this.disIrUpdateFrequency = true
+
+        this.dealRate('fixed', 'hide')
+        this.dealRate('float', 'hide')
+      }
+      // 刷新table
+    },
+
+    // 隐藏、显示利率
+    dealRate(rateType, dealType) {
+      console.log('[dealRate]rateType ' + rateType + ', dealRate ' + dealType)
+      if (rateType == 'fixed') { // 固定
+        // eslint-disable-next-line no-empty
+        if (dealType == 'hide') {
+
+          // eslint-disable-next-line no-empty
+        } else if (dealType == 'show') {
+
+        }
+      } else if (rateType == 'float') { // 浮动
+        if (dealType == 'hide') {
+          this.loanrate.floatWay = ''
+          this.loanrate.rateFloatProportion = ''
+          this.isFloatWay = false
+          this.isRateFloatProportion = false
+        } else if (dealType == 'show') {
+          this.isFloatWay = true
+          this.isRateFloatProportion = true
+        }
+      }
+      // 刷新table
+    },
+    // 节假日顺延标志选否，节假日利息处理方式为空且不可选；
+    // 节假日顺延标志选择“是”，则“节假日利息处理方式默认为追加罚息，不可修改
+    conChangeHoliday() {
+      var holidayFlag = this.loanrate.holidayFlg
+      console.log('[conChangeHoliday]holidayFlag ' + holidayFlag)
+      if (holidayFlag == '1') {
+        this.isHolidayIntFlg = true
+        this.loanrate.holidayIntFlg = '1'
+        this.disHolidayIntFlg = true
+      } else { // 不顺延或者为空
+        this.isHolidayIntFlg = false
+        this.loanrate.holidayIntFlg = ''
+      }
+      // 刷新table
+    },
+
+    /* 宽限期--
+      宽限期方式选择“无宽限期”，则“宽限期利息处理方式”不展示；
+      宽限期方式选择“宽限至月底/按日计算”，则“宽限期利息处理方式”默认为追加罚息，不可修改 */
+    onselectGrace() {
+      var graceType = this.loanrate.gracePeriodType
+      console.log('[onselectGrace]graceType ' + graceType)
+      if (graceType == '2') { // 按日
+        this.isGracePeriodDay = true
+        this.isGraceCountIntFlag = true
+
+        // 默认追加罚息不可修改
+        this.loanrate.graceCountIntFlag = '1'
+        this.disGraceCountIntFlag = true
+      } else if (graceType == '1') { // 宽限至月底
+        this.isGracePeriodDay = false
+        this.isGraceCountIntFlag = true
+
+        this.loanrate.gracePeriodDay = ''
+        // 默认追加罚息不可修改
+        this.loanrate.graceCountIntFlag = '1'
+        this.disGraceCountIntFlag = true
+      } else { // 无宽限期
+        this.isGracePeriodDay = false
+        this.isGraceCountIntFlag = false
+
+        this.loanrate.gracePeriodDay = ''
+        this.loanrate.graceCountIntFlag = ''
+        this.disGraceCountIntFlag = false
+      }
+      // 刷新table
+    },
+    onRateFloat() {
+      console.log('[onRateFloat] rateFloatProportion ' + this.loanrate.rateFloatProportion)
+
+      // 合同校验--浮动比例
+      if (this.loanrate.rateFloatProportion) {
+        if (this.contractId) {
+          var oldFloatPro = this.rateFloatProportion
+          var newFloatPro = this.loanrate.rateFloatProportion
+          var floatWay = this.loanrate.floatWay
+          if (floatWay == '1') { // 上浮
+            if (parseFloat(newFloatPro) < parseFloat(oldFloatPro)) {
+              alert('上浮时改动值不能小于审批浮动比例')
+              this.loanrate.rateFloatProportion = ''
+              return false
+            }
+          } else { // 下浮
+            if (parseFloat(newFloatPro) > parseFloat(oldFloatPro)) {
+              alert('下浮时改动值不能大于审批浮动比例')
+              this.loanrate.rateFloatProportion = ''
+              return false
             }
           }
         }
-        // 如果没有还款方式，默认1200
-        if (o.loanInfo.repayType == null || o.loanInfo.repayType == '') {
-          this.o.loanInfo.repayType = '1200'
+      }
+      // 刷新table
+      return true
+    },
+    onYearrate(e) {
+      console.log('[onYearrate]e is' + JSON.stringify(e))
+      // 合同校验--固定利率
+      if (this.yearrate) {
+        var oldyearrate = this.yearrate
+        var newyearrate = this.loanrate.yearRate
+        if (parseFloat(newyearrate) < parseFloat(oldyearrate)) {
+          alert('改动值不能小于审批利率')
+          this.loanrate.yearRate = ''
+          return false
         }
+      }
+      // 刷新table
+      return true
+    },
 
-        const flagType = o.bizHappenType// 借新还旧标志
-        const bizHappenType = flagType.substring(0, 2)
-        const ynflag = flagType.substring(3, 4)
-        if (bizHappenType != '06') {
-          this.isPayOutFlag = false
-        } else { // 借新还旧是否归还利息
-          if (!o.loanInfo.payOutFlag) {
-            this.o.loanInfo.payOutFlag = '1'
+    // 计算基准利率
+    countRate(v) {
+      console.log('[countRate]v is' + JSON.stringify(v))
+      var rateType = this.loanrate.rateType
+      if (rateType == '1') {
+        this.loanrate.floatWay = ''
+        this.loanrate.rateFloatProportion = ''
+      } else {
+        if (v == '1') {
+          this.onRateFloat()
+          var newFloatWay = this.loanrate.floatWay
+          if (!newFloatWay) {
+            this.loanrate.rateFloatProportion = ''
+            alert('请先选择浮动方式!')
+            return
           }
         }
-        if (ynflag == '1') { // 年利率可以编辑
-          this.childFlag.isYearRate = false
-        } else { // 年利率不可以编辑
-          this.childFlag.isYearRate = true
+      }
+
+      var creditTerm
+      if (typeof (this.contractId) === 'undefined' || this.contractId == '') {
+        creditTerm = this.loanrate.creditTerm // amountDetail.creditTerm 注意，这个是amountDetail 改成了loanrate
+      }
+      if (creditTerm) {
+        var ratettype = '1'
+        if (this.productType == '02005001' || this.productType == '02005003' || this.productType == '02005010') {
+          ratettype = '2'
         }
-        proFlag = '1'// 先在这里给你写一个假数据，以后是直接从其他页面传递过来
-        if (proFlag != '1') { // 如果流程标识为0表示为查看，隐藏保存按钮禁用控件，pay_apply已经赋了初始值	1
-          this.isSave = false
-          // this.isEnable()//无法实现
-          // form.setEnabled(false);//整个表单（子组件和父组件表单）不可编辑
+        var json1 = { 'loanlength': creditTerm, 'rateType': ratettype }
+
+        getBasicrate(json1).then((response) => {
+          const o = response.data
+          console.log('[getBasicrate]o is ' + JSON.stringify(o))
+          this.baseRate = o.basicrate
+          this.countRate1()
+        }).catch((error) => {
+          console.log(error)
+        })
+      } else {
+        const items = {
+          amountDetailId: this.amountDetailId,
+          contractId: this.contractId
+
         }
-        // 如果开始时间或者结束时间存在，则计算基准利率
-        const beginDate = o.loanInfo.beginDate
-        const endDate = o.loanInfo.endDate
-        if (beginDate && endDate) {
-          // this.countRate(o,setValue)//计算基准利率  setValue is not defined 有问题，在这里直接调用这个方法
-        }
-        // 国结的产品，一个合同只能做一次出账 而且出账金额要等于合同金额
-        if (productType == '01007001' || productType == '01007003' || productType == '01007004' || productType == '01007009' ||
-          productType == '01007012' || productType == '01007011' || productType == '01007006' || productType == '01007005' ||
-          productType == '01007010' || productType == '01007013' || productType == '01007014') {
-          this.o.loanInfo.loanAmt = o.contractInfo.contractAmt
-          this.childFlag.isLoanAmt = true// 出账金额不允许修改
-        }
-        // 银承
-        if (productType == '01008001' || productType == '01008002' || productType == '01008010') {
-          if (pjzl == '02') { // 电票
-            if (o.hps != null) {
-              this.o.loanInfo.endDate = o.hps.drftExpDt
-              this.childFlag.isEndDate = true// 到期日期不允许修改
+        getBizTerm(items).then((response) => {
+          const o = response.data
+          console.log('[getBizTerm]o is ' + JSON.stringify(o))
+
+          if (o && o.items && o.items[0]) {
+            this.bizTerm = o.items[0].TERM_NUM
+          }
+
+          if (this.bizTerm != null && this.bizTerm != '') {
+            // 根据期限取基准利率
+            var ratettype = '1'
+            if (this.productType == '02005001' || this.productType == '02005003' || this.productType == '02005010') {
+              ratettype = '2'
             }
-          } else { // 不是电票
-            this.childFlag.isEndDate = false// 到期日期可以修改
+            var json = { loanlength: this.bizTerm, rateType: ratettype }
+
+            getBasicrate(json).then((response) => {
+              const o = response.data
+              console.log('[getBasicrate]o is ' + JSON.stringify(o))
+              this.baseRate = o.basicrate
+              this.countRate1()
+            }).catch((error) => {
+              console.log(error)
+            })
+          } else {
+            if (this.productType != '01006001' && this.productType != '01006002' && this.productType != '01006010') {
+              return alert('请先填写申请期限！')
+            }
+          }
+        })
+      }
+    },
+
+    // 计算利率
+    countRate1() {
+      var rateType = this.loanrate.rateType
+      console.log('[countRate1]rateType' + rateType)
+      if (rateType == '1') {
+        this.onYearrate()
+      }
+      this.loanrate.yearRate = ''
+      var floatWay = this.loanrate.floatWay
+      var rateFloatProportion = this.loanrate.rateFloatProportion
+      if (floatWay && this.baseRate) {
+        if (rateFloatProportion) {
+          if (floatWay == '1') { // 上浮
+            this.loanrate.yearRate = ((parseFloat(this.baseRate) + parseFloat(this.baseRate) * parseFloat(rateFloatProportion) * 0.01).toFixed(6))
+          } else { // 下浮
+            this.loanrate.yearRate = ((parseFloat(this.baseRate) - parseFloat(this.baseRate) * parseFloat(rateFloatProportion) * 0.01).toFixed(6))
           }
         }
-        this.payInfoParam = { o: this.o, childFlag: this.childFlag }
-        if (data.addr == 'pay/payout_info/bh_info') { // 保函、信贷证明、项目贷款承诺函
-          this.currentView = 'bhInfo'
-          console.log('保函、信贷证明、项目贷款承诺函:pay/payout_info/bh_info')
-        } else if (data.addr == 'pay/payout_info/cdhp_info') { // 承兑汇票
-          alert('承兑汇票:pay/payout_info/cdhp_info')
-        } else if (data.addr == 'pay/payout_info/tx_info') { // 村镇银行贴现产品
-          alert('村镇银行贴现产品:pay/payout_info/tx_info')
-        } else if (data.addr == 'pay/payout_info/yh_info') { // 押汇类产品
-          alert('押汇类产品:pay/payout_info/yh_info')
-        } else if (data.addr == 'pay/payout_info/xyz_info') { // 信用证
-          alert('信用证:pay/payout_info/xyz_info')
-        } else {
-          this.currentView = 'loanInfo1'
-          console.log('普通贷款信息:pay/payout_info/loan_info')
+      }
+    },
+
+    // 计算浮动比例
+    countRate2() {
+      var rateType = this.loanrate.rateType
+      console.log('[countRate2]rateType ' + rateType)
+      if (rateType == '1') {
+        this.loanrate.floatWay = ''
+        this.loanrate.rateFloatProportion = ''
+        this.onYearrate()
+        return
+      }
+      var newYearRate = this.loanrate.yearRate// 执行利率
+      var floatWay = this.loanrate.floatWay
+      if (floatWay && this.baseRate) {
+        if (newYearRate) {
+          if (floatWay == '1') { // 上浮
+            if (newYearRate < this.baseRate) {
+              this.loanrate.yearRate = ''
+              return alert('申请利率【' + newYearRate + '】小于基准利率【' + this.baseRate + '】请选择下浮！')
+            }
+            this.loanrate.rateFloatProportion = (((parseFloat(newYearRate) / parseFloat(this.baseRate) - 1) * 100).toFixed(6))
+          } else { // 下浮
+            if (newYearRate > this.baseRate) {
+              this.loanrate.yearRate = ''
+              return alert('申请利率【' + newYearRate + '】大于基准利率【' + this.baseRate + '】请选择上浮！')
+            }
+            this.loanrate.rateFloatProportion = (Math.abs(((parseFloat(newYearRate) / parseFloat(this.baseRate) - 1) * 100)).toFixed(6))
+          }
         }
-        console.log(this.o)
-      }).catch((error) => {
-        console.log(error)
-        console.log('pay_info报错了')
-      })
-    },
-    save() { // 验证规则写在哪？form表单引入验证规则之后save需不需要也引入那些验证规则？？
-      const childData = this.$refs.currentView.payChildForm// 获取的子组件的form表单内容
-      let beginDate = childData.beginDate
-      let endDate = childData.endDate
-
-      if (beginDate == '' || beginDate == null || endDate == '' || endDate == null) {
-        return alert('请填入正确的期限')
+      } else {
+        if (this.productType != '01006001' && this.productType != '01006002' && this.productType != '01006010') {
+          if (!floatWay) {
+            this.loanrate.rateFloatProportion = ''
+            alert('请先选择浮动方式!')
+            return
+          }
+        }
       }
-      // this.isSave = true//暂时不用
-      if (typeof (beginDate) !== 'number') {
-        beginDate = Date.parse(beginDate)
-      }
-      if (typeof (endDate) !== 'number') {
-        endDate = Date.parse(endDate)
-      }
-      if (childData.loanAmt == null || childData.loanAmt == '') {
-        alert('出账金额不能为0')
-        // nui.get("btnCreate").setEnabled(true)//保存按钮可编辑
-        return
-      }
-      if (beginDate == endDate) {
-        alert('出账起期不能等于出账止期')
-        // nui.get("btnCreate").setEnabled(true);//保存按钮可编辑
-        return
-      }
-      // 合同起期大于营业日期即借据起期，不让申请        感觉前面验证开始日期的时候已经处理了
-      if (beginDate < parseFloat(this.o.contractInfo.beginDate)) {
-        nui.alert('借据起期小于合同起期')
-        // nui.get("btnCreate").setEnabled(true);////保存按钮可编辑
-        return
-      }
-      // nui.get("btnCreate").setEnabled(false);
-      console.log('保存安妮---------------------------------')
-      childData.beginDate = beginDate
-      childData.endDate = endDate
-
-      const postData = qs.stringify({
-        baseRateValue: childData.baseRateValue,
-        beginDate: childData.beginDate,
-        currencyCd: '9527'
-      })
-      savePayInfo(childData).then(response => {
-        const yy = response.data// 真实结果
-        console.log(yy)
-      }).catch((error) => {
-        console.log(error)
-        console.log('childData，保存报错了！！！！！！')
-      })
-    },
-    printFKPZ() {
-      alert('打印放款凭证')
-    },
-    printFKCXPZ() {
-      alert('打印放款撤销凭证')
-    },
-
-    fatherFunc(str) {
-      alert('父组件的方法，测试用' + str)
-    },
-    cancel() {
-      this.dialogVisible = false
     }
+
   }
 }
 

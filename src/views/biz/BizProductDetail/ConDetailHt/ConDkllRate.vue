@@ -1,5 +1,6 @@
 <template>
 
+
   <el-row :gutter="20"
           class="form">
 
@@ -19,12 +20,7 @@
 
       </div>
 
-      <!-- <el-row align="middle" class="bottomBtn">
-        <el-col align="center" >
-        <el-button size="medium" type="primary" @click="test1">保存11</el-button>
 
-        </el-col>
-    </el-row> -->
 
     </el-form>
   </el-row>
@@ -36,9 +32,9 @@
 
 export default {
   name: 'conDkllRate',
-  // components: {
+  components: {
 
-  // },
+  },
   props: {
     conDetailHtData: { // 这个是有关父子传参的工作
 
